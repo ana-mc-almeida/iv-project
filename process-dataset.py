@@ -1,59 +1,60 @@
 import pandas as pd
-import re
 import numpy as np
 
+initial_dataset_path = './initial_dataset.csv'
+final_dataset_path = './final_dataset.csv'
 
-# import dataset
-df = pd.read_csv('./portugal_ads_proprieties.csv')
+# Import dataset
+df = pd.read_csv(initial_dataset_path)
 
-##### DATA PROCESSING
+##### DATA PROCESSING FUNCTIONS #####
 
-# keep only records where AdsType is not 'Vacation'
-def filter_dataset(df: pd.DataFrame) -> pd.DataFrame:
+# Filter records to keep only those that are not of type 'Vacation'
+def filter_non_vacation_ads(df: pd.DataFrame) -> pd.DataFrame:
     return df[df['AdsType'] != 'Vacation']
 
-# drop records with NAs
-def clean_dataset(df: pd.DataFrame) -> pd.DataFrame:
+# Remove missing values (NaN)
+def remove_missing_values(df: pd.DataFrame) -> pd.DataFrame:
     return df.dropna()
 
-# drop unused columns
-def remove_features(df: pd.DataFrame) -> pd.DataFrame:
-    return df.drop(["ProprietyType", "Location"], axis=1)
+# Remove unused columns
+def drop_unused_columns(df: pd.DataFrame) -> pd.DataFrame:
+    columns_to_drop = ["ProprietyType", "Location"]
+    return df.drop(columns=columns_to_drop, axis=1)
 
-##### SELECTED DATA
+##### DATA TRANSFORMATION FUNCTIONS #####
 
-# if adsType = rent, update price from mensal to anual
-def update_price(df: pd.DataFrame) -> pd.DataFrame:
+# Update the price of rental ads ('Rent') from monthly to annual
+def convert_rent_price_to_annual(df: pd.DataFrame) -> pd.DataFrame:
     return df.assign(
-        Price=lambda x : x.apply(lambda y: y['Price'] * 12 if y['AdsType'] == 'Rent' else y['Price'], axis=1)
-        )
+        Price=lambda x: x.apply(lambda y: y['Price'] * 12 if y['AdsType'] == 'Rent' else y['Price'], axis=1)
+    )
 
-# add new column "price_per_m2"
-def create_price_per_m2(df: pd.DataFrame) -> pd.DataFrame:
+# Create a new column with the price per square meter
+def calculate_price_per_square_meter(df: pd.DataFrame) -> pd.DataFrame:
     return df.assign(
-        PricePerMeter=lambda x : x['Price'] / x['Area']
-        )
+        PricePerMeter=lambda x: x['Price'] / x['Area']
+    )
 
-# information from district and municipality should be in separate columns
-def split_location(df: pd.DataFrame) -> pd.DataFrame:
+# Slice the location string to extract the district and municipality
+def split_location_into_columns(df: pd.DataFrame) -> pd.DataFrame:
     return df.assign(
         District=lambda x: x['Location'].apply(lambda y: y.split(",")[-1] if "," in y else None),
         Municipality=lambda x: x['Location'].apply(lambda y: y.split(",")[-2] if "," in y else None)
     )
 
+
+# Main function for data preprocessing
 def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
-    return(
+    return (
         df
-        .pipe(update_price) # update price from month to year if AdsType is 'Rent'
-        .pipe(create_price_per_m2) # create new column price_per_m2
-        .pipe(split_location) # split location into district and municipality
-        .pipe(clean_dataset) # clean NaN values
-        .pipe(filter_dataset) # remove records where AdsType is 'Vacation'
-        .pipe(remove_features) # remove unused columns (ProprietyType, Location)
+        .pipe(convert_rent_price_to_annual)
+        .pipe(calculate_price_per_square_meter)
+        .pipe(split_location_into_columns)
+        .pipe(remove_missing_values)
+        .pipe(filter_non_vacation_ads)
+        .pipe(drop_unused_columns)
     )
 
-df = preprocess_data(df)
-df.to_csv('./final_dataset.csv', index=False)
-
-
-
+df_processed = preprocess_data(df)
+df_processed.to_csv(final_dataset_path, index=False)
