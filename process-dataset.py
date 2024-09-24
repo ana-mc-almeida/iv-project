@@ -33,7 +33,7 @@ def convert_rent_price_to_annual(df: pd.DataFrame) -> pd.DataFrame:
 # Create a new column with the price per square meter
 def calculate_price_per_square_meter(df: pd.DataFrame) -> pd.DataFrame:
     return df.assign(
-        PricePerMeter=lambda x: x['Price'] / x['Area']
+        PricePerSquareMeter=lambda x: x['Price'] / x['Area']
     )
 
 # Slice the location string to extract the district and municipality
