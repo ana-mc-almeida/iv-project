@@ -1,4 +1,4 @@
-# Notes CheckPoint 1
+# Notes to Improve CheckPoint 1
 
 > Bring the improved version printed on Friday
 
