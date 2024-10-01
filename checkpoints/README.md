@@ -1,0 +1,29 @@
+# CheckPoints
+
+- [CheckPoint 1](CPI-23.pdf)
+  - Final Grade: 17.9/20
+    - Peer Grade (5%) : 3.7/5
+    - Theme registration (5%) : 3/5
+- [CheckPoint 1 - Improved](CPI-23-Improv.pdf)
+  - [Notes to Improve CheckPoint 1](CPI-Improv.md)
+  - Grade: TBD
+- [CheckPoint 2](CPII-23.pdf)
+  - Grade: TBD
+- **(TBD)** [CheckPoint 2 - Improved](CPII-23-Improv.pdf)
+  - **(TBD)** [Notes to Improve CheckPoint 2](CPII-Improv.md)
+  - Grade: TBD
+- **(TBD)** [CheckPoint 3](CPIII-23.pdf)
+  - Grade: TBD
+- **(TBD)** [CheckPoint 3 - Improved](CPIII-23-Improv.pdf)
+  - **(TBD)** [Notes to Improve CheckPoint 3](CPIII-Improv.md)
+  - Grade: TBD
+- **(TBD)** [CheckPoint 4](CPIV-23.pdf)
+  - Grade: TBD
+- **(TBD)** [CheckPoint 4 - Improved](CPIV-23-Improv.pdf)
+  - **(TBD)** [Notes to Improve CheckPoint 4](CPIV-Improv.md)
+  - Grade: TBD
+- **(TBD)** [CheckPoint 5](CPV-23.pdf)
+  - Grade: TBD
+- **(TBD)** [CheckPoint 5 - Improved](CPV-23-Improv.pdf)
+  - **(TBD)** [Notes to Improve CheckPoint 5](CPV-Improv.md)
+  - Grade: TBD
