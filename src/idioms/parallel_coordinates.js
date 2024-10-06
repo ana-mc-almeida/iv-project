@@ -1,26 +1,36 @@
 const dimensions = ["Area", "Rooms", "Bathrooms", "Price"];
 
-var globalData = null;
+let width, height;
 
-// Função principal para criar o gráfico de coordenadas paralelas
+let globalData = null;
+
 function createParallelCoordinates(data, selector) {
   globalData = data;
+
   const margin = { top: 30, right: 30, bottom: 10, left: 30 };
-
-  // Obter o tamanho do div onde o gráfico será inserido
   const divElement = d3.select(selector).node();
-  const width = divElement.clientWidth - margin.left - margin.right;
-  const height = divElement.clientHeight - margin.top - margin.bottom;
+  width = divElement.clientWidth - margin.left - margin.right;
+  height = divElement.clientHeight - margin.top - margin.bottom;
 
-  // Criar o SVG com base nas dimensões do div
   const svg = d3
     .select(selector)
     .append("svg")
-    .attr("width", divElement.clientWidth) // Usar o tamanho completo do div para o SVG
+    .attr("width", divElement.clientWidth)
     .attr("height", divElement.clientHeight)
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
+  const yScales = createYScales(data, height);
+  const xScale = createXScale(data, width);
+
+  const foreground = createPaths(svg, data, xScale, yScales);
+
+  addAxes(svg, yScales, xScale);
+
+  addSliderInteractivity(data, yScales, foreground, selector);
+}
+
+function createYScales(data, height) {
   const yScales = {};
   dimensions.forEach((dim) => {
     yScales[dim] = d3
@@ -28,50 +38,48 @@ function createParallelCoordinates(data, selector) {
       .domain(d3.extent(data, (d) => +d[dim]))
       .range([height, 0]);
   });
+  return yScales;
+}
 
-  const xScale = d3
-    .scalePoint()
-    .range([0, width])
-    .padding(0.1)
-    .domain(dimensions);
+function createXScale(data, width) {
+  return d3.scalePoint().range([0, width]).padding(0.1).domain(dimensions);
+}
 
-  const path = (d) => {
-    // console.log(d);
-    console.log("path");
-    return d3.line()(dimensions.map((p) => [xScale(p), yScales[p](+d[p])]));
-  };
+function createPaths(svg, data, xScale, yScales) {
+  const lineGenerator = (d) =>
+    d3.line()(dimensions.map((dim) => [xScale(dim), yScales[dim](+d[dim])]));
 
-  const foreground = svg
+  return svg
     .append("g")
     .attr("class", "foreground")
     .selectAll("path")
     .data(data)
     .enter()
     .append("path")
-    .attr("d", path)
-    .style("fill", "none") // Sem preenchimento para as linhas
-    .style("stroke", "steelblue") // Cor inicial das linhas
-    .style("stroke-width", "1.5px") // Espessura inicial das linhas
-    .on("mouseover", function (event, d) {
-      d3.select(this)
-        .style("stroke", "orange") // Cor de destaque ao passar o rato
-        .style("stroke-width", "3px"); // Aumentar a espessura da linha
+    .attr("d", lineGenerator)
+    .style("fill", "none")
+    .style("stroke", "steelblue")
+    .style("stroke-width", "1.5px")
+    .on("mouseover", function () {
+      d3.select(this).style("stroke", "orange").style("stroke-width", "3px");
     })
-    .on("mouseout", function (event, d) {
+    .on("mouseout", function () {
       d3.select(this)
-        .style("stroke", "steelblue") // Restaurar a cor original
-        .style("stroke-width", "1.5px"); // Restaurar a espessura original
+        .style("stroke", "steelblue")
+        .style("stroke-width", "1.5px");
     });
+}
 
-  const axis = svg
+function addAxes(svg, yScales, xScale) {
+  svg
     .selectAll(".dimension")
     .data(dimensions)
     .enter()
     .append("g")
     .attr("class", "dimension")
     .attr("transform", (d) => `translate(${xScale(d)})`)
-    .each(function (d) {
-      d3.select(this).call(d3.axisLeft(yScales[d]));
+    .each(function (dim) {
+      d3.select(this).call(d3.axisLeft(yScales[dim]));
     })
     .append("text")
     .attr("fill", "black")
@@ -79,18 +87,9 @@ function createParallelCoordinates(data, selector) {
     .attr("y", -9)
     .text((d) => d)
     .style("font-size", "16px");
-
-  // Adicionar interatividade nos sliders
-  addSliderInteractivity(data, yScales, path, foreground, selector);
-
-  //   d3.selectAll("input[type=range]").on("", updateChart(data));
-  //   d3.selectAll("input[type=range]").on("input", () =>
-  //     updateChart(data, selector)
-  //   );
 }
 
-// Função para adicionar interatividade com sliders
-function addSliderInteractivity(data, yScales, path, foreground, selector) {
+function addSliderInteractivity(data, yScales, foreground, selector) {
   const sliders = {
     Rooms: { min: "#minRooms", max: "#maxRooms" },
     Bathrooms: { min: "#minBathrooms", max: "#maxBathrooms" },
@@ -98,169 +97,66 @@ function addSliderInteractivity(data, yScales, path, foreground, selector) {
     Price: { min: "#minPrice", max: "#maxPrice" },
   };
 
-  // Definir os valores iniciais dos sliders
+  setInitialSliderValues(data, sliders);
+
+  d3.selectAll("input[type='range']").on("input", function () {
+    const filters = getSliderFilters(sliders);
+    const filteredData = applyFilters(data, filters);
+    updateChart(filteredData, selector, yScales, foreground);
+  });
+}
+
+function setInitialSliderValues(data, sliders) {
   Object.keys(sliders).forEach((key) => {
-    console.log(key);
-
-    const min = data.reduce((prev, curr) => {
-      // Garantir que o valor de curr[key] seja numérico e válido
-      const currentValue = +curr[key]; // Converte para número
-      if (isNaN(currentValue)) return prev; // Ignora valores não numéricos
-
-      // Inicializa prev na primeira iteração
-      if (prev === null || isNaN(prev)) return currentValue;
-
-      return prev < currentValue ? prev : currentValue;
-    }, null);
-
-    // Calcula o valor máximo
-    const max = data.reduce((prev, curr) => {
-      const currentValue = +curr[key]; // Converte para número
-      if (isNaN(currentValue)) return prev; // Ignora valores não numéricos
-
-      // Inicializa prev na primeira iteração
-      if (prev === null || isNaN(prev)) return currentValue;
-
-      return prev > currentValue ? prev : currentValue;
-    }, null);
-
-    let step = (max - min) / 100;
-    step = step < 1 ? 1 : step;
-
-    console.log("min", min);
-    console.log("max", max);
-    console.log("step", step);
-
-    // console.log(d3.select(sliders[key].min));
-
+    const { min, max, step } = getMinMaxStep(data, key);
     d3.select(sliders[key].min)
       .property("min", min)
       .property("max", max)
       .property("step", step)
       .property("value", min);
-
-    // Selecionar e configurar o slider máximo
     d3.select(sliders[key].max)
-      .attr("min", min)
-      .attr("max", max)
-      .attr("step", step)
+      .property("min", min)
+      .property("max", max)
+      .property("step", step)
       .property("value", max);
-  });
-
-  d3.selectAll("input[type='range']").on("input", function () {
-    console.log("input");
-    const filters = {
-      Rooms: [
-        +d3.select(sliders.Rooms.min).property("value"),
-        +d3.select(sliders.Rooms.max).property("value"),
-      ],
-      Bathrooms: [
-        +d3.select(sliders.Bathrooms.min).property("value"),
-        +d3.select(sliders.Bathrooms.max).property("value"),
-      ],
-      Area: [
-        +d3.select(sliders.Area.min).property("value"),
-        +d3.select(sliders.Area.max).property("value"),
-      ],
-      Price: [
-        +d3.select(sliders.Price.min).property("value"),
-        +d3.select(sliders.Price.max).property("value"),
-      ],
-    };
-
-    console.log(Object.keys(data[0]));
-
-    // Logging the filter values
-    console.log("Filters: ", filters);
-
-    const filteredData = data.filter((d) => {
-      // Logging the current data item being checked
-      // console.log("Checking data: ", d);
-
-      // // check if fails any of the filters
-      // if (
-      //   !(
-      //     d["Rooms"] >= filters.Rooms[0] &&
-      //     d["Rooms"] <= filters.Rooms[1] &&
-      //     d["Bathrooms"] >= filters.Bathrooms[0] &&
-      //     d["Bathrooms"] <= filters.Bathrooms[1] &&
-      //     d["Area"] >= filters.Area[0] &&
-      //     d["Area"] <= filters.Area[1] &&
-      //     d["Price"] >= filters.Price[0] &&
-      //     d["Price"] <= filters.Price[1]
-      //   )
-      // ) {
-      //   // console.log("Data failed filter: ", d);
-
-      //   // check which filter failed
-      //   if (d["Rooms"] < filters.Rooms[0] || d["Rooms"] > filters.Rooms[1]) {
-      //     console.log("Rooms failed");
-      //   }
-      //   if (
-      //     d["Bathrooms"] < filters.Bathrooms[0] ||
-      //     d["Bathrooms"] > filters.Bathrooms[1]
-      //   ) {
-      //     console.log("Bathrooms failed");
-      //   }
-      //   if (d["Area"] < filters.Area[0] || d["Area"] > filters.Area[1]) {
-      //     console.log("Area failed");
-      //   }
-      //   if (d["Price"] < filters.Price[0] || d["Price"] > filters.Price[1]) {
-      //     console.log("Price failed");
-      //   }
-      // }
-
-      return (
-        d["Rooms"] >= filters.Rooms[0] &&
-        d["Rooms"] <= filters.Rooms[1] &&
-        d["Bathrooms"] >= filters.Bathrooms[0] &&
-        d["Bathrooms"] <= filters.Bathrooms[1] &&
-        d["Area"] >= filters.Area[0] &&
-        d["Area"] <= filters.Area[1] &&
-        d["Price"] >= filters.Price[0] &&
-        d["Price"] <= filters.Price[1]
-      );
-    });
-
-    updateChart(filteredData, selector, path);
   });
 }
 
-function updateChart(filteredData, selector, path) {
-  console.log("updateChart");
-  console.log("filteredData", filteredData);
+function getMinMaxStep(data, key) {
+  const min = d3.min(data, (d) => +d[key]);
+  const max = d3.max(data, (d) => +d[key]);
+  const step = Math.max((max - min) / 100, 1);
+  return { min, max, step };
+}
 
-  const margin = { top: 30, right: 30, bottom: 10, left: 30 };
+function getSliderFilters(sliders) {
+  return Object.keys(sliders).reduce((filters, key) => {
+    filters[key] = [
+      +d3.select(sliders[key].min).property("value"),
+      +d3.select(sliders[key].max).property("value"),
+    ];
+    return filters;
+  }, {});
+}
 
-  // Obter o tamanho do div onde o gráfico será inserido
-  const divElement = d3.select(selector).node();
-  const width = divElement.clientWidth - margin.left - margin.right;
-  const height = divElement.clientHeight - margin.top - margin.bottom;
+function applyFilters(data, filters) {
+  return data.filter((d) => {
+    return Object.keys(filters).every((key) => {
+      const [min, max] = filters[key];
+      return d[key] >= min && d[key] <= max;
+    });
+  });
+}
 
-  // Delete all selector children
-  d3.select(selector).selectAll(".foreground").remove();
-
+function updateChart(filteredData, selector, yScales, foreground) {
   const svg = d3.select(selector).select("svg").select("g");
 
-  const foreground = svg
-    .append("g")
-    .attr("class", "foreground")
-    .selectAll("path")
-    .data(filteredData)
-    .enter()
-    .append("path")
-    .attr("d", path)
-    .style("fill", "none") // Sem preenchimento para as linhas
-    .style("stroke", "steelblue") // Cor inicial das linhas
-    .style("stroke-width", "1.5px") // Espessura inicial das linhas
-    .on("mouseover", function (event, d) {
-      d3.select(this)
-        .style("stroke", "orange") // Cor de destaque ao passar o rato
-        .style("stroke-width", "3px"); // Aumentar a espessura da linha
-    })
-    .on("mouseout", function (event, d) {
-      d3.select(this)
-        .style("stroke", "steelblue") // Restaurar a cor original
-        .style("stroke-width", "1.5px"); // Restaurar a espessura original
-    });
+  d3.select(selector).selectAll(".foreground").remove();
+
+  createPaths(
+    svg,
+    filteredData,
+    createXScale(globalData, width),
+    createYScales(globalData, height)
+  );
 }
