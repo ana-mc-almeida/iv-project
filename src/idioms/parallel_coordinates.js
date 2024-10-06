@@ -23,7 +23,12 @@ function createParallelCoordinates(data, selector) {
   const yScales = createYScales(data, height);
   const xScale = createXScale(data, width);
 
-  const foreground = createPaths(svg, data, xScale, yScales);
+  // Create the color scale based on District
+  const colorScale = d3
+    .scaleOrdinal(d3.schemeBlues[9])
+    .domain(d3.map(data, (d) => d.District));
+
+  const foreground = createPaths(svg, data, xScale, yScales, colorScale);
 
   addAxes(svg, yScales, xScale);
 
@@ -45,7 +50,7 @@ function createXScale(data, width) {
   return d3.scalePoint().range([0, width]).padding(0.1).domain(dimensions);
 }
 
-function createPaths(svg, data, xScale, yScales) {
+function createPaths(svg, data, xScale, yScales, colorScale) {
   const lineGenerator = (d) =>
     d3.line()(dimensions.map((dim) => [xScale(dim), yScales[dim](+d[dim])]));
 
@@ -58,15 +63,13 @@ function createPaths(svg, data, xScale, yScales) {
     .append("path")
     .attr("d", lineGenerator)
     .style("fill", "none")
-    .style("stroke", "steelblue")
+    .style("stroke", (d) => colorScale(d.District)) // Apply color based on District
     .style("stroke-width", "1.5px")
     .on("mouseover", function () {
-      d3.select(this).style("stroke", "orange").style("stroke-width", "3px");
+      d3.select(this).style("stroke-width", "3px");
     })
     .on("mouseout", function () {
-      d3.select(this)
-        .style("stroke", "steelblue")
-        .style("stroke-width", "1.5px");
+      d3.select(this).style("stroke-width", "1.5px");
     });
 }
 
@@ -153,10 +156,15 @@ function updateChart(filteredData, selector, yScales, foreground) {
 
   d3.select(selector).selectAll(".foreground").remove();
 
+  const colorScale = d3
+    .scaleOrdinal(d3.schemeBlues[9])
+    .domain(d3.map(globalData, (d) => d.District));
+
   createPaths(
     svg,
     filteredData,
     createXScale(globalData, width),
-    createYScales(globalData, height)
+    createYScales(globalData, height),
+    colorScale // Pass colorScale to update paths
   );
 }
