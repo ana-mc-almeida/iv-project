@@ -1,6 +1,28 @@
-const dimensions = ["Area", "Rooms", "Bathrooms", "Price"];
+const dimensions = ["Rooms", "Bathrooms", "Area", "Price"];
 
-let width, height;
+const customColors = [
+  "#1f77b4",
+  "#ff7f0e",
+  "#2ca02c",
+  "#d62728",
+  "#9467bd",
+  "#8c564b",
+  "#e377c2",
+  "#7f7f7f",
+  "#bcbd22",
+  "#17becf",
+  "#9e6e1d",
+  "#ff9896",
+  "#c5b0d5",
+  "#f7b6d2",
+  "#c49c94",
+  "#dbdb8d",
+  "#8c6d31",
+  "#e377c2",
+  "#7f7f7f",
+];
+
+let width, height, colorScale;
 
 let globalData = null;
 
@@ -23,9 +45,8 @@ function createParallelCoordinates(data, selector) {
   const yScales = createYScales(data, height);
   const xScale = createXScale(data, width);
 
-  // Create the color scale based on District
-  const colorScale = d3
-    .scaleOrdinal(d3.schemeBlues[9])
+  colorScale = d3
+    .scaleOrdinal(customColors)
     .domain(d3.map(data, (d) => d.District));
 
   const foreground = createPaths(svg, data, xScale, yScales, colorScale);
@@ -155,10 +176,6 @@ function updateChart(filteredData, selector, yScales, foreground) {
   const svg = d3.select(selector).select("svg").select("g");
 
   d3.select(selector).selectAll(".foreground").remove();
-
-  const colorScale = d3
-    .scaleOrdinal(d3.schemeBlues[9])
-    .domain(d3.map(globalData, (d) => d.District));
 
   createPaths(
     svg,
