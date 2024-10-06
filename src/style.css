@@ -1,35 +1,112 @@
-/* FIXME: the code in this file is just an temporary template
- * Please delete this comment after updating this file
-*/
-
-body {
-  height: 100%;
-  margin: 0;
-  font-family: Arial, sans-serif;
-}
-
 .container {
   display: grid;
   grid-auto-columns: 1fr;
-  grid-template-columns: 1fr 1fr;
-  gap: 0px 0px;
+  grid-template-columns: 0.7fr 1.7fr 0.5fr;
+  grid-template-rows: 300px 400px;
+  gap: 30px 50px;
   grid-template-areas:
-    "ScatterPlot BarChart"
-    "Histogram Sunburst"
-    "LineChart LineChart";
+    "choropleth_map violin_plot controllers"
+    "choropleth_map parallel_coordinates parallel_coordinates";
 }
-.BarChart {
-  grid-area: BarChart;
+
+.choropleth_map {
+  grid-area: choropleth_map;
+
+  background-color: lightblue; 
+  padding: 20px; 
+  border: 2px solid #333;
 }
-.ScatterPlot {
-  grid-area: ScatterPlot;
+
+.violin_plot {
+  grid-area: violin_plot;
+
+  background-color: lightgreen; 
+  padding: 20px; 
+  border: 2px solid #333; 
 }
-.Histogram {
-  grid-area: Histogram;
+
+.parallel_coordinates {
+  grid-area: parallel_coordinates;
+
+  background-color: lightcoral;
+  padding: 20px;
+  border: 2px solid #333; 
 }
-.Sunburst {
-  grid-area: Sunburst;
+
+.controllers {
+  grid-area: controllers;
+  width: 250px;
+  height: 300px;
+  background-color: #2c3e50;
+  color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
 }
-.LineChart {
-  grid-area: LineChart;
+html,
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  min-height: 100vh;
+}
+
+.principal {
+  flex: 1;
+  background-color: #ecf0f1;
+  padding: 20px;
+}
+
+.controllers h2 {
+  margin-top: -5px;
+  margin-bottom: 10px;
+}
+
+.controllers a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 0;
+  border-bottom: 0.1px solid rgba(238, 244, 245, 0.118);
+  margin-bottom: 5px;
+}
+
+.controllers a:hover {
+  background-color: #34495e;
+}
+
+
+.search-form {
+  display: flex; 
+  margin-bottom: 0px;
+}
+
+.search-icon {
+  position: absolute;
+  font-size: 16px;
+  pointer-events: none; 
+  margin-top: 4px;
+  margin-left: 4px;
+}
+
+.search-input {
+  flex: 1;
+  width: 100%;
+  padding: 10px 10px 10px 30px; 
+  border: 1px solid rgba(238, 244, 245, 0.5);
+  border-radius: 4px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.header {
+  background-color: #2980b9;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  margin-bottom: 20px;
 }
