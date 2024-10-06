@@ -1,35 +1,17 @@
-/* FIXME: the code in this file is just an temporary template
- * Please delete this comment after updating this file
-*/
-
 body {
-  height: 100%;
-  margin: 0;
   font-family: Arial, sans-serif;
 }
 
-.container {
-  display: grid;
-  grid-auto-columns: 1fr;
-  grid-template-columns: 1fr 1fr;
-  gap: 0px 0px;
-  grid-template-areas:
-    "ScatterPlot BarChart"
-    "Histogram Sunburst"
-    "LineChart LineChart";
+.controls {
+  margin: 20px;
 }
-.BarChart {
-  grid-area: BarChart;
+
+.parallelCoordinates {
+  width: 100%;
+  height: 500px;
+  margin-top: 20px;
 }
-.ScatterPlot {
-  grid-area: ScatterPlot;
-}
-.Histogram {
-  grid-area: Histogram;
-}
-.Sunburst {
-  grid-area: Sunburst;
-}
-.LineChart {
-  grid-area: LineChart;
+
+input[type="range"] {
+  margin: 10px;
 }

@@ -8,17 +8,30 @@
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./script.js"></script>
-    <script src="./idioms.js/violin_plot.js"></script>
-    <script src="./idioms.js/parallel_coordinates.js"></script>
+    <script src="./idioms/parallel_coordinates.js"></script>
+    <!-- <script src="./idioms.js/parallel_coordinates.js"></script>
     <script src="./idioms.js/choropleth_map.js"></script>
-    <script src="./idioms.js/controllers.js"></script>
+    <script src="./idioms.js/controllers.js"></script> -->
   </head>
   <body onload="init()">
     <div class="container">
       <div class="choropleth_map"></div>
       <div class="violin_plot"></div>
-      <div class="parallel_coordinates"></div>
-      <div class="controllers"></div>
+      <div class="parallelCoordinates"></div>
+      <div class="controls">
+        <label>Min Quartos: <input type="range" id="minRooms" /></label>
+        <label>Max Quartos: <input type="range" id="maxRooms" /></label>
+        <label
+          >Min Casas de Banho: <input type="range" id="minBathrooms"
+        /></label>
+        <label
+          >Max Casas de Banho: <input type="range" id="maxBathrooms"
+        /></label>
+        <label>Min Área: <input type="range" id="minArea" /></label>
+        <label>Max Área: <input type="range" id="maxArea" /></label>
+        <label>Min Preço: <input type="range" id="minPrice" /></label>
+        <label>Max Preço: <input type="range" id="maxPrice" /></label>
+      </div>
     </div>
   </body>
 </html>
