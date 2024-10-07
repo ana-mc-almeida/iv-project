@@ -36,18 +36,18 @@
         <div class="controllers">
           <h2>Menu</h2>
 
-          <div class="search">
-            <button class="search-input">🔍  What to see on the map?</button>
-            <div class="search-content">
+          <div class="mapOption">
+            <button class="mapOption-input">🔍  What to see on the map?</button>
+            <div class="mapOption-content">
                 <a href="#" onclick="selectMap('Area')">Area</a>
                 <a href="#" onclick="selectMap('Price Per Square Meter')">Price Per Square Meter</a>
                 <a href="#" onclick="selectMap('Number of availability')">Number of availability</a>
             </div>
           </div>
 
-          <div class="dropdown">
+          <div class="district">
             <button class="dropbtn">District</button>
-            <div class="dropdown-content">
+            <div class="district-content">
               <a href="#" onclick="selectDistrict('Açores')">Açores</a>
               <a href="#" onclick="selectDistrict('Aveiro')">Aveiro</a>
               <a href="#" onclick="selectDistrict('Beja')">Beja</a>
@@ -71,14 +71,14 @@
             </div>
           </div>
           
-          <div class="button-container">
-            <button class="button-type" onclick="selectType('Rent')">Rent</button>
-            <button class="button-type" onclick="selectType('Sell')">Buy</button>
+          <div class="rentOrBuy-container">
+            <button class="rentOrBuy-button" onclick="selectType('Rent')">Rent</button>
+            <button class="rentOrBuy-button" onclick="selectType('Sell')">Buy</button>
           </div>
           
-          <div class="dropdown-condition">
+          <div class="condition">
             <button class="dropbtn">Condition</button>
-            <div class="dropdown-condition-content">
+            <div class="condition-content">
 
                 <a href="#" onclick="selectCondition('New')">New</a>
                 <a href="#" onclick="selectCondition('Renovated')">Renovated</a>

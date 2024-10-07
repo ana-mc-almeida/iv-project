@@ -21,42 +21,47 @@ function init() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  const dropdownLinks = d3.selectAll('.dropdown-content a');
+  // District
+  const districtLinks = d3.selectAll('.district-content a');
 
-  dropdownLinks.on('click', function(event) {
+  districtLinks.on('click', function(event) {
       event.preventDefault(); 
 
       d3.select(this).classed('selected', !d3.select(this).classed('selected'));
   });
 
-  const dropdownConditionLinks = d3.selectAll('.dropdown-condition-content a');
+  // Condition
+  const conditionLinks = d3.selectAll('.condition-content a');
 
-  dropdownConditionLinks.on('click', function(event) {
+  conditionLinks.on('click', function(event) {
       event.preventDefault();
 
       d3.select(this).classed('selected', !d3.select(this).classed('selected'));
   });
 
-  const searchLinks = d3.selectAll('.search-content a');
+  // Map
+  const mapOptionLinks = d3.selectAll('.mapOption-content a');
 
-  searchLinks.on('click', function(event) {
+  mapOptionLinks.on('click', function(event) {
       event.preventDefault();
 
       const isSelected = d3.select(this).classed('selected'); 
 
-      searchLinks.classed('selected', false);
+      mapOptionLinks.classed('selected', false);
 
       if (!isSelected) {
           d3.select(this).classed('selected', true);
       }
   });
 
-  const buttons = d3.selectAll('.button-type');
+  // RentOrBuy
+  const rentOrBuyButtons = d3.selectAll('.rentOrBuy-button');
 
   buttons.on('click', function() {
       d3.select(this).classed('selected', !d3.select(this).classed('selected'));
   });
 
+  // Years
   d3.select('#yearInput').on('input', function() {
     selectedYears = +this.value;
     console.log(selectedYears);

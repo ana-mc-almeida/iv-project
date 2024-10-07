@@ -78,12 +78,12 @@ body {
   background-color: #34495e;
 }
 
-.search {
+.mapOption {
   display: flex; 
   margin-bottom: 0px;
 }
 
-.search-input {
+.mapOption-input {
   margin-top: 5px;
   margin-bottom: 0px;
   position: relative; 
@@ -96,11 +96,11 @@ body {
   border: none;
 }
 
-.search-input:hover {
+.mapOption-input:hover {
   background-color: #45a049; /* Cor de fundo ao passar o mouse */
 }
 
-.search-content {
+.mapOption-content {
   display: none;
   position: absolute;
   background-color: white; 
@@ -113,7 +113,7 @@ body {
   cursor: pointer; 
 }
 
-.search-content a {
+.mapOption-content a {
   color: black;
   padding: 12px 16px;
   text-decoration: none;
@@ -123,16 +123,16 @@ body {
   cursor: pointer; 
 }
 
-.search-content a:hover {
+.mapOption-content a:hover {
   background-color: #f1f1f1;
 }
 
-.search-content a.selected {
+.mapOption-content a.selected {
   background-color: #4CAF50;
   color: black;
 }
 
-.search:hover .search-content {
+.mapOption:hover .mapOption-content {
   display: block;
 }
 
@@ -144,7 +144,13 @@ body {
   margin-bottom: 20px;
 }
 
-.button-type {
+.rentOrBuy-container {
+  min-width: 210px; 
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 5px; 
+}
+
+.rentOrBuy-button {
   background-color: white; 
   border: none; 
   color: black; 
@@ -160,22 +166,16 @@ body {
   width: 103px;
 }
 
-.button-type:hover {
+.rentOrBuy-button:hover {
   background-color: #45a049; 
 }
 
-.button-type.selected {
+.rentOrBuy-button.selected {
   background-color: #45a049; 
   color: black;
 }
 
-.button-container {
-  min-width: 210px; 
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  border-radius: 5px; 
-}
-
-.dropdown {
+.district {
   margin-top: 5px;
   margin-bottom: 5px;
   position: relative; 
@@ -195,11 +195,11 @@ body {
   margin-left: 0px;
 }
 
-.dropbtn:hover {
+.district-btn:hover {
   background-color: #45a049; /* Cor de fundo ao passar o mouse */
 }
 
-.dropdown-content {
+.district-content {
   display: none;
   position: absolute;
   background-color: white; 
@@ -212,7 +212,7 @@ body {
   overflow-y: auto;
 }
 
-.dropdown-content a {
+.district-content a {
   color: black;
   padding: 12px 16px;
   text-decoration: none;
@@ -221,27 +221,27 @@ body {
   border-radius: 4px; 
 }
 
-.dropdown-content a:hover {
+.district-content a:hover {
   background-color: #f1f1f1;
 }
 
-.dropdown-content a.selected {
+.district-content a.selected {
   background-color: #4CAF50;
   color: white;
 }
 
-.dropdown:hover .dropdown-content {
+.district:hover .district-content {
   display: block;
 }
 
-.dropdown-condition {
+.condition {
   margin-top: 5px;
   margin-bottom: 5px;
   position: relative; 
   display: inline-block;
 }
 
-.dropdown-condition-content {
+.condition-content {
   display: none;
   position: absolute;
   background-color: white; 
@@ -254,7 +254,7 @@ body {
   overflow-y: auto;
 }
 
-.dropdown-condition-content a {
+.condition-content a {
   color: black;
   padding: 12px 16px;
   text-decoration: none;
@@ -263,16 +263,16 @@ body {
   border-radius: 4px; 
 }
 
-.dropdown-condition-content a:hover {
+.condition-content a:hover {
   background-color: #f1f1f1;
 }
 
-.dropdown-condition-content a.selected {
+.condition-content a.selected {
   background-color: #4CAF50;
   color: white;
 }
 
-.dropdown-condition:hover .dropdown-condition-content{
+.condition:hover .condition-content{
   display: block;
 }
 
