@@ -17,9 +17,9 @@
     <script src="./controllers.js"></script>
 
     <!-- Visualization scripts for idioms -->
-    <script src="./idioms.js/parallel_coordinates.js"></script>
-    <!-- <script src="./idioms.js/violin_plot.js"></script>
-    <script src="./idioms.js/choropleth_map.js"></script> -->
+    <script src="./idioms/parallel_coordinates.js"></script>
+    <!-- <script src="./idioms/violin_plot.js"></script>
+    <script src="./idioms/choropleth_map.js"></script> -->
 
   </head>
 
@@ -57,7 +57,6 @@
           <div class="district">
             <button class="dropbtn">District</button>
             <div class="district-content">
-              <a href="#" onclick="selectDistrict('Ilha dos Açores')">Açores</a>
               <a href="#" onclick="selectDistrict('Aveiro')">Aveiro</a>
               <a href="#" onclick="selectDistrict('Beja')">Beja</a>
               <a href="#" onclick="selectDistrict('Braga')">Braga</a>
@@ -69,7 +68,6 @@
               <a href="#" onclick="selectDistrict('Guarda')">Guarda</a>
               <a href="#" onclick="selectDistrict('Leiria')">Leiria</a>
               <a href="#" onclick="selectDistrict('Lisboa')">Lisboa</a>
-              <a href="#" onclick="selectDistrict('Ilha da Madeira')">Madeira</a>
               <a href="#" onclick="selectDistrict('Portalegre')">Portalegre</a>
               <a href="#" onclick="selectDistrict('Porto')">Porto</a>
               <a href="#" onclick="selectDistrict('Santarém')">Santarém</a>
@@ -93,13 +91,12 @@
                 <a href="#" onclick="selectCondition('New')">New</a>
                 <a href="#" onclick="selectCondition('Renovated')">Renovated</a>
                 <a href="#" onclick="selectCondition('Used')">Used</a>
-                <a href="#" onclick="selectCondition('Others')">Others</a>
             </div>
           </div>
 
           <!-- Year Selector Input -->
           <div class="year-selector">
-            <input type="number" class="year-input" placeholder="Number of Years" id="yearInput" value="0" min="0">
+            <input type="number" class="year-input" placeholder="Number of Years" id="yearInput" min="0">
           </div>
 
         </div> <!-- End of controllers -->

@@ -35,7 +35,7 @@ function createParallelCoordinates(data, selector) {
   globalData = data;
   globalSelector = selector;
 
-  const margin = { top: 30, right: 30, bottom: 10, left: 30 };
+  const margin = { top: 25, right: 65, bottom:10, left: 30 };
   const divElement = d3.select(selector).node();
   width = divElement.clientWidth - margin.left - margin.right;
   height = divElement.clientHeight - margin.top - margin.bottom;

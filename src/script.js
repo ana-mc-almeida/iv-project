@@ -1,5 +1,5 @@
 // Global variable to hold the dataset
-var globalData;
+var global_data;
 
 // Variable to hold the selected year value
 let selectedYears = 0;
@@ -22,8 +22,9 @@ function init() {
       Condition: d["Condition"],
     };
   }).then(function (data) {
-    globalData = data;
-    console.log(globalData);
+    global_data = data;
+    console.log(global_data);
+    initControllers(data);
     createParallelCoordinates(data, ".parallelCoordinates");
   });
 }
@@ -105,8 +106,7 @@ function selectMap(typeOfMap) {
  * @param {String} district - The district to be filtered.
  */
 function selectDistrict(district) {
-  const data = globalData.slice(); // Clone global data to avoid mutating the original
-  updateDistrict(data, district);
+  updateDistrict(district);
 }
 
 /**
@@ -114,8 +114,7 @@ function selectDistrict(district) {
  * @param {String} type - The ads type to be filtered.
  */
 function selectType(type) {
-  const data = globalData.slice(); // Clone global data to avoid mutating the original
-  updateType(data, type);
+  updateType(type);
 }
 
 /**
@@ -123,6 +122,5 @@ function selectType(type) {
  * @param {String} condition - The condition to be filtered.
  */
 function selectCondition(condition) {
-  const data = globalData.slice(); // Clone global data to avoid mutating the original
-  updateCondition(data, condition);
+  updateCondition(condition);
 }
