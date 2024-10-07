@@ -39,8 +39,8 @@ def calculate_price_per_square_meter(df: pd.DataFrame) -> pd.DataFrame:
 # Slice the location string to extract the district and municipality
 def split_location_into_columns(df: pd.DataFrame) -> pd.DataFrame:
     return df.assign(
-        District=lambda x: x['Location'].apply(lambda y: y.split(",")[-1] if "," in y else None),
-        Municipality=lambda x: x['Location'].apply(lambda y: y.split(",")[-2] if "," in y else None)
+        District=lambda x: x['Location'].apply(lambda y: y.split(", ")[-1] if "," in y else None),
+        Municipality=lambda x: x['Location'].apply(lambda y: y.split(", ")[-2] if "," in y else None)
     )
 
 
