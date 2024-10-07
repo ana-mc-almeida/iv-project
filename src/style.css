@@ -2,7 +2,7 @@
   display: grid;
   grid-auto-columns: 1fr;
   grid-template-columns: 0.7fr 1.7fr 0.5fr;
-  grid-template-rows: 300px 400px;
+  grid-template-rows: 300px 370px;
   gap: 30px 50px;
   grid-template-areas:
     "choropleth_map violin_plot controllers"
@@ -79,28 +79,57 @@ body {
   background-color: #34495e;
 }
 
-
-.search-form {
+.search {
   display: flex; 
   margin-bottom: 0px;
 }
 
-.search-icon {
-  position: absolute;
-  font-size: 16px;
-  pointer-events: none; 
-  margin-top: 4px;
-  margin-left: 4px;
+.search-input {
+  margin-top: 5px;
+  margin-bottom: 0px;
+  position: relative; 
+  display: inline-block;
+  font-size: 9.5px;
+  border-radius: 4px;
+  height: 30px;
+  width: 210px;
+  background-color: white; 
+  border: none;
 }
 
-.search-input {
-  flex: 1;
-  width: 100%;
-  padding: 10px 10px 10px 30px; 
-  border: 1px solid rgba(238, 244, 245, 0.5);
-  border-radius: 4px;
-  outline: none;
-  box-sizing: border-box;
+.search-input:hover {
+  background-color: #45a049; /* Cor de fundo ao passar o mouse */
+}
+
+.search-content {
+  display: none;
+  position: absolute;
+  background-color: white; 
+  min-width: 210px; 
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 4px; 
+  margin-top: 38px;
+  color: black;
+  z-index: 2000;
+  cursor: pointer; 
+}
+
+.search-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  transition: background-color 0.3s;
+  border-radius: 4px; 
+  cursor: pointer; 
+}
+
+.search-content a:hover {
+  background-color: #f1f1f1;
+}
+
+.search:hover .search-content {
+  display: block;
 }
 
 .header {
@@ -109,4 +138,82 @@ body {
   padding: 10px;
   text-align: center;
   margin-bottom: 20px;
+}
+
+.button-type {
+  background-color: white; 
+  border: none; 
+  color: black; 
+  padding: 10px 34px; 
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px; 
+  cursor: pointer; 
+  border-radius: 4px;
+  transition: background-color 0.3s; 
+  margin-left: -0.5px;
+  width: 103px;
+}
+
+.button-type:hover {
+  background-color: #45a049; 
+}
+
+.button-container {
+  min-width: 210px; 
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 5px; 
+}
+
+.dropdown {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  position: relative; 
+  display: inline-block;
+}
+
+.dropbtn {
+  background-color: white; 
+  color: black;
+  padding: 8px 20px; 
+  font-size: 16px; 
+  border: none;
+  cursor: pointer; 
+  border-radius: 4px; 
+  transition: background-color 0.3s;
+  min-width: 210px;
+  margin-left: 0px;
+}
+
+.dropbtn:hover {
+  background-color: #45a049; /* Cor de fundo ao passar o mouse */
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white; 
+  min-width: 210px; 
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 4px; 
+  margin-top: 2px;
+  z-index: 1000; 
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  transition: background-color 0.3s;
+  border-radius: 4px; 
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
 }
