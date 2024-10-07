@@ -8,6 +8,7 @@ function init() {
       // if AdsType is 'Rent' then Price is * 40
       Price: d["AdsType"] === "Rent" ? +d["Price"] * 50 : +d["Price"],
       District: d["District"],
+      Zone: d["Zone"],
     };
   }).then(function (data) {
     console.log(data);
