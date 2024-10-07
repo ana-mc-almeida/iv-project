@@ -1,4 +1,5 @@
 const dimensions = ["Rooms", "Bathrooms", "Area", "Price"];
+const integerTick = ["Rooms", "Bathrooms"];
 const customColors = [
   "#1f77b4",
   "#ff7f0e",
@@ -130,7 +131,17 @@ function addAxesWithBrush(svg) {
     .attr("class", "dimension")
     .attr("transform", (dim) => `translate(${xScale(dim)})`)
     .each(function (dim) {
-      d3.select(this).call(d3.axisLeft(yScales[dim]));
+      let axis = d3.axisLeft(yScales[dim]);
+
+      if (integerTick.includes(dim)) {
+        axis = axis
+          .ticks(
+            Math.floor(yScales[dim].domain()[1] - yScales[dim].domain()[0])
+          ) // Definir intervalo de 1
+          .tickFormat(d3.format("d")); // Formato de inteiro
+      }
+
+      d3.select(this).call(axis);
 
       const brush = d3
         .brushY()
