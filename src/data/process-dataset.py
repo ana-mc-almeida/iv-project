@@ -39,8 +39,8 @@ def calculate_price_per_square_meter(df: pd.DataFrame) -> pd.DataFrame:
 # Slice the location string to extract the district and municipality
 def split_location_into_columns(df: pd.DataFrame) -> pd.DataFrame:
     return df.assign(
-        District=lambda x: x['Location'].apply(lambda y: y.split(", ")[-1] if "," in y else None),
-        Municipality=lambda x: x['Location'].apply(lambda y: y.split(", ")[-2] if "," in y else None)
+        District=lambda x: x['Location'].apply(lambda y: y.split(",")[-1].strip() if "," in y else None),  # Remove espaços
+        Municipality=lambda x: x['Location'].apply(lambda y: y.split(",")[-2].strip() if "," in y else None)  # Remove espaços
     )
 
 # Remove PricePerSquareMeter outliers
@@ -93,6 +93,11 @@ def create_zone_column(df: pd.DataFrame) -> pd.DataFrame:
     }
     district_to_zone = {district: zone for zone, districts in zones.items() for district in districts}
     return df.assign(Zone=lambda x: x['District'].apply(lambda y: district_to_zone.get(y, 'aaaaaaa')))
+    return df.sample(100)
+
+# Remove area greater than 30k
+def remove_area_biggers(df: pd.DataFrame) -> pd.DataFrame:
+    return df[df['Area'] <= 30000]
 
 def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
     return (
@@ -103,6 +108,7 @@ def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
         .pipe(remove_non_principal_cities)
         .pipe(split_location_into_columns)
         .pipe(remove_missing_values)
+        .pipe(remove_area_biggers)
         .pipe(filter_non_vacation_ads)
         .pipe(drop_unused_columns)
         .pipe(remove_PricePerSquareMeter_outliers)
