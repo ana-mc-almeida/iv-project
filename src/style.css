@@ -127,6 +127,11 @@ body {
   background-color: #f1f1f1;
 }
 
+.search-content a.selected {
+  background-color: #4CAF50;
+  color: rgba(16, 10, 103, 0.756);
+}
+
 .search:hover .search-content {
   display: block;
 }
@@ -157,6 +162,11 @@ body {
 
 .button-type:hover {
   background-color: #45a049; 
+}
+
+.button-type.selected {
+  background-color: #45a049; 
+  color: black;
 }
 
 .button-container {
@@ -215,10 +225,14 @@ body {
   background-color: #f1f1f1;
 }
 
+.dropdown-content a.selected {
+  background-color: #4CAF50;
+  color: white;
+}
+
 .dropdown:hover .dropdown-content {
   display: block;
 }
-
 
 .dropdown-condition {
   margin-top: 5px;
@@ -251,6 +265,11 @@ body {
 
 .dropdown-condition-content a:hover {
   background-color: #f1f1f1;
+}
+
+.dropdown-condition-content a.selected {
+  background-color: #4CAF50;
+  color: white;
 }
 
 .dropdown-condition:hover .dropdown-condition-content{
