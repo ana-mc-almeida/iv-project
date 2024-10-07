@@ -61,8 +61,8 @@ function createParallelCoordinates(data, selector) {
 
   const foreground = createPaths(svg, data, xScale, yScales, colorScale);
 
-  addAxes(svg, yScales, xScale);
   filters = getSliderFilters(data, selector);
+  addAxes(svg, yScales, xScale);
 
   // addSliderInteractivity(data, yScales, foreground, selector);
 }
@@ -118,20 +118,21 @@ function addAxes(svg, yScales, xScale) {
       // Adiciona o eixo Y
       d3.select(this).call(d3.axisLeft(yScales[dim]));
 
+      const brush = d3
+        .brushY()
+        .extent([
+          [-10, 0], // Define a área de brush
+          [10, height],
+        ])
+        .on("brush", (event) => brushed(event, dim)) // Função chamada enquanto o brush é movido
+        .on("end", (event) => brushEnded(event, dim)); // Função chamada quando o brush termina
+
       // Adiciona o brush ao eixo Y
       d3.select(this)
         .append("g")
         .attr("class", "brush")
-        .call(
-          d3
-            .brushY()
-            .extent([
-              [-10, 0], // Define a área de brush
-              [10, height],
-            ])
-            .on("brush", (event) => brushed(event, dim)) // Função chamada enquanto o brush é movido
-            .on("end", (event) => brushEnded(event, dim)) // Função chamada quando o brush termina
-        );
+        .call(brush)
+        .call(brush.move, [0, height]);
     })
     .append("text")
     .attr("fill", "black")
