@@ -122,9 +122,9 @@ function filterDatasetByDistricts(data) {
 }
 
 /**
- * Filters the dataset by the selected property types.
+ * Filters the dataset by the selected ads types.
  * @param {Array} data - The dataset to filter.
- * @returns {Array} - Filtered dataset based on the selected property types.
+ * @returns {Array} - Filtered dataset based on the selected ads types.
  */
 function filterDatasetByType(data) {
     if (filters.TYPE.length === 0) {

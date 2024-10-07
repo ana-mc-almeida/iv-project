@@ -109,8 +109,8 @@ function selectDistrict(district) {
 }
 
 /**
- * Selects a property type for filtering the dataset.
- * @param {String} type - The property type to be filtered.
+ * Selects a ads type for filtering the dataset.
+ * @param {String} type - The ads type to be filtered.
  */
 function selectType(type) {
   const data = globalData.slice(); // Clone global data to avoid mutating the original
