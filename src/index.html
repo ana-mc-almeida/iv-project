@@ -11,7 +11,7 @@
     <script src="./idioms.js/violin_plot.js"></script>
     <script src="./idioms.js/parallel_coordinates.js"></script>
     <script src="./idioms.js/choropleth_map.js"></script>
-    <script src="./idioms.js/controllers.js"></script>
+    <script src="./controllers.js"></script>
   </head>
 
   <body onload="init()">
@@ -27,48 +27,54 @@
         <div class="parallel_coordinates"></div>
         <div class="controllers">
           <h2>Menu</h2>
-
-          <!-- <form class="search-form" action="#" method="GET"></form>
-            <div class="search-container">
-              <span class="search-icon">🔍</span>
-              <input type="text" class="search-input" placeholder="What would to see on the map?">
-            </div>
-          </form> -->
           
           <div class="search">
             <button class="search-input">🔍  What to see on the map?</button>
             <div class="search-content">
-                <a href="#">Area</a>
-                <a href="#">Price Per Square Meter</a>
-                <a href="#">Number of availability</a>
+                <a href="#" onclick="selectMap('Area')">Area</a>
+                <a href="#" onclick="selectMap('Price Per Square Meter')">Price Per Square Meter</a>
+                <a href="#" onclick="selectMap('Number of availability')">Number of availability</a>
             </div>
           </div>
 
           <div class="dropdown">
             <button class="dropbtn">District</button>
             <div class="dropdown-content">
-                <a href="#">Aveiro</a>
-                <a href="#">Beja</a>
-                <a href="#">Lisboa</a>
-                <a href="#">Setúbal</a>
-                <a href="#">Leiria</a>
-                <a href="#">Porto</a>
-                <a href="#">Faro</a>
+              <a href="#" onclick="selectDistrict('Açores')">Açores</a>
+              <a href="#" onclick="selectDistrict('Aveiro')">Aveiro</a>
+              <a href="#" onclick="selectDistrict('Beja')">Beja</a>
+              <a href="#" onclick="selectDistrict('Braga')">Braga</a>
+              <a href="#" onclick="selectDistrict('Bragança')">Bragança</a>
+              <a href="#" onclick="selectDistrict('Castelo Branco')">Castelo Branco</a>
+              <a href="#" onclick="selectDistrict('Coimbra')">Coimbra</a>
+              <a href="#" onclick="selectDistrict('Évora')">Évora</a>
+              <a href="#" onclick="selectDistrict('Faro')">Faro</a>
+              <a href="#" onclick="selectDistrict('Guarda')">Guarda</a>
+              <a href="#" onclick="selectDistrict('Leiria')">Leiria</a>
+              <a href="#" onclick="selectDistrict('Lisboa')">Lisboa</a>
+              <a href="#" onclick="selectDistrict('Madeira')">Madeira</a>
+              <a href="#" onclick="selectDistrict('Portalegre')">Portalegre</a>
+              <a href="#" onclick="selectDistrict('Porto')">Porto</a>
+              <a href="#" onclick="selectDistrict('Santarém')">Santarém</a>
+              <a href="#" onclick="selectDistrict('Setúbal')">Setúbal</a>
+              <a href="#" onclick="selectDistrict('Viana do Castelo')">Viana do Castelo</a>
+              <a href="#" onclick="selectDistrict('Vila Real')">Vila Real</a>
+              <a href="#" onclick="selectDistrict('Viseu')">Viseu</a>
             </div>
           </div>
           
           <div class="button-container">
-            <button class="button-type">Rent</button>
-            <button class="button-type">Buy</button>
+            <button class="button-type" onclick="selectType('Rent')">Rent</button>
+            <button class="button-type" onclick="selectType('Buy')">Buy</button>
           </div>
           
           <div class="dropdown">
             <button class="dropbtn">Condition</button>
             <div class="dropdown-content">
-                <a href="#">New</a>
-                <a href="#">Renew</a>
-                <a href="#">Used</a>
-                <a href="#">Others</a>
+                <a href="#" onclick="selectCondition('New')">New</a>
+                <a href="#" onclick="selectCondition('Renew')">Renew</a>
+                <a href="#" onclick="selectCondition('Used')">Used</a>
+                <a href="#" onclick="selectCondition('Others')">Others</a>
             </div>
           </div>
 
