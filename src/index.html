@@ -10,19 +10,19 @@
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Controller logic -->
+    <!-- Controller logic for data manipulation and interaction -->
     <script src="./controllers.js"></script>
 
-    <!-- Idioms/Visualization Scripts -->
+    <!-- Visualization scripts for idioms -->
     <script src="./idioms.js/violin_plot.js"></script>
     <script src="./idioms.js/parallel_coordinates.js"></script>
     <script src="./idioms.js/choropleth_map.js"></script>
 
-    <!-- Initialize script -->
-    <script src="./script.js"></script>    <!-- This should load last to initialize everything -->
+    <!-- Initialize script to set up the application -->
+    <script src="./script.js"></script> <!-- This should load last to initialize everything -->
   </head>
 
-  <body onload="init()">
+  <body onload="init()"> <!-- Calls the init function when the body is loaded -->
 
     <div class="principal">
       <div class="header">
@@ -30,12 +30,19 @@
       </div>
 
       <div class="container">
+        <!-- Placeholder for the choropleth map visualization -->
         <div class="choropleth_map"></div>
+        
+        <!-- Placeholder for the violin plot visualization -->
         <div class="violin_plot"></div>
+        
+        <!-- Placeholder for the parallel coordinates visualization -->
         <div class="parallel_coordinates"></div>
+        
         <div class="controllers">
           <h2>Menu</h2>
 
+          <!-- Map Options Section -->
           <div class="mapOption">
             <button class="mapOption-input">🔍  What to see on the map?</button>
             <div class="mapOption-content">
@@ -45,6 +52,7 @@
             </div>
           </div>
 
+          <!-- District Selection Section -->
           <div class="district">
             <button class="dropbtn">District</button>
             <div class="district-content">
@@ -71,15 +79,16 @@
             </div>
           </div>
           
+          <!-- Rent or Buy Selection Section -->
           <div class="rentOrBuy-container">
             <button class="rentOrBuy-button" onclick="selectType('Rent')">Rent</button>
             <button class="rentOrBuy-button" onclick="selectType('Sell')">Buy</button>
           </div>
           
+          <!-- Condition Selection Section -->
           <div class="condition">
             <button class="dropbtn">Condition</button>
             <div class="condition-content">
-
                 <a href="#" onclick="selectCondition('New')">New</a>
                 <a href="#" onclick="selectCondition('Renovated')">Renovated</a>
                 <a href="#" onclick="selectCondition('Used')">Used</a>
@@ -87,14 +96,15 @@
             </div>
           </div>
 
+          <!-- Year Selector Input -->
           <div class="year-selector">
             <input type="number" class="year-input" placeholder="Number of Years" id="yearInput" value="0" min="0">
           </div>
 
-        </div>
-      </div>
+        </div> <!-- End of controllers -->
+      </div> <!-- End of container -->
 
-    </div>
+    </div> <!-- End of principal -->
   </body>
   
 </html>
