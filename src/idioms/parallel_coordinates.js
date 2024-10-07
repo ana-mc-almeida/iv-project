@@ -22,12 +22,22 @@ const customColors = [
   "#7f7f7f",
 ];
 
-let width, height, colorScale;
+let width, height, colorScale, yScales, xScale;
 
 let globalData = null;
+let globalSelector = null;
+
+// Objeto para armazenar os filtros de brush (mínimos e máximos de cada eixo)
+let filters;
+
+// Inicializando o objeto de filtros com `null` para cada dimensão
+// dimensions.forEach((dim) => {
+//   filters[dim] = null;
+// });
 
 function createParallelCoordinates(data, selector) {
   globalData = data;
+  globalSelector = selector;
 
   const margin = { top: 30, right: 30, bottom: 10, left: 30 };
   const divElement = d3.select(selector).node();
@@ -42,8 +52,8 @@ function createParallelCoordinates(data, selector) {
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
-  const yScales = createYScales(data, height);
-  const xScale = createXScale(data, width);
+  yScales = createYScales(data, height);
+  xScale = createXScale(data, width);
 
   colorScale = d3
     .scaleOrdinal(customColors)
@@ -52,8 +62,9 @@ function createParallelCoordinates(data, selector) {
   const foreground = createPaths(svg, data, xScale, yScales, colorScale);
 
   addAxes(svg, yScales, xScale);
+  filters = getSliderFilters(data, selector);
 
-  addSliderInteractivity(data, yScales, foreground, selector);
+  // addSliderInteractivity(data, yScales, foreground, selector);
 }
 
 function createYScales(data, height) {
@@ -94,6 +105,7 @@ function createPaths(svg, data, xScale, yScales, colorScale) {
     });
 }
 
+// Função para adicionar e configurar os brushes nos eixos
 function addAxes(svg, yScales, xScale) {
   svg
     .selectAll(".dimension")
@@ -103,7 +115,23 @@ function addAxes(svg, yScales, xScale) {
     .attr("class", "dimension")
     .attr("transform", (d) => `translate(${xScale(d)})`)
     .each(function (dim) {
+      // Adiciona o eixo Y
       d3.select(this).call(d3.axisLeft(yScales[dim]));
+
+      // Adiciona o brush ao eixo Y
+      d3.select(this)
+        .append("g")
+        .attr("class", "brush")
+        .call(
+          d3
+            .brushY()
+            .extent([
+              [-10, 0], // Define a área de brush
+              [10, height],
+            ])
+            .on("brush", (event) => brushed(event, dim)) // Função chamada enquanto o brush é movido
+            .on("end", (event) => brushEnded(event, dim)) // Função chamada quando o brush termina
+        );
     })
     .append("text")
     .attr("fill", "black")
@@ -113,57 +141,89 @@ function addAxes(svg, yScales, xScale) {
     .style("font-size", "16px");
 }
 
-function addSliderInteractivity(data, yScales, foreground, selector) {
-  const sliders = {
-    Rooms: { min: "#minRooms", max: "#maxRooms" },
-    Bathrooms: { min: "#minBathrooms", max: "#maxBathrooms" },
-    Area: { min: "#minArea", max: "#maxArea" },
-    Price: { min: "#minPrice", max: "#maxPrice" },
-  };
+// Função chamada quando o brush é movido
+function brushed(event, dim) {
+  console.log("brushed");
+  const selection = event.selection;
 
-  setInitialSliderValues(data, sliders);
+  if (selection) {
+    // Convertendo a seleção de pixels para valores reais (mínimo e máximo) no eixo da dimensão
+    const [yMax, yMin] = selection.map((d) => yScales[dim].invert(d));
 
-  d3.selectAll("input[type='range']").on("input", function () {
-    const filters = getSliderFilters(sliders);
-    const filteredData = applyFilters(data, filters);
-    updateChart(filteredData, selector, yScales, foreground);
-  });
+    // Atualizar o filtro do brush para esta dimensão
+    filters[dim] = [yMin, yMax];
+  }
+  const filteredData = applyFilters(globalData, filters);
+  console.log("filteredDataB", filteredData);
+  updateChart(filteredData);
 }
 
-function setInitialSliderValues(data, sliders) {
-  Object.keys(sliders).forEach((key) => {
-    const { min, max, step } = getMinMaxStep(data, key);
-    d3.select(sliders[key].min)
-      .property("min", min)
-      .property("max", max)
-      .property("step", step)
-      .property("value", min);
-    d3.select(sliders[key].max)
-      .property("min", min)
-      .property("max", max)
-      .property("step", step)
-      .property("value", max);
-  });
+// Função chamada quando o brush termina
+function brushEnded(event, dim) {
+  // Se o brush for limpo (sem seleção), remover o filtro para esta dimensão
+  if (!event.selection) {
+    filters[dim] = null;
+  }
+
+  // Agora, aplica os filtros aos dados e atualiza o gráfico
+  const filteredData = applyFilters(globalData, filters);
+  console.log("filteredDataB1", filteredData);
+  updateChart(filteredData);
 }
+
+// function addSliderInteractivity(data, yScales, foreground, selector) {
+//   const sliders = {
+//     Rooms: { min: "#minRooms", max: "#maxRooms" },
+//     Bathrooms: { min: "#minBathrooms", max: "#maxBathrooms" },
+//     Area: { min: "#minArea", max: "#maxArea" },
+//     Price: { min: "#minPrice", max: "#maxPrice" },
+//   };
+
+//   setInitialSliderValues(data, sliders);
+
+//   d3.selectAll("input[type='range']").on("input", function () {
+//     const filters = getSliderFilters(sliders);
+//     const filteredData = applyFilters(data, filters);
+//     updateChart(filteredData, selector, yScales, foreground);
+//   });
+// }
+
+// function setInitialSliderValues(data, sliders) {
+//   Object.keys(sliders).forEach((key) => {
+//     const { min, max, step } = getMinMaxStep(data, key);
+//     d3.select(sliders[key].min)
+//       .property("min", min)
+//       .property("max", max)
+//       .property("step", step)
+//       .property("value", min);
+//     d3.select(sliders[key].max)
+//       .property("min", min)
+//       .property("max", max)
+//       .property("step", step)
+//       .property("value", max);
+//   });
+// }
 
 function getMinMaxStep(data, key) {
   const min = d3.min(data, (d) => +d[key]);
   const max = d3.max(data, (d) => +d[key]);
   const step = Math.max((max - min) / 100, 1);
+  console.log("min", min, "max", max, "step", step);
   return { min, max, step };
 }
 
-function getSliderFilters(sliders) {
-  return Object.keys(sliders).reduce((filters, key) => {
-    filters[key] = [
-      +d3.select(sliders[key].min).property("value"),
-      +d3.select(sliders[key].max).property("value"),
-    ];
-    return filters;
-  }, {});
+function getSliderFilters() {
+  const filterss = {};
+  dimensions.forEach((dim) => {
+    const { min, max } = getMinMaxStep(globalData, dim);
+    console.log("min", min, "max", max);
+    filterss[dim] = [min, max];
+  });
+  return filterss;
 }
 
 function applyFilters(data, filters) {
+  console.log("filters", filters);
   return data.filter((d) => {
     return Object.keys(filters).every((key) => {
       const [min, max] = filters[key];
@@ -172,16 +232,17 @@ function applyFilters(data, filters) {
   });
 }
 
-function updateChart(filteredData, selector, yScales, foreground) {
-  const svg = d3.select(selector).select("svg").select("g");
+function updateChart(filteredData) {
+  console.log("filteredDataUC", filteredData);
+  const svg = d3.select(globalSelector).select("svg").select("g");
 
-  d3.select(selector).selectAll(".foreground").remove();
+  d3.select(globalSelector).selectAll(".foreground").remove();
 
   createPaths(
     svg,
     filteredData,
-    createXScale(globalData, width),
-    createYScales(globalData, height),
+    xScale,
+    yScales,
     colorScale // Pass colorScale to update paths
   );
 }

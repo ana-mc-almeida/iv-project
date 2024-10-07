@@ -68,7 +68,7 @@ def add_id_column(df: pd.DataFrame) -> pd.DataFrame:
 
 # Slice data to keep only 1000 random records
 def slice_data(df: pd.DataFrame) -> pd.DataFrame:
-    return df.sample(1000)
+    return df.sample(100)
 
 # Remove area greater than 30k
 def remove_area_biggers(df: pd.DataFrame) -> pd.DataFrame:
