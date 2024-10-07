@@ -88,12 +88,11 @@ def remove_islands(df: pd.DataFrame) -> pd.DataFrame:
 def create_zone_column(df: pd.DataFrame) -> pd.DataFrame:
     zones = {
         'Norte': ['Porto', 'Braga', 'Viana do Castelo', 'Vila Real', 'Bragança'],
-        'Centro': ['Aveiro', 'Viseu', 'Guarda', 'Coimbra', 'Castelo Branco', 'Leiria', 'Santarém', 'Lisboa'],
-        'Alentejo': ['Setúbal', 'Évora', 'Portalegre', 'Beja', 'Faro'],
+        'Centro': ['Aveiro', 'Viseu', 'Guarda', 'Coimbra', 'Castelo Branco', 'Leiria', 'Santarém', 'Lisboa', 'Portalegre'],
+        'Sul': ['Setúbal', 'Évora', 'Beja', 'Faro'],
     }
     district_to_zone = {district: zone for zone, districts in zones.items() for district in districts}
     return df.assign(Zone=lambda x: x['District'].apply(lambda y: district_to_zone.get(y, 'aaaaaaa')))
-    return df.sample(100)
 
 # Remove area greater than 30k
 def remove_area_biggers(df: pd.DataFrame) -> pd.DataFrame:

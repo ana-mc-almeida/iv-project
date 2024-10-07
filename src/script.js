@@ -20,6 +20,7 @@ function init() {
       District: d["District"],
       AdsType: d["AdsType"],
       Condition: d["Condition"],
+      Zone: d["Zone"],
     };
   }).then(function (data) {
     global_data = data;

@@ -1,25 +1,9 @@
 const dimensions = ["Rooms", "Bathrooms", "Area", "Price"];
 const integerTick = ["Rooms", "Bathrooms"];
 const customColors = [
-  "#1f77b4",
-  "#ff7f0e",
-  "#2ca02c",
-  "#d62728",
-  "#9467bd",
-  "#8c564b",
-  "#e377c2",
-  "#7f7f7f",
-  "#bcbd22",
-  "#17becf",
-  "#9e6e1d",
-  "#ff9896",
-  "#c5b0d5",
-  "#f7b6d2",
-  "#c49c94",
-  "#dbdb8d",
-  "#8c6d31",
-  "#e377c2",
-  "#7f7f7f",
+  "#1392FF",
+  "#A724FF",
+  "#00FFBF",
 ];
 
 let width, height, colorScale, yScales, xScale, filters;
@@ -82,12 +66,12 @@ function createXScale() {
 }
 
 /**
- * Creates color scale based on Districts
+ * Creates color scale based on Zone
  * @param {Array} data - The dataset
- * @returns {d3.ScaleOrdinal} - Color scale for Districts
+ * @returns {d3.ScaleOrdinal} - Color scale for Zone
  */
 function createColorScale(data) {
-  return d3.scaleOrdinal(customColors).domain(data.map((d) => d.District));
+  return d3.scaleOrdinal(customColors).domain(data.map((d) => d.Zone));
 }
 
 /**
@@ -108,13 +92,15 @@ function createPaths(svg, data) {
     .append("path")
     .attr("d", lineGenerator)
     .style("fill", "none")
-    .style("stroke", (d) => colorScale(d.District)) // Apply color based on District
+    .style("stroke", (d) => colorScale(d.Zone)) // Apply color based on Zone
     .style("stroke-width", "1.5px")
     .on("mouseover", function () {
-      d3.select(this).style("stroke-width", "3px");
+      d3.select(this).style("stroke-width", "4px");
+      d3.select(this).style("stroke", "white");
     })
     .on("mouseout", function () {
       d3.select(this).style("stroke-width", "1.5px");
+      d3.select(this).style("stroke", (d) => colorScale(d.Zone));
     });
 }
 
@@ -141,7 +127,12 @@ function addAxesWithBrush(svg) {
           .tickFormat(d3.format("d")); // Formato de inteiro
       }
 
-      d3.select(this).call(axis);
+      d3.select(this).call(axis)
+        .style("fill", "#6599CB");
+
+      d3.select(this).selectAll(".tick text")
+        .style("fill", "white")
+        .style("font-size", "13px");
 
       const brush = d3
         .brushY()
@@ -159,11 +150,12 @@ function addAxesWithBrush(svg) {
         .call(brush.move, [0, height]);
     })
     .append("text")
-    .attr("fill", "black")
+    .attr("fill", "white")
     .style("text-anchor", "middle")
     .attr("y", -9)
     .text((d) => d)
-    .style("font-size", "16px");
+    .style("font-size", "18px")
+    .style("font-family", "Arial, sans-serif");
 }
 
 /**
