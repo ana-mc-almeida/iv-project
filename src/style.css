@@ -219,6 +219,44 @@ body {
   display: block;
 }
 
+
+.dropdown-condition {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  position: relative; 
+  display: inline-block;
+}
+
+.dropdown-condition-content {
+  display: none;
+  position: absolute;
+  background-color: white; 
+  min-width: 210px; 
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 4px; 
+  margin-top: 2px;
+  z-index: 1000; 
+  max-height: 190px;
+  overflow-y: auto;
+}
+
+.dropdown-condition-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  transition: background-color 0.3s;
+  border-radius: 4px; 
+}
+
+.dropdown-condition-content a:hover {
+  background-color: #f1f1f1;
+}
+
+.dropdown-condition:hover .dropdown-condition-content{
+  display: block;
+}
+
 .year-selector {
   display: flex;
   flex-direction: column;
