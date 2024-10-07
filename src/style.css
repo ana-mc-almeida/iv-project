@@ -129,7 +129,7 @@ body {
 
 .search-content a.selected {
   background-color: #4CAF50;
-  color: rgba(16, 10, 103, 0.756);
+  color: black;
 }
 
 .search:hover .search-content {

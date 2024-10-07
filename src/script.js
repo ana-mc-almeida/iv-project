@@ -42,9 +42,13 @@ document.addEventListener("DOMContentLoaded", function() {
   searchLinks.on('click', function(event) {
       event.preventDefault();
 
+      const isSelected = d3.select(this).classed('selected'); 
+
       searchLinks.classed('selected', false);
 
-      d3.select(this).classed('selected', true);
+      if (!isSelected) {
+          d3.select(this).classed('selected', true);
+      }
   });
 
   const buttons = d3.selectAll('.button-type');
@@ -61,9 +65,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 });
 
-function selectMap(typeOfMap){
-  d3.selectAll("button").attr("disabled", true);
-
+function selectMap(typeOfMap) {
   switch (typeOfMap) {
       case "Area":
           updateMapToArea();
@@ -82,17 +84,17 @@ function selectMap(typeOfMap){
   }
 }
 
-function selectDistrict(district){
+function selectDistrict(district) {
   const data = globalData.slice();
   updateDistrict(data, district);
 }
 
-function selectType(type){
+function selectType(type) {
   const data = globalData.slice();
   updateType(data, type);
 }
 
-function selectCondition(condition){
+function selectCondition(condition) {
   const data = globalData.slice();
   updateCondition(data, condition);
 }

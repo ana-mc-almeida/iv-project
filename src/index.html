@@ -3,15 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title></title>
+    <title>How was the real estate market in Portugal in 2021?</title>
     <link rel="stylesheet" href="style.css" />
+
+    <!-- External libraries -->
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="./script.js"></script>
+
+    <!-- Controller logic -->
+    <script src="./controllers.js"></script>
+
+    <!-- Idioms/Visualization Scripts -->
     <script src="./idioms.js/violin_plot.js"></script>
     <script src="./idioms.js/parallel_coordinates.js"></script>
     <script src="./idioms.js/choropleth_map.js"></script>
-    <script src="./controllers.js"></script>
+
+    <!-- Initialize script -->
+    <script src="./script.js"></script>    <!-- This should load last to initialize everything -->
   </head>
 
   <body onload="init()">
@@ -88,6 +96,5 @@
 
     </div>
   </body>
-
   
 </html>

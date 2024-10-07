@@ -6,26 +6,26 @@ const filters = {
     YEARS: 0
 };
 
-function updateAllCharts(data){
+function updateAllCharts(data) {
     // TODO: go to idioms update
 }
 
-function updateMapToArea(){
+function updateMapToArea() {
     filters.MAP_TYPE = 'area';
     console.log(filters.MAP_TYPE);
 }
 
-function updateMapToPricePerSquareMeter(){
+function updateMapToPricePerSquareMeter() {
     filters.MAP_TYPE = 'price_per_square_meter';
     console.log(filters.MAP_TYPE);
 }
 
-function updateMapToNumberOfAvailability(){
+function updateMapToNumberOfAvailability() {
     filters.MAP_TYPE = 'number_of_availability';
     console.log(filters.MAP_TYPE);
 }   
 
-function updateDistrict(data, district){
+function updateDistrict(data, district) {
 
     const exists = filters.DISTRICT.includes(district);
     if (!exists) {
@@ -42,7 +42,7 @@ function updateDistrict(data, district){
     console.log(filteredData);
 }
 
-function updateType(data, type){
+function updateType(data, type) {
 
     if (!filters.TYPE.includes(type)) {
         filters.TYPE.push(type); 
@@ -58,12 +58,7 @@ function updateType(data, type){
     console.log(filteredData);
 }
 
-function updateCondition(data, condition){
-
-    let others = 0;
-    if (condition === 'Others') {
-        others = 1;
-    }
+function updateCondition(data, condition) {
 
     if (!filters.CONDITION.includes(condition)) {
         filters.CONDITION.push(condition); 
@@ -72,16 +67,14 @@ function updateCondition(data, condition){
         filters.CONDITION = filters.CONDITION.filter(d => d !== condition);
     }
 
-    console.log("others: " + others);
-
-    const filteredData = filterDatasetByConditions(data, others); 
+    const filteredData = filterDatasetByConditions(data); 
 
     updateAllCharts(filteredData);
     console.log(filters.CONDITION);
     console.log(filteredData);
 }
 
-function updateYear(years){
+function updateYear(years) {
     filters.YEARS = years;
     console.log(filters.YEARS);
 }
@@ -100,12 +93,12 @@ function filterDatasetByType(data) {
     return data.filter(d => filters.TYPE.includes(d.AdsType));
 }
 
-function filterDatasetByConditions(data, others) {
+function filterDatasetByConditions(data) {
     if (filters.CONDITION.length === 0) {
         return data; 
     }
 
-    if (others){
+    if (filters.CONDITION.includes('Others')) {
         return data.filter(d => filters.CONDITION.includes(d.Condition) || 
             (d.Condition !== 'New' && d.Condition !== 'Renovated' && d.Condition !== 'Used'));
     }
