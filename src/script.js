@@ -1,6 +1,7 @@
 // Global variable to hold the dataset
-var global_data;
-var inicial_data;
+var inicial_data; // Initial data from the dataset
+var global_data; // Global data to apply filters
+var filtered_data; // Filtered data to update the charts
 
 // Variable to hold the selected year value
 let selectedYears = 50;
@@ -11,15 +12,13 @@ let selectedYears = 50;
  */
 function init() {
   d3.json("./data/final_dataset.json").then(function (data) {
-    inicial_data = data;
+    inicial_data = data.slice();
     global_data = processData(inicial_data);
-    initControllers(global_data);
     createParallelCoordinates(global_data, ".parallelCoordinates");
   });
 }
 
 function processData(data) {
-  console.log("selectedYears", selectedYears);
   return data.map(function (d) {
     return {
       Area: +d["Area"],

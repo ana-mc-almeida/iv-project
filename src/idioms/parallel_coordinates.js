@@ -2,7 +2,7 @@ const dimensions = ["Rooms", "Bathrooms", "Area", "Price"];
 const integerTick = ["Rooms", "Bathrooms"];
 const customColors = ["#1392FF", "#A724FF", "#00FFBF"];
 
-let width, height, colorScale, yScales, xScale, filters;
+let width, height, colorScale, yScales, xScale;
 let globalData = null;
 let globalSelector = null;
 
@@ -34,7 +34,7 @@ function createParallelCoordinates(data, selector) {
 
   createPaths(svg, data);
 
-  filters = initializeFilters();
+  initializeFilters();
   addAxesWithBrush(svg);
 }
 
@@ -163,10 +163,10 @@ function brushed(event, dim) {
   const selection = event.selection;
   if (selection) {
     const [yMax, yMin] = selection.map((d) => yScales[dim].invert(d));
-    filters[dim] = [yMin, yMax];
+    globalFilters[dim] = [yMin, yMax];
   }
-  const filteredData = applyFilters(globalData, filters);
-  updateChart(filteredData);
+  const filtered_data = filterDataset();
+  updateChart(filtered_data);
 }
 
 /**
@@ -178,8 +178,8 @@ function brushEnded(event, dim) {
   if (!event.selection) {
     filters[dim] = null;
   }
-  const filteredData = applyFilters(globalData, filters);
-  updateChart(filteredData);
+  const filtered_data = filterDataset();
+  updateChart(filtered_data);
 }
 
 /**
@@ -199,11 +199,16 @@ function getMinMaxValues(data, dim) {
  * @returns {Object} - Filters object with ranges for each dimension
  */
 function initializeFilters() {
-  return dimensions.reduce((filterObj, dim) => {
+  dimensions.forEach((dim) => {
     const { min, max } = getMinMaxValues(globalData, dim);
-    filterObj[dim] = [min, max];
-    return filterObj;
-  }, {});
+    globalFilters[dim] = [min, max];
+  });
+
+  // dimensions.reduce((filterObj, dim) => {
+  //   const { min, max } = getMinMaxValues(globalData, dim);
+  //   filterObj[dim] = [min, max];
+  //   return filterObj;
+  // }, {});
 }
 
 /**
@@ -223,10 +228,10 @@ function applyFilters(data, filters) {
 
 /**
  * Applies the current filters to the dataset and updates the chart
- * @param {Array} filteredData - The filtered dataset
+ * @param {Array} filtered_data - The filtered dataset
  */
-function updateChart(filteredData) {
+function updateChart(filtered_data) {
   const svg = d3.select(globalSelector).select("svg").select("g");
   d3.select(globalSelector).selectAll(".foreground").remove();
-  createPaths(svg, filteredData);
+  createPaths(svg, filtered_data);
 }
