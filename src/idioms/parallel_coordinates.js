@@ -76,6 +76,10 @@ function createPaths(svg, data) {
   const lineGenerator = (d) =>
     d3.line()(dimensions.map((dim) => [xScale(dim), yScales[dim](+d[dim])]));
 
+  if (!data) {
+    return;
+  }
+
   return svg
     .append("g")
     .attr("class", "foreground")

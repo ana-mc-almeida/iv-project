@@ -26,7 +26,7 @@ function filterDatasetByDistricts(data) {
  */
 function filterDatasetByType(data) {
   if (globalFilters.TYPE.length === 0) {
-    return data;
+    return null;
   }
   return data.filter((d) => globalFilters.TYPE.includes(d.AdsType));
 }
@@ -125,12 +125,12 @@ function filterDataset() {
   var data = global_data.slice();
 
   data = filterDatasetByDistricts(data);
-  data = filterDatasetByType(data);
   data = filterDatasetByConditions(data);
   data = filterDatasetByRooms(data);
   data = filterDatasetByBathrooms(data);
   data = filterDatasetByPrice(data);
   data = filterDatasetByArea(data);
+  data = filterDatasetByType(data);
 
   return data;
 }
