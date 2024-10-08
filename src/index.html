@@ -11,8 +11,9 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Initialize script to set up the application -->
-    <script src="./script.js"></script> <!-- This should load last to initialize everything -->
-    
+    <script src="./script.js"></script>
+    <!-- This should load last to initialize everything -->
+
     <!-- Controller logic for data manipulation and interaction -->
     <script src="./controllers.js"></script>
 
@@ -20,27 +21,29 @@
     <script src="./idioms/parallel_coordinates.js"></script>
     <!-- <script src="./idioms/violin_plot.js"></script>
     <script src="./idioms/choropleth_map.js"></script> -->
-
   </head>
 
-  <body onload="init()"> <!-- Calls the init function when the body is loaded -->
+  <body onload="init()">
+    <!-- Calls the init function when the body is loaded -->
 
     <div class="principal">
       <div class="header">
-          <h1>How was the real estate market in Portugal in 2021?</h1>
+        <h1>How was the real estate market in Portugal in 2021?</h1>
       </div>
 
       <div class="container">
         <!-- Placeholder for the choropleth map visualization -->
         <div class="choropleth_map"></div>
-        
+
         <!-- Placeholder for the violin plot visualization -->
         <div class="violin_plot"></div>
-        
+
         <!-- Placeholder for the parallel coordinates visualization -->
 
         <div class="parallelCoordinates">
-          <label class="parallelCoordinatesSubtitle">Characteristics of each house</label>
+          <label class="parallelCoordinatesSubtitle"
+            >Characteristics of each house</label
+          >
         </div>
 
         <div class="controllers">
@@ -48,11 +51,15 @@
 
           <!-- Map Options Section -->
           <div class="mapOption">
-            <button class="mapOption-input">🔍  What to see on the map?</button>
+            <button class="mapOption-input">🔍 What to see on the map?</button>
             <div class="mapOption-content">
-                <a href="#" onclick="selectMap('Area')">Area</a>
-                <a href="#" onclick="selectMap('Price Per Square Meter')">Price Per Square Meter</a>
-                <a href="#" onclick="selectMap('Number of availability')">Number of availability</a>
+              <a href="#" onclick="selectMap('Area')">Area</a>
+              <a href="#" onclick="selectMap('Price Per Square Meter')"
+                >Price Per Square Meter</a
+              >
+              <a href="#" onclick="selectMap('Number of availability')"
+                >Number of availability</a
+              >
             </div>
           </div>
 
@@ -64,7 +71,9 @@
               <a href="#" onclick="selectDistrict('Beja')">Beja</a>
               <a href="#" onclick="selectDistrict('Braga')">Braga</a>
               <a href="#" onclick="selectDistrict('Bragança')">Bragança</a>
-              <a href="#" onclick="selectDistrict('Castelo Branco')">Castelo Branco</a>
+              <a href="#" onclick="selectDistrict('Castelo Branco')"
+                >Castelo Branco</a
+              >
               <a href="#" onclick="selectDistrict('Coimbra')">Coimbra</a>
               <a href="#" onclick="selectDistrict('Évora')">Évora</a>
               <a href="#" onclick="selectDistrict('Faro')">Faro</a>
@@ -75,25 +84,37 @@
               <a href="#" onclick="selectDistrict('Porto')">Porto</a>
               <a href="#" onclick="selectDistrict('Santarém')">Santarém</a>
               <a href="#" onclick="selectDistrict('Setúbal')">Setúbal</a>
-              <a href="#" onclick="selectDistrict('Viana do Castelo')">Viana do Castelo</a>
+              <a href="#" onclick="selectDistrict('Viana do Castelo')"
+                >Viana do Castelo</a
+              >
               <a href="#" onclick="selectDistrict('Vila Real')">Vila Real</a>
               <a href="#" onclick="selectDistrict('Viseu')">Viseu</a>
             </div>
           </div>
-          
+
           <!-- Rent or Buy Selection Section -->
           <div class="rentOrBuy-container">
-            <button class="rentOrBuy-button selected" onclick="selectType('Rent')">Rent</button>
-            <button class="rentOrBuy-button selected" onclick="selectType('Sell')">Buy</button>
+            <button
+              class="rentOrBuy-button selected"
+              onclick="selectType('Rent')"
+            >
+              Rent
+            </button>
+            <button
+              class="rentOrBuy-button selected"
+              onclick="selectType('Sell')"
+            >
+              Buy
+            </button>
           </div>
-          
+
           <!-- Condition Selection Section -->
           <div class="condition">
             <button class="dropbtn">Condition</button>
             <div class="condition-content">
-                <a href="#" onclick="selectCondition('New')">New</a>
-                <a href="#" onclick="selectCondition('Renovated')">Renovated</a>
-                <a href="#" onclick="selectCondition('Used')">Used</a>
+              <a href="#" onclick="selectCondition('New')">New</a>
+              <a href="#" onclick="selectCondition('Renovated')">Renovated</a>
+              <a href="#" onclick="selectCondition('Used')">Used</a>
             </div>
           </div>
 
@@ -101,14 +122,21 @@
           <div class="year-selector">
             <div class="year-input-container">
               <span class="year-input-text">Number of Years :</span>
-              <input type="number" class="year-input" id="yearInput" value="50" min="1" max="99">
+              <input
+                type="number"
+                class="year-input"
+                id="yearInput"
+                value="50"
+                min="1"
+                max="99"
+              />
             </div>
           </div>
-
-        </div> <!-- End of controllers -->
-      </div> <!-- End of container -->
-
-    </div> <!-- End of principal -->
+        </div>
+        <!-- End of controllers -->
+      </div>
+      <!-- End of container -->
+    </div>
+    <!-- End of principal -->
   </body>
-  
 </html>

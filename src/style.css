@@ -16,17 +16,17 @@ input[type="range"] {
 .choropleth_map {
   grid-area: choropleth_map;
 
-  background-color: rgb(66, 132, 243); 
-  padding: 20px; 
+  background-color: rgb(66, 132, 243);
+  padding: 20px;
   border: 2px solid #333;
 }
 
 .violin_plot {
   grid-area: violin_plot;
 
-  background-color: rgb(86, 162, 174); 
-  padding: 20px; 
-  border: 2px solid #333; 
+  background-color: rgb(86, 162, 174);
+  padding: 20px;
+  border: 2px solid #333;
 }
 
 .parallelCoordinates {
@@ -68,20 +68,20 @@ body {
 }
 
 .mapOption {
-  display: flex; 
+  display: flex;
   margin-bottom: 0px;
 }
 
 .mapOption-input {
   margin-top: 5px;
   margin-bottom: 0px;
-  position: relative; 
+  position: relative;
   display: inline-block;
   font-size: 15px;
   border-radius: 4px;
   height: 30px;
   width: 210px;
-  background-color: white; 
+  background-color: white;
   border: none;
 }
 
@@ -92,14 +92,14 @@ body {
 .mapOption-content {
   display: none;
   position: absolute;
-  background-color: white; 
-  min-width: 210px; 
+  background-color: white;
+  min-width: 210px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  border-radius: 4px; 
+  border-radius: 4px;
   margin-top: 38px;
   color: black;
   z-index: 2000;
-  cursor: pointer; 
+  cursor: pointer;
 }
 
 .mapOption-content a {
@@ -108,8 +108,8 @@ body {
   text-decoration: none;
   display: block;
   transition: background-color 0.3s;
-  border-radius: 4px; 
-  cursor: pointer; 
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .mapOption-content a:hover {
@@ -134,23 +134,23 @@ body {
 }
 
 .rentOrBuy-container {
-  min-width: 210px; 
+  min-width: 210px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  border-radius: 5px; 
+  border-radius: 5px;
 }
 
 .rentOrBuy-button {
-  background-color: white; 
-  border: none; 
-  color: black; 
-  padding: 10px 34px; 
+  background-color: white;
+  border: none;
+  color: black;
+  padding: 10px 34px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 16px; 
-  cursor: pointer; 
+  font-size: 16px;
+  cursor: pointer;
   border-radius: 4px;
-  transition: background-color 0.3s; 
+  transition: background-color 0.3s;
   margin-left: -0.5px;
   width: 103px;
 }
@@ -167,18 +167,18 @@ body {
 .district {
   margin-top: 5px;
   margin-bottom: 5px;
-  position: relative; 
+  position: relative;
   display: inline-block;
 }
 
 .dropbtn {
-  background-color: white; 
+  background-color: white;
   color: black;
-  padding: 8px 20px; 
-  font-size: 16px; 
+  padding: 8px 20px;
+  font-size: 16px;
   border: none;
-  cursor: pointer; 
-  border-radius: 4px; 
+  cursor: pointer;
+  border-radius: 4px;
   transition: background-color 0.3s;
   min-width: 210px;
   margin-left: 0px;
@@ -191,12 +191,12 @@ body {
 .district-content {
   display: none;
   position: absolute;
-  background-color: white; 
-  min-width: 210px; 
+  background-color: white;
+  min-width: 210px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  border-radius: 4px; 
+  border-radius: 4px;
   margin-top: 2px;
-  z-index: 1000; 
+  z-index: 1000;
   max-height: 190px;
   overflow-y: auto;
 }
@@ -207,7 +207,7 @@ body {
   text-decoration: none;
   display: block;
   transition: background-color 0.3s;
-  border-radius: 4px; 
+  border-radius: 4px;
 }
 
 .district-content a:hover {
@@ -226,19 +226,19 @@ body {
 .condition {
   margin-top: 5px;
   margin-bottom: 5px;
-  position: relative; 
+  position: relative;
   display: inline-block;
 }
 
 .condition-content {
   display: none;
   position: absolute;
-  background-color: white; 
-  min-width: 210px; 
+  background-color: white;
+  min-width: 210px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  border-radius: 4px; 
+  border-radius: 4px;
   margin-top: 2px;
-  z-index: 1000; 
+  z-index: 1000;
   max-height: 190px;
   overflow-y: auto;
 }
@@ -249,7 +249,7 @@ body {
   text-decoration: none;
   display: block;
   transition: background-color 0.3s;
-  border-radius: 4px; 
+  border-radius: 4px;
 }
 
 .condition-content a:hover {
@@ -261,25 +261,25 @@ body {
   color: white;
 }
 
-.condition:hover .condition-content{
+.condition:hover .condition-content {
   display: block;
 }
 
 .year-selector {
   display: flex;
   flex-direction: column;
-  align-items: center; 
-  width: 210px; 
+  align-items: center;
+  width: 210px;
 }
 
 .year-input {
-  width: 100%; 
+  width: 100%;
   padding: 10px;
   text-align: right;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
-  margin-bottom: 5px; 
+  margin-bottom: 5px;
   padding-right: 20px;
 }
 
@@ -291,14 +291,14 @@ body {
 .year-input-text {
   position: absolute;
   left: 20px;
-  top: 47%; 
-  transform: translateY(-50%); 
-  color: black; 
-  pointer-events: none; 
+  top: 47%;
+  transform: translateY(-50%);
+  color: black;
+  pointer-events: none;
 }
 
 .parallelCoordinatesSubtitle {
-  display: flex; 
+  display: flex;
   justify-content: center;
   font-size: 12px;
   color: white;

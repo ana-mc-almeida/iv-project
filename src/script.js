@@ -19,13 +19,14 @@ function init() {
 }
 
 function processData(data) {
-  console.log('selectedYears', selectedYears);
+  console.log("selectedYears", selectedYears);
   return data.map(function (d) {
     return {
       Area: +d["Area"],
       Rooms: +d["Rooms"],
       Bathrooms: +d["Bathrooms"],
-      Price: d["AdsType"] === "Rent" ? +d["Price"] * selectedYears : +d["Price"],
+      Price:
+        d["AdsType"] === "Rent" ? +d["Price"] * selectedYears : +d["Price"],
       District: d["District"],
       AdsType: d["AdsType"],
       Condition: d["Condition"],
@@ -35,48 +36,48 @@ function processData(data) {
 }
 
 // Event listener for DOMContentLoaded to set up the UI interactions
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   // District Links
-  const districtLinks = d3.selectAll('.district-content a');
-  
+  const districtLinks = d3.selectAll(".district-content a");
+
   // Toggle district selection on click
-  districtLinks.on('click', function(event) {
-      event.preventDefault(); 
-      d3.select(this).classed('selected', !d3.select(this).classed('selected'));
+  districtLinks.on("click", function (event) {
+    event.preventDefault();
+    d3.select(this).classed("selected", !d3.select(this).classed("selected"));
   });
 
   // Condition Links
-  const conditionLinks = d3.selectAll('.condition-content a');
-  
+  const conditionLinks = d3.selectAll(".condition-content a");
+
   // Toggle condition selection on click
-  conditionLinks.on('click', function(event) {
-      event.preventDefault();
-      d3.select(this).classed('selected', !d3.select(this).classed('selected'));
+  conditionLinks.on("click", function (event) {
+    event.preventDefault();
+    d3.select(this).classed("selected", !d3.select(this).classed("selected"));
   });
 
   // Map Options
-  const mapOptionLinks = d3.selectAll('.mapOption-content a');
-  
+  const mapOptionLinks = d3.selectAll(".mapOption-content a");
+
   // Toggle map option selection on click
-  mapOptionLinks.on('click', function(event) {
-      event.preventDefault();
-      const isSelected = d3.select(this).classed('selected'); 
-      mapOptionLinks.classed('selected', false); // Deselect all options
-      if (!isSelected) {
-          d3.select(this).classed('selected', true); // Select the clicked option
-      }
+  mapOptionLinks.on("click", function (event) {
+    event.preventDefault();
+    const isSelected = d3.select(this).classed("selected");
+    mapOptionLinks.classed("selected", false); // Deselect all options
+    if (!isSelected) {
+      d3.select(this).classed("selected", true); // Select the clicked option
+    }
   });
 
   // Rent or Buy Buttons
-  const rentOrBuyButtons = d3.selectAll('.rentOrBuy-button');
+  const rentOrBuyButtons = d3.selectAll(".rentOrBuy-button");
 
   // Toggle selection on rent/buy buttons
-  rentOrBuyButtons.on('click', function() {
-      d3.select(this).classed('selected', !d3.select(this).classed('selected'));
+  rentOrBuyButtons.on("click", function () {
+    d3.select(this).classed("selected", !d3.select(this).classed("selected"));
   });
 
   // Years Input
-  d3.select('#yearInput').on('input', function() {
+  d3.select("#yearInput").on("input", function () {
     selectedYears = +this.value; // Get the selected years from input
     console.log(selectedYears);
 
@@ -85,8 +86,7 @@ document.addEventListener("DOMContentLoaded", function() {
     } else if (selectedYears > 99) {
       selectedYears = 99;
     }
-    document.getElementById('yearInput').value = selectedYears;
-
+    document.getElementById("yearInput").value = selectedYears;
 
     updateYear(selectedYears); // Update the year filter
 
@@ -101,20 +101,20 @@ document.addEventListener("DOMContentLoaded", function() {
  */
 function selectMap(typeOfMap) {
   switch (typeOfMap) {
-      case "Area":
-          updateMapToArea();
-          break;
+    case "Area":
+      updateMapToArea();
+      break;
 
-      case "Price Per Square Meter":
-          updateMapToPricePerSquareMeter();
-          break;
+    case "Price Per Square Meter":
+      updateMapToPricePerSquareMeter();
+      break;
 
-      case "Number of availability":
-          updateMapToNumberOfAvailability();
-          break;
+    case "Number of availability":
+      updateMapToNumberOfAvailability();
+      break;
 
-      default:
-          break;
+    default:
+      break;
   }
 }
 

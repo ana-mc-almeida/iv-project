@@ -1,10 +1,6 @@
 const dimensions = ["Rooms", "Bathrooms", "Area", "Price"];
 const integerTick = ["Rooms", "Bathrooms"];
-const customColors = [
-  "#1392FF",
-  "#A724FF",
-  "#00FFBF",
-];
+const customColors = ["#1392FF", "#A724FF", "#00FFBF"];
 
 let width, height, colorScale, yScales, xScale, filters;
 let globalData = null;
@@ -19,7 +15,7 @@ function createParallelCoordinates(data, selector) {
   globalData = data;
   globalSelector = selector;
 
-  const margin = { top: 25, right: 65, bottom:10, left: 30 };
+  const margin = { top: 25, right: 65, bottom: 10, left: 30 };
   const divElement = d3.select(selector).node();
   width = divElement.clientWidth - margin.left - margin.right;
   height = divElement.clientHeight - margin.top - margin.bottom;
@@ -127,10 +123,10 @@ function addAxesWithBrush(svg) {
           .tickFormat(d3.format("d")); // Formato de inteiro
       }
 
-      d3.select(this).call(axis)
-        .style("fill", "#6599CB");
+      d3.select(this).call(axis).style("fill", "#6599CB");
 
-      d3.select(this).selectAll(".tick text")
+      d3.select(this)
+        .selectAll(".tick text")
         .style("fill", "white")
         .style("font-size", "13px");
 
