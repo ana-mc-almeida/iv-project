@@ -2,7 +2,8 @@
 const controllerFilters = {
     MAP_TYPE: 'none',
     DISTRICT: [],
-    TYPE: [],
+    TYPE: ['Rent',
+        'Sell'],
     CONDITION: [],
     YEARS: 0
 };

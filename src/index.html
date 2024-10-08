@@ -38,8 +38,11 @@
         <div class="violin_plot"></div>
         
         <!-- Placeholder for the parallel coordinates visualization -->
-        <div class="parallelCoordinates"></div>
-        
+
+        <div class="parallelCoordinates">
+          <label class="parallelCoordinatesSubtitle">Characteristics of each house</label>
+        </div>
+
         <div class="controllers">
           <h2>Menu</h2>
 
@@ -80,8 +83,8 @@
           
           <!-- Rent or Buy Selection Section -->
           <div class="rentOrBuy-container">
-            <button class="rentOrBuy-button" onclick="selectType('Rent')">Rent</button>
-            <button class="rentOrBuy-button" onclick="selectType('Sell')">Buy</button>
+            <button class="rentOrBuy-button selected" onclick="selectType('Rent')">Rent</button>
+            <button class="rentOrBuy-button selected" onclick="selectType('Sell')">Buy</button>
           </div>
           
           <!-- Condition Selection Section -->
