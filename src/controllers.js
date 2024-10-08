@@ -1,5 +1,5 @@
-// Global filters object to hold the state of the various filters applied to the dataset
-const filters = {
+// Global controllerFilters object to hold the state of the various controllerFilters applied to the dataset
+const controllerFilters = {
     MAP_TYPE: 'none',
     DISTRICT: [],
     TYPE: [],
@@ -7,145 +7,171 @@ const filters = {
     YEARS: 0
 };
 
+var inicialData;
+var filteredData;
+
+/**
+ * Init the dataset.
+ * @param {Array} data - The inicial dataset.
+ */
+function initControllers(data){
+   inicialData = data.slice(); // Clone global data to avoid mutating the original
+   filteredData = data.slice();
+}
+
 /**
  * Updates all charts based on the filtered data.
  * @param {Array} data - The dataset to update the charts with.
  */
 function updateAllCharts(data) {
-    // TODO: go to idioms update
+    updateChart(data);
+    console.log("update");
 }
 
 /**
  * Updates the map to display data based on the area.
  */
 function updateMapToArea() {
-    filters.MAP_TYPE = 'area';
-    console.log(filters.MAP_TYPE);
+    controllerFilters.MAP_TYPE = 'area';
+    console.log(controllerFilters.MAP_TYPE);
 }
 
 /**
  * Updates the map to display data based on the price per square meter.
  */
 function updateMapToPricePerSquareMeter() {
-    filters.MAP_TYPE = 'price_per_square_meter';
-    console.log(filters.MAP_TYPE);
+    controllerFilters.MAP_TYPE = 'price_per_square_meter';
+    console.log(controllerFilters.MAP_TYPE);
 }
 
 /**
  * Updates the map to display the number of availability.
  */
 function updateMapToNumberOfAvailability() {
-    filters.MAP_TYPE = 'number_of_availability';
-    console.log(filters.MAP_TYPE);
+    controllerFilters.MAP_TYPE = 'number_of_availability';
+    console.log(controllerFilters.MAP_TYPE);
 }   
 
 /**
  * Updates the district filter based on user selection.
  * If the district already exists in the filter, it removes it; otherwise, it adds it.
- * @param {Array} data - The dataset to filter by district.
  * @param {String} district - The district to update the filter with.
  */
-function updateDistrict(data, district) {
-    const exists = filters.DISTRICT.includes(district);
+function updateDistrict(district) {
+    const exists = controllerFilters.DISTRICT.includes(district);
     if (!exists) {
-        filters.DISTRICT.push(district); 
+        controllerFilters.DISTRICT.push(district); 
     } else {
         // Remove if exists
-        filters.DISTRICT = filters.DISTRICT.filter(d => d !== district);
+        controllerFilters.DISTRICT = controllerFilters.DISTRICT.filter(d => d !== district);
     }
 
-    const filteredData = filterDatasetByDistricts(data); 
+    filteredData = filterDataset();
+
     updateAllCharts(filteredData);
-    console.log("distritos:" + filters.DISTRICT);
+    console.log("distritos:" + controllerFilters.DISTRICT);
     console.log(filteredData);
 }
 
 /**
  * Updates the property type filter based on user selection.
  * If the type already exists in the filter, it removes it; otherwise, it adds it.
- * @param {Array} data - The dataset to filter by property type.
  * @param {String} type - The property type to update the filter with.
  */
-function updateType(data, type) {
-    if (!filters.TYPE.includes(type)) {
-        filters.TYPE.push(type); 
+function updateType(type) {
+    if (!controllerFilters.TYPE.includes(type)) {
+        controllerFilters.TYPE.push(type); 
     } else {
         // Remove if exists
-        filters.TYPE = filters.TYPE.filter(d => d !== type);
+        controllerFilters.TYPE = controllerFilters.TYPE.filter(d => d !== type);
     }
 
-    const filteredData = filterDatasetByType(data); 
+    filteredData = filterDataset(); 
+
     updateAllCharts(filteredData);
-    console.log(filters.TYPE);
+    console.log(controllerFilters.TYPE);
     console.log(filteredData);
 }
 
 /**
  * Updates the condition filter based on user selection.
  * If the condition already exists in the filter, it removes it; otherwise, it adds it.
- * @param {Array} data - The dataset to filter by condition.
  * @param {String} condition - The condition to update the filter with.
  */
-function updateCondition(data, condition) {
-    if (!filters.CONDITION.includes(condition)) {
-        filters.CONDITION.push(condition); 
+function updateCondition(condition) {
+    if (!controllerFilters.CONDITION.includes(condition)) {
+        controllerFilters.CONDITION.push(condition); 
     } else {
         // Remove if exists
-        filters.CONDITION = filters.CONDITION.filter(d => d !== condition);
+        controllerFilters.CONDITION = controllerFilters.CONDITION.filter(d => d !== condition);
     }
 
-    const filteredData = filterDatasetByConditions(data); 
+    filteredData = filterDataset(); 
+
     updateAllCharts(filteredData);
-    console.log(filters.CONDITION);
+    console.log(controllerFilters.CONDITION);
     console.log(filteredData);
 }
 
 /**
  * Updates the years filter based on user input.
- * @param {Number} years - The number of years to set in the filters.
+ * @param {Number} years - The number of years to set in the controllerFilters.
  */
 function updateYear(years) {
-    filters.YEARS = years;
-    console.log(filters.YEARS);
+    controllerFilters.YEARS = years;
+    console.log(controllerFilters.YEARS);
 }
 
 /**
- * Filters the dataset by the selected districts.
+ * controllerFilters the dataset by the selected districts.
  * @param {Array} data - The dataset to filter.
  * @returns {Array} - Filtered dataset based on the selected districts.
  */
 function filterDatasetByDistricts(data) {
-    if (filters.DISTRICT.length === 0) {
+    if (controllerFilters.DISTRICT.length === 0) {
         return data; 
     }
-    return data.filter(d => filters.DISTRICT.includes(d.District));
+    return data.filter(d => controllerFilters.DISTRICT.includes(d.District));
 }
 
 /**
- * Filters the dataset by the selected ads types.
+ * controllerFilters the dataset by the selected ads types.
  * @param {Array} data - The dataset to filter.
  * @returns {Array} - Filtered dataset based on the selected ads types.
  */
 function filterDatasetByType(data) {
-    if (filters.TYPE.length === 0) {
+    if (controllerFilters.TYPE.length === 0) {
         return data; 
     }
-    return data.filter(d => filters.TYPE.includes(d.AdsType));
+    return data.filter(d => controllerFilters.TYPE.includes(d.AdsType));
 }
 
 /**
- * Filters the dataset by the selected conditions.
+ * controllerFilters the dataset by the selected conditions.
  * @param {Array} data - The dataset to filter.
  * @returns {Array} - Filtered dataset based on the selected conditions.
  */
 function filterDatasetByConditions(data) {
-    if (filters.CONDITION.length === 0) {
+    if (controllerFilters.CONDITION.length === 0) {
         return data; 
     }
 
-    if (filters.CONDITION.includes('Others')) {
-        return data.filter(d => filters.CONDITION.includes(d.Condition) || 
+    if (controllerFilters.CONDITION.includes('Others')) {
+        return data.filter(d => controllerFilters.CONDITION.includes(d.Condition) || 
             (d.Condition !== 'New' && d.Condition !== 'Renovated' && d.Condition !== 'Used'));
     }
-    return data.filter(d => filters.CONDITION.includes(d.Condition));
+    return data.filter(d => controllerFilters.CONDITION.includes(d.Condition));
+}
+
+/**
+ * filters the dataset by the selected information.
+ * @returns {Array} - Filtered dataset based on the selected information.
+ */
+function filterDataset(){
+    var data = inicialData.slice();
+
+    data = filterDatasetByDistricts(data);
+    data = filterDatasetByType(data);
+    data = filterDatasetByConditions(data);
+    return data;
 }

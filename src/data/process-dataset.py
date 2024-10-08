@@ -55,9 +55,15 @@ def remove_price_outliers(df: pd.DataFrame) -> pd.DataFrame:
 def remove_area_outliers(df: pd.DataFrame) -> pd.DataFrame:
     return df[(np.abs(df.Area - df.Area.mean()) <= (3 * df.Area.std()))]
 
+# Rooms that had values "10 or more" were deleted
 def drop_rows_with_non_numeric_rooms(df: pd.DataFrame) -> pd.DataFrame:
     df['Rooms'] = pd.to_numeric(df['Rooms'], errors='coerce')
     return df.dropna(subset=['Rooms'])
+
+# Remove records that are not in the principal cities
+def remove_non_principal_cities(df: pd.DataFrame) -> pd.DataFrame:
+    # Is principal city if location.slipt(",").length == 2
+    return df[df['Location'].apply(lambda x: len(x.split(",")) == 2)]
 
 # Add id column
 def add_id_column(df: pd.DataFrame) -> pd.DataFrame:
@@ -68,19 +74,37 @@ def add_id_column(df: pd.DataFrame) -> pd.DataFrame:
 
 # Slice data to keep only 1000 random records
 def slice_data(df: pd.DataFrame) -> pd.DataFrame:
-    return df.sample(100)
+    return df.sample(2000)
+
+# Remove condition different from 'Used', 'New' or 'Renovated'
+def remove_under_construction(df: pd.DataFrame) -> pd.DataFrame:
+    return df[df['Condition'].isin(['Used', 'New', 'Renovated'])]
+
+# Remove islands
+def remove_islands(df: pd.DataFrame) -> pd.DataFrame:
+    return df[~df['District'].str.contains('Ilha')]
+
+# Create nem column 'Zone' based on the 'District' column
+def create_zone_column(df: pd.DataFrame) -> pd.DataFrame:
+    zones = {
+        'Norte': ['Porto', 'Braga', 'Viana do Castelo', 'Vila Real', 'Bragança'],
+        'Centro': ['Aveiro', 'Viseu', 'Guarda', 'Coimbra', 'Castelo Branco', 'Leiria', 'Santarém', 'Lisboa', 'Portalegre'],
+        'Sul': ['Setúbal', 'Évora', 'Beja', 'Faro'],
+    }
+    district_to_zone = {district: zone for zone, districts in zones.items() for district in districts}
+    return df.assign(Zone=lambda x: x['District'].apply(lambda y: district_to_zone.get(y, 'aaaaaaa')))
 
 # Remove area greater than 30k
 def remove_area_biggers(df: pd.DataFrame) -> pd.DataFrame:
     return df[df['Area'] <= 30000]
 
-# Main function for data preprocessing
 def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
     return (
         df
         .pipe(drop_rows_with_non_numeric_rooms)
         .pipe(convert_rent_price_to_annual)
         .pipe(calculate_price_per_square_meter)
+        .pipe(remove_non_principal_cities)
         .pipe(split_location_into_columns)
         .pipe(remove_missing_values)
         .pipe(remove_area_biggers)
@@ -89,8 +113,12 @@ def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
         .pipe(remove_PricePerSquareMeter_outliers)
         .pipe(remove_price_outliers)
         .pipe(remove_area_outliers)
+        .pipe(remove_area_outliers)
         .pipe(add_id_column)
-        .pipe(slice_data)
+        .pipe(remove_islands)
+        .pipe(remove_under_construction)
+        .pipe(create_zone_column)
+        # .pipe(slice_data)
     )
 
 df_processed = preprocess_data(df)
