@@ -1,32 +1,36 @@
 // Global variable to hold the dataset
 var global_data;
+var inicial_data;
 
 // Variable to hold the selected year value
-let selectedYears = 0;
+let selectedYears = 50;
 
 /**
  * Initializes the application by loading the dataset.
  * It processes the dataset by converting specific values to numbers.
  */
 function init() {
-  d3.json("./data/final_dataset.json", function (d) {
-    // Converts CSV values into numbers
+  d3.json("./data/final_dataset.json").then(function (data) {
+    inicial_data = data;
+    global_data = processData(inicial_data);
+    initControllers(global_data);
+    createParallelCoordinates(global_data, ".parallelCoordinates");
+  });
+}
+
+function processData(data) {
+  console.log('selectedYears', selectedYears);
+  return data.map(function (d) {
     return {
       Area: +d["Area"],
       Rooms: +d["Rooms"],
       Bathrooms: +d["Bathrooms"],
-      // If AdsType is 'Rent', then Price is multiplied by 50
-      Price: d["AdsType"] === "Rent" ? +d["Price"] * 50 : +d["Price"],
+      Price: d["AdsType"] === "Rent" ? +d["Price"] * selectedYears : +d["Price"],
       District: d["District"],
       AdsType: d["AdsType"],
       Condition: d["Condition"],
       Zone: d["Zone"],
     };
-  }).then(function (data) {
-    global_data = data;
-    console.log(global_data);
-    initControllers(data);
-    createParallelCoordinates(data, ".parallelCoordinates");
   });
 }
 
@@ -75,7 +79,19 @@ document.addEventListener("DOMContentLoaded", function() {
   d3.select('#yearInput').on('input', function() {
     selectedYears = +this.value; // Get the selected years from input
     console.log(selectedYears);
+
+    if (selectedYears <= 0) {
+      selectedYears = 1;
+    } else if (selectedYears > 99) {
+      selectedYears = 99;
+    }
+    document.getElementById('yearInput').value = selectedYears;
+
+
     updateYear(selectedYears); // Update the year filter
+
+    global_data = processData(inicial_data);
+    recreateChart(global_data);
   });
 });
 

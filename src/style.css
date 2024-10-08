@@ -274,10 +274,25 @@ body {
 
 .year-input {
   width: 100%; 
-  padding: 10px; 
-  text-align: center;
+  padding: 10px;
+  text-align: right;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
   margin-bottom: 5px; 
+  padding-right: 20px;
+}
+
+.year-input-container {
+  width: 100%;
+  position: relative;
+}
+
+.year-input-text {
+  position: absolute;
+  left: 20px;
+  top: 47%; 
+  transform: translateY(-50%); 
+  color: black; 
+  pointer-events: none; 
 }

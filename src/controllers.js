@@ -175,3 +175,12 @@ function filterDataset(){
     data = filterDatasetByConditions(data);
     return data;
 }
+
+/**
+ * Recreates the chart with all the axes and paths
+ * @param {Array} data - The dataset
+ */
+function recreateChart(data) {
+    d3.select(globalSelector).selectAll("svg").remove();
+    createParallelCoordinates(data, globalSelector);
+  }
