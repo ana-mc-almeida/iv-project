@@ -17,11 +17,10 @@ function updateMapToArea() {
 
 /**
  * Recreates the chart with all the axes and paths
- * @param {Array} data - The dataset
  */
-function recreateChart(data) {
+function recreateChart() {
   d3.select(globalSelector).selectAll("svg").remove();
-  createParallelCoordinates(data, globalSelector);
+  createParallelCoordinates(globalSelector);
 }
 
 /**

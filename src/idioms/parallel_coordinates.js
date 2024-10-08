@@ -3,17 +3,14 @@ const integerTick = ["Rooms", "Bathrooms"];
 const customColors = ["#1392FF", "#A724FF", "#00FFBF"];
 
 let width, height, colorScale, yScales, xScale;
-let globalData = null;
-let globalSelector = null;
+let parallelCoordinatesSelector = null;
 
 /**
  * Initializes the Parallel Coordinates chart
- * @param {Array} data - Data to visualize
  * @param {String} selector - DOM element selector for the chart
  */
-function createParallelCoordinates(data, selector) {
-  globalData = data;
-  globalSelector = selector;
+function createParallelCoordinates(selector) {
+  parallelCoordinatesSelector = selector;
 
   const margin = { top: 25, right: 65, bottom: 10, left: 30 };
   const divElement = d3.select(selector).node();
@@ -28,11 +25,11 @@ function createParallelCoordinates(data, selector) {
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
-  yScales = createYScales(data);
+  yScales = createYScales(global_data);
   xScale = createXScale();
-  colorScale = createColorScale(data);
+  colorScale = createColorScale(global_data);
 
-  createPaths(svg, data);
+  createPaths(svg, global_data);
 
   initializeFilters();
   addAxesWithBrush(svg);
@@ -72,8 +69,8 @@ function createColorScale(data) {
 
 /**
  * Creates and renders paths for each data point
- * @param {Object} svg - The SVG container
  * @param {Array} data - The dataset
+ * @param {Object} svg - The SVG container
  */
 function createPaths(svg, data) {
   const lineGenerator = (d) =>
@@ -178,7 +175,7 @@ function brushEnded(event, dim) {
   if (!event.selection) {
     filters[dim] = null;
   }
-  const filtered_data = filterDataset();
+  filtered_data = filterDataset();
   updateChart(filtered_data);
 }
 
@@ -200,15 +197,9 @@ function getMinMaxValues(data, dim) {
  */
 function initializeFilters() {
   dimensions.forEach((dim) => {
-    const { min, max } = getMinMaxValues(globalData, dim);
+    const { min, max } = getMinMaxValues(global_data, dim);
     globalFilters[dim] = [min, max];
   });
-
-  // dimensions.reduce((filterObj, dim) => {
-  //   const { min, max } = getMinMaxValues(globalData, dim);
-  //   filterObj[dim] = [min, max];
-  //   return filterObj;
-  // }, {});
 }
 
 /**
@@ -231,7 +222,7 @@ function applyFilters(data, filters) {
  * @param {Array} filtered_data - The filtered dataset
  */
 function updateChart(filtered_data) {
-  const svg = d3.select(globalSelector).select("svg").select("g");
-  d3.select(globalSelector).selectAll(".foreground").remove();
+  const svg = d3.select(parallelCoordinatesSelector).select("svg").select("g");
+  d3.select(parallelCoordinatesSelector).selectAll(".foreground").remove();
   createPaths(svg, filtered_data);
 }

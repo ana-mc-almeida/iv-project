@@ -14,7 +14,8 @@ function init() {
   d3.json("./data/final_dataset.json").then(function (data) {
     inicial_data = data.slice();
     global_data = processData(inicial_data);
-    createParallelCoordinates(global_data, ".parallelCoordinates");
+    filtered_data = filterDataset();
+    createParallelCoordinates(".parallelCoordinates");
   });
 }
 
@@ -90,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
     updateYear(selectedYears); // Update the year filter
 
     global_data = processData(inicial_data);
-    recreateChart(global_data);
+    recreateChart();
   });
 });
 
