@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 
 initial_dataset_path = 'initial_dataset.csv'
-final_dataset_path = 'final_dataset.csv'
 
 # Import dataset
 df = pd.read_csv(initial_dataset_path)
@@ -122,5 +121,4 @@ def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
     )
 
 df_processed = preprocess_data(df)
-df_processed.to_csv(final_dataset_path, index=False)
 df_processed.to_json('final_dataset.json', index=False, orient="records")
