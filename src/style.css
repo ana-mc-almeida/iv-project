@@ -304,3 +304,34 @@ body {
   color: white;
   margin-bottom: 15px;
 }
+
+.violinPlot-selector {
+  min-width: 210px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+}
+
+.violinPlot-input {
+  background-color: white;
+  border: none;
+  color: black;
+  padding: 10px 0;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  margin-left: -0.5px;
+  width: 103px;
+}
+
+.violinPlot-input:hover {
+  background-color: rgb(64, 116, 165);
+}
+
+.violinPlot-input.selected {
+  background-color: rgb(159, 194, 227);
+  color: white;
+}

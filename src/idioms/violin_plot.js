@@ -1,4 +1,8 @@
-const domain = ["Rent", "Sell"];
+const domains = [
+  { show: "AdsType", domain: ["Rent", "Sell"] },
+  { show: "Condition", domain: ["New", "Renovated"] },
+];
+const toShow = ["Condition", "AdsType"];
 
 /**
  * Função para calcular Kernel Density Estimation (KDE)
@@ -33,7 +37,19 @@ function kernelGaussian(bandwidth) {
  * @param {Array} data - O dataset
  * @param {String} selector - Seletor do elemento DOM para o gráfico
  */
-function createHorizontalViolinPlot(data, selector) {
+function createHorizontalViolinPlot(data, selector, show) {
+  if (!toShow.includes(show)) {
+    console.error(`Invalid show value. Must be one of: ${toShow.join(", ")}`);
+    return;
+  }
+
+  if (!data) {
+    console.log("No data to create violin plot");
+    return;
+  }
+
+  const domain = domains.find((d) => d.show === show).domain;
+
   const margin = { top: 20, right: 30, bottom: 40, left: 50 };
   const divElement = d3.select(selector).node();
   const width = divElement.clientWidth - margin.left - margin.right;
@@ -61,14 +77,14 @@ function createHorizontalViolinPlot(data, selector) {
   // Kernel Density Estimation
   const kde = kernelDensityEstimator(kernelGaussian(200), xScale.ticks(50));
 
-  // Filtra dados por "AdsType"
-  const groupedData = d3.group(data, (d) => d.AdsType);
+  const groupedData = d3.group(data, (d) => d[show]);
 
   let maxDensity = 0;
 
+  const upValue = domain[0];
   // Para cada grupo (Sell e Rent), cria os violinos
-  domain.forEach((AdsType) => {
-    const prices = groupedData.get(AdsType).map((d) => +d.Price);
+  domain.forEach((attribute) => {
+    const prices = groupedData.get(attribute).map((d) => +d.Price);
 
     // Calcula a densidade para cada grupo
     const density = kde(prices);
@@ -93,18 +109,18 @@ function createHorizontalViolinPlot(data, selector) {
           .area()
           .x((d) => xScale(d[0]))
           .y0((d) =>
-            AdsType === "Sell"
+            attribute === upValue
               ? height / 2
               : height / 2 - violinWidthScale(d[1])
           ) // Sell embaixo, Rent em cima
           .y1((d) =>
-            AdsType === "Sell"
+            attribute === upValue
               ? height / 2 + violinWidthScale(d[1])
               : height / 2
           ) // Rent em cima, Sell embaixo
           .curve(d3.curveBasis)
       )
-      .style("fill", AdsType === "Sell" ? "#1392FF" : "#A724FF")
+      .style("fill", attribute === upValue ? "#1392FF" : "#A724FF")
       .style("stroke", "#fff");
   });
 
@@ -127,10 +143,7 @@ function createHorizontalViolinPlot(data, selector) {
   // Adiciona o eixo x (Price)
   svg
     .append("g")
-    .attr(
-      "transform",
-      `translate(0,${height / 2 + violinWidthScale(maxDensity)})`
-    ) // Aumente o valor para mover o eixo mais abaixo
+    .attr("transform", `translate(0,${height})`) // Aumente o valor para mover o eixo mais abaixo
     .call(d3.axisBottom(xScale).ticks(10).tickFormat(d3.format(".2s")))
     .selectAll("text")
     .style("fill", "white")
@@ -154,7 +167,7 @@ function createHorizontalViolinPlot(data, selector) {
   //   .style("font-size", "16px");
 }
 
-function updateViolinPlot(data, selector) {
+function updateViolinPlot(data, selector, show) {
   d3.select(selector).selectAll("svg").remove();
-  createHorizontalViolinPlot(data, selector);
+  createHorizontalViolinPlot(data, selector, show);
 }

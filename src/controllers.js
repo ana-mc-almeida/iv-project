@@ -2,9 +2,9 @@
  * Updates all charts based on the filtered data.
  * @param {Array} data - The dataset to update the charts with.
  */
-function updateAllCharts(data) {
-  updateChart(data);
-  console.log("update");
+function updateAllCharts() {
+  updateChart(filtered_data);
+  updateViolinPlot(violin_data, ".violinPlot", showViolinPlot);
 }
 
 /**
@@ -19,8 +19,8 @@ function updateMapToArea() {
  * Recreates the chart with all the axes and paths
  */
 function recreateChart() {
-  d3.select(globalSelector).selectAll("svg").remove();
-  createParallelCoordinates(globalSelector);
+  d3.select(parallelCoordinatesSelector).selectAll("svg").remove();
+  createParallelCoordinates(parallelCoordinatesSelector);
 }
 
 /**
@@ -55,9 +55,9 @@ function updateDistrict(district) {
     );
   }
 
-  filtered_data = filterDataset();
+  filterDataset();
 
-  updateAllCharts(filtered_data);
+  updateAllCharts();
   console.log("distritos:" + globalFilters.DISTRICT);
   console.log(filtered_data);
 }
@@ -75,9 +75,9 @@ function updateType(type) {
     globalFilters.TYPE = globalFilters.TYPE.filter((d) => d !== type);
   }
 
-  filtered_data = filterDataset();
+  filterDataset();
 
-  updateAllCharts(filtered_data);
+  updateAllCharts();
   console.log(globalFilters.TYPE);
   console.log(filtered_data);
 }
@@ -97,9 +97,9 @@ function updateCondition(condition) {
     );
   }
 
-  filtered_data = filterDataset();
+  filterDataset();
 
-  updateAllCharts(filtered_data);
+  updateAllCharts();
   console.log(globalFilters.CONDITION);
   console.log(filtered_data);
 }
@@ -111,4 +111,10 @@ function updateCondition(condition) {
 function updateYear(years) {
   globalFilters.YEARS = years;
   console.log(globalFilters.YEARS);
+}
+
+function selectViolinPlot(show) {
+  showViolinPlot = show;
+  filterDataset();
+  updateViolinPlot(violin_data, ".violinPlot", showViolinPlot);
 }
