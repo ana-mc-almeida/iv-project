@@ -93,7 +93,7 @@ function createPaths(svg, data) {
     .style("stroke-width", "1.5px")
     .on("mouseover", function () {
       d3.select(this).style("stroke-width", "4px");
-      d3.select(this).style("stroke", "white");
+      d3.select(this).style("stroke", "black");
     })
     .on("mouseout", function () {
       d3.select(this).style("stroke-width", "1.5px");
@@ -128,7 +128,7 @@ function addAxesWithBrush(svg) {
 
       d3.select(this)
         .selectAll(".tick text")
-        .style("fill", "white")
+        .style("fill", "#4B7AC4")
         .style("font-size", "13px");
 
       const brush = d3
@@ -147,7 +147,7 @@ function addAxesWithBrush(svg) {
         .call(brush.move, [0, height]);
     })
     .append("text")
-    .attr("fill", "white")
+    .attr("fill", "#4B7AC4")
     .style("text-anchor", "middle")
     .attr("y", -9)
     .text((d) => d)

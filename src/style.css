@@ -18,7 +18,7 @@ input[type="range"] {
 
   background-color: rgb(66, 132, 243);
   padding: 20px;
-  border: 2px solid #333;
+  border: 2px solid #4B7AC4;
 }
 
 .violin_plot {
@@ -26,7 +26,7 @@ input[type="range"] {
 
   background-color: rgb(86, 162, 174);
   padding: 20px;
-  border: 2px solid #333;
+  border: 2px solid #4B7AC4;
 }
 
 .parallelCoordinates {
@@ -58,7 +58,7 @@ body {
 
 .principal {
   flex: 1;
-  background-color: rgb(38, 57, 82);
+  background-color: rgb(216, 227, 244);
   padding: 20px;
 }
 
@@ -301,6 +301,6 @@ body {
   display: flex;
   justify-content: center;
   font-size: 16px;
-  color: white;
+  color: #4B7AC4;
   margin-bottom: 15px;
 }
