@@ -1,4 +1,4 @@
-domain = ["Rent", "Sell"];
+const domain = ["Rent", "Sell"];
 
 /**
  * Função para calcular Kernel Density Estimation (KDE)
@@ -64,13 +64,22 @@ function createHorizontalViolinPlot(data, selector) {
   // Filtra dados por "AdsType"
   const groupedData = d3.group(data, (d) => d.AdsType);
 
+  let maxDensity = 0;
+
   // Para cada grupo (Sell e Rent), cria os violinos
   domain.forEach((AdsType) => {
     const prices = groupedData.get(AdsType).map((d) => +d.Price);
 
     // Calcula a densidade para cada grupo
     const density = kde(prices);
-    violinWidthScale.domain([0, d3.max(density, (d) => d[1])]);
+
+    const maxDensityEach = d3.max(density, (d) => d[1]);
+
+    violinWidthScale.domain([0, maxDensityEach]);
+
+    if (maxDensityEach > maxDensity) {
+      maxDensity = maxDensityEach;
+    }
 
     // Cria as formas de área (violin plot) sobre o mesmo eixo x
     svg
@@ -93,20 +102,39 @@ function createHorizontalViolinPlot(data, selector) {
               ? height / 2 + violinWidthScale(d[1])
               : height / 2
           ) // Rent em cima, Sell embaixo
-          .curve(d3.curveCatmullRom)
+          .curve(d3.curveBasis)
       )
       .style("fill", AdsType === "Sell" ? "#1392FF" : "#A724FF")
       .style("stroke", "#fff");
   });
 
+  // Adicionar linhas verticais (gridlines) nos ticks do eixo x
+  svg
+    .append("g")
+    .attr("class", "grid") // Classe para estilização futura, se necessário
+    .selectAll("line")
+    .data(xScale.ticks(10)) // Usa os mesmos ticks do eixo x
+    .enter()
+    .append("line")
+    .attr("x1", (d) => xScale(d)) // Posição inicial no eixo x
+    .attr("x2", (d) => xScale(d)) // Posição final no eixo x
+    .attr("y1", 0) // Começa do topo do gráfico
+    .attr("y2", height) // Vai até o fim da altura do gráfico
+    .style("stroke", "#cccccc") // Cor das linhas, pode ser ajustada
+    .style("stroke-width", 1) // Largura das linhas
+    .style("stroke-dasharray", "4,4"); // Linha tracejada para ficar mais sutil
+
   // Adiciona o eixo x (Price)
   svg
     .append("g")
-    .attr("transform", `translate(0,${height / 2 + 30})`) // Mover o eixo x para baixo da linha central (ajustar valor conforme necessário)
+    .attr(
+      "transform",
+      `translate(0,${height / 2 + violinWidthScale(maxDensity)})`
+    ) // Aumente o valor para mover o eixo mais abaixo
     .call(d3.axisBottom(xScale).ticks(10).tickFormat(d3.format(".2s")))
     .selectAll("text")
     .style("fill", "white")
-    .style("dy", "1.5em"); // Mover o texto dos ticks para baixo do eixo
+    .style("dy", "1.5em"); // Mantém os valores abaixo do eixo
 
   // Adiciona o eixo y (Rent e Sell)
   svg
