@@ -18,9 +18,8 @@
 
     <!-- Visualization scripts for idioms -->
     <script src="./idioms/parallel_coordinates.js"></script>
-
-    <!-- <script src="./idioms/violin_plot.js"></script>
-    <script src="./idioms/choropleth_map.js"></script> -->
+    <script src="./idioms/violin_plot.js"></script>
+    <script src="./idioms/choropleth_map.js"></script>
 
     <!-- Initialize script to set up the application -->
     <script src="./script.js"></script>
@@ -39,13 +38,14 @@
         <div class="choropleth_map"></div>
 
         <!-- Placeholder for the violin plot visualization -->
-        <div class="violin_plot"></div>
+        <div class="violinPlot"></div>
 
         <!-- Placeholder for the parallel coordinates visualization -->
 
         <div class="parallelCoordinates">
           <label class="parallelCoordinatesSubtitle"
-            >Characteristics of each house</label>
+            >Characteristics of each house</label
+          >
         </div>
 
         <div class="controllers">
@@ -128,7 +128,7 @@
                 type="number"
                 class="year-input"
                 id="yearInput"
-                value="50"
+                value="15"
                 min="1"
                 max="99"
               />

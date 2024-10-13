@@ -4,7 +4,7 @@ var global_data; // Global data to apply filters
 var filtered_data; // Filtered data to update the charts
 
 // Variable to hold the selected year value
-let selectedYears = 50;
+let selectedYears = 15;
 
 /**
  * Initializes the application by loading the dataset.
@@ -16,6 +16,7 @@ function init() {
     global_data = processData(inicial_data);
     filtered_data = filterDataset();
     createParallelCoordinates(".parallelCoordinates");
+    createHorizontalViolinPlot(global_data, ".violinPlot");
   });
 }
 

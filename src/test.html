@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>How was the real estate market in Portugal in 2021?</title>
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- External libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Filter logic for the dataset -->
+    <script src="./filter.js"></script>
+
+    <!-- Controller logic for data manipulation and interaction -->
+
+    <!-- Visualization scripts for idioms -->
+    <script src="./idioms/violin_plot.js"></script>
+
+    <!-- Initialize script to set up the application -->
+    <script src="./script.js"></script>
+  </head>
+
+  <body onload="init()">
+    <!-- Calls the init function when the body is loaded -->
+
+    <div class="principal">
+      <div class="header">
+        <h1>How was the real estate market in Portugal in 2021?</h1>
+      </div>
+
+      <div class="container">
+        <!-- Placeholder for the violin plot visualization -->
+        <div class="violinPlot"></div>
+      </div>
+      <!-- End of container -->
+    </div>
+    <!-- End of principal -->
+  </body>
+</html>
