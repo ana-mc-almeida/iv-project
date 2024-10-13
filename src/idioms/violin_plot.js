@@ -37,7 +37,7 @@ function createHorizontalViolinPlot(data, selector) {
   const margin = { top: 20, right: 30, bottom: 40, left: 50 };
   const divElement = d3.select(selector).node();
   const width = divElement.clientWidth - margin.left - margin.right;
-  const height = 400 - margin.top - margin.bottom;
+  const height = divElement.clientHeight - margin.top - margin.bottom;
 
   const svg = d3
     .select(selector)
