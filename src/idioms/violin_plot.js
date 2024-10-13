@@ -153,3 +153,8 @@ function createHorizontalViolinPlot(data, selector) {
   //   .text("Distribuição de Preços: Venda (embaixo) vs Aluguel (em cima)")
   //   .style("font-size", "16px");
 }
+
+function updateViolinPlot(data, selector) {
+  d3.select(selector).selectAll("svg").remove();
+  createHorizontalViolinPlot(data, selector);
+}
