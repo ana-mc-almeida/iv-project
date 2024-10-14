@@ -2,9 +2,12 @@
 var inicial_data; // Initial data from the dataset
 var global_data; // Global data to apply filters
 var filtered_data; // Filtered data to update the charts
+var violin_data; // Data to create the violin plot
 
 // Variable to hold the selected year value
 let selectedYears = 50;
+
+let showViolinPlot = "AdsType";
 
 /**
  * Initializes the application by loading the dataset.
@@ -14,8 +17,10 @@ function init() {
   d3.json("./data/final_dataset.json").then(function (data) {
     inicial_data = data.slice();
     global_data = processData(inicial_data);
-    filtered_data = filterDataset();
+    filterDataset();
+    violin_data = filtered_data;
     createParallelCoordinates(".parallelCoordinates");
+    createHorizontalViolinPlot(violin_data, ".violinPlot", showViolinPlot);
   });
 }
 
@@ -94,6 +99,16 @@ document.addEventListener("DOMContentLoaded", function () {
     recreateChart();
   });
 
+
+  // violinPlotButtons
+  const violinPlotButtons = d3.selectAll(".violinPlot-input");
+
+  // Toggle selection on rent/buy buttons
+  violinPlotButtons.on("click", function () {
+    violinPlotButtons.classed("selected", false);
+    d3.select(this).classed("selected", true);
+  });
+
   if (globalFilters.DISTRICT.length === 0) {
     document.getElementById('selectedDistricts').textContent = 'District';
   }
@@ -105,6 +120,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (globalFilters.MAP_TYPE == "none") {
     document.getElementById('selectedMapOption').textContent = '🔍 What to see on the map?';
   }
+
 });
 
 /**

@@ -2,7 +2,7 @@
   display: grid;
   grid-auto-columns: 1fr;
   grid-template-columns: 0.7fr 1.7fr 0.5fr;
-  grid-template-rows: 0.5fr 1.5fr;
+  grid-template-rows: 0.5fr 1.1fr;
   gap: 0px 0px;
   grid-template-areas:
     "choropleth_map violin_plot controllers"
@@ -19,6 +19,7 @@ input[type="range"] {
   background-color: rgb(66, 132, 243);
   padding: 20px;
   border: 2px solid #333;
+  width: 400px;
 }
 
 .violin_plot {
@@ -32,6 +33,7 @@ input[type="range"] {
 .parallelCoordinates {
   grid-area: parallelCoordinates;
   padding: 20px;
+  height: 320px;
 }
 
 .controllers {
@@ -305,6 +307,38 @@ body {
   margin-bottom: 15px;
 }
 
+
+.violinPlot-selector {
+  min-width: 210px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+}
+
+.violinPlot-input {
+  background-color: white;
+  border: none;
+  color: black;
+  padding: 10px 0;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  margin-left: -0.5px;
+  width: 103px;
+}
+
+.violinPlot-input:hover {
+  background-color: rgb(64, 116, 165);
+}
+
+.violinPlot-input.selected {
+  background-color: rgb(159, 194, 227);
+  color: white;
+}
+
 .tags-container {
   display: flex;
   align-items: center;
@@ -328,3 +362,4 @@ body {
 .tag:hover {
   background-color: #e76f51;
 }
+
