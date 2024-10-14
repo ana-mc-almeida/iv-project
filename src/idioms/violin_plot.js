@@ -121,7 +121,7 @@ function createHorizontalViolinPlot(data, selector, show) {
           .curve(d3.curveBasis)
       )
       .style("fill", attribute === upValue ? "#1392FF" : "#A724FF")
-      .style("stroke", "#fff");
+      .style("stroke", "#4d4d4d");
   });
 
   // Adicionar linhas verticais (gridlines) nos ticks do eixo x
@@ -136,7 +136,7 @@ function createHorizontalViolinPlot(data, selector, show) {
     .attr("x2", (d) => xScale(d)) // Posição final no eixo x
     .attr("y1", 0) // Começa do topo do gráfico
     .attr("y2", height) // Vai até o fim da altura do gráfico
-    .style("stroke", "#cccccc") // Cor das linhas, pode ser ajustada
+    .style("stroke", "#808080") // Cor das linhas, pode ser ajustada
     .style("stroke-width", 1) // Largura das linhas
     .style("stroke-dasharray", "4,4"); // Linha tracejada para ficar mais sutil
 
@@ -146,7 +146,7 @@ function createHorizontalViolinPlot(data, selector, show) {
     .attr("transform", `translate(0,${height})`) // Aumente o valor para mover o eixo mais abaixo
     .call(d3.axisBottom(xScale).ticks(10).tickFormat(d3.format(".2s")))
     .selectAll("text")
-    .style("fill", "white")
+    .style("fill", "#4B7AC4")
     .style("dy", "1.5em"); // Mantém os valores abaixo do eixo
 
   // Adiciona o eixo y (Rent e Sell)
@@ -154,17 +154,17 @@ function createHorizontalViolinPlot(data, selector, show) {
     .append("g")
     .call(d3.axisLeft(yScale))
     .selectAll("text")
-    .style("fill", "white");
+    .style("fill", "#4B7AC4");
 
   // Adiciona título
-  // svg
-  //   .append("text")
-  //   .attr("x", width / 2)
-  //   .attr("y", -10)
-  //   .attr("text-anchor", "middle")
-  //   .attr("fill", "white")
-  //   .text("Distribuição de Preços: Venda (embaixo) vs Aluguel (em cima)")
-  //   .style("font-size", "16px");
+  svg
+    .append("text")
+    .attr("x", width / 2)
+    .attr("y", -5)
+    .attr("text-anchor", "middle")
+    .attr("fill", "#4B7AC4")
+    .text("Price Distribution")
+    .style("font-size", "16px");
 }
 
 function updateViolinPlot(data, selector, show) {
