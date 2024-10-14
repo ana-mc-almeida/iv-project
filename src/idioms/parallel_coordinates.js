@@ -12,7 +12,7 @@ let parallelCoordinatesSelector = null;
 function createParallelCoordinates(selector) {
   parallelCoordinatesSelector = selector;
 
-  const margin = { top: 25, right: 65, bottom: 10, left: 30 };
+  const margin = { top: 25, right: 65, bottom: 10, left: 50 };
   const divElement = d3.select(selector).node();
   width = divElement.clientWidth - margin.left - margin.right;
   height = divElement.clientHeight - margin.top - margin.bottom;
@@ -129,7 +129,8 @@ function addAxesWithBrush(svg) {
           svg
             .selectAll(".dimension")
             .attr("transform", (d) => `translate(${position(d)})`);
-          updateChart(filterDataset());
+          filterDataset();
+          updateChart(filtered_data);
         })
         .on("end", function (event, dim) {
           delete dragging[dim];
@@ -215,7 +216,6 @@ function brushEnded(event, dim) {
   if (!event.selection) {
     globalFilters[dim] = null;
   }
-  
   filterDataset();
   updateChart(filtered_data);
 }
@@ -244,10 +244,11 @@ function initializeFilters() {
 
 /**
  * Applies filters to the dataset and updates the chart
- * @param {Array} filtered_data - The filtered dataset
+ * @param {Array} filteredData - The filtered dataset
  */
-function updateChart(filtered_data) {
+function updateChart(filteredData) {
+  console.log(filterDataset());
   const svg = d3.select(parallelCoordinatesSelector).select("svg").select("g");
   d3.select(parallelCoordinatesSelector).selectAll(".foreground").remove();
-  createPaths(svg, filtered_data);
+  createPaths(svg, filteredData);
 }
