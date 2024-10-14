@@ -53,7 +53,10 @@
 
           <!-- Map Options Section -->
           <div class="mapOption">
-            <button class="mapOption-input">🔍 What to see on the map?</button>
+            <div id="mapOptionBtn" class="mapOption-input"> 
+              <div id="selectedMapOption" class="tags-container"></div>
+            </div>
+            <!-- <button class="mapOption-input">🔍 What to see on the map?</button> -->
             <div class="mapOption-content">
               <a href="#" onclick="selectMap('Area')">Area</a>
               <a href="#" onclick="selectMap('Price Per Square Meter')"
@@ -67,7 +70,11 @@
 
           <!-- District Selection Section -->
           <div class="district">
-            <button class="dropbtn">District</button>
+            <div id="districtBtn" class="dropbtn"> 
+              <div id="selectedDistricts" class="tags-container"></div>
+            </div>
+
+            <!-- <button id="districtBtn" class="dropbtn">District</button> -->
             <div class="district-content">
               <a href="#" onclick="selectDistrict('Aveiro')">Aveiro</a>
               <a href="#" onclick="selectDistrict('Beja')">Beja</a>
@@ -112,7 +119,10 @@
 
           <!-- Condition Selection Section -->
           <div class="condition">
-            <button class="dropbtn">Condition</button>
+            <div id="conditionBtn" class="dropbtn"> 
+              <div id="selectedConditions" class="tags-container"></div>
+            </div>
+            <!-- <button class="dropbtn">Condition</button> -->
             <div class="condition-content">
               <a href="#" onclick="selectCondition('New')">New</a>
               <a href="#" onclick="selectCondition('Renovated')">Renovated</a>
