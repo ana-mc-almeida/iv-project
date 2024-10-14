@@ -202,7 +202,7 @@ function brushed(event, dim) {
     const [yMax, yMin] = selection.map((d) => yScales[dim].invert(d));
     globalFilters[dim] = [yMin, yMax];
   }
-  const filtered_data = filterDataset();
+  filterDataset();
   updateChart(filtered_data);
 }
 
@@ -215,7 +215,8 @@ function brushEnded(event, dim) {
   if (!event.selection) {
     globalFilters[dim] = null;
   }
-  const filtered_data = filterDataset();
+  
+  filterDataset();
   updateChart(filtered_data);
 }
 

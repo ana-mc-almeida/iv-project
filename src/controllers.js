@@ -2,40 +2,50 @@
  * Updates all charts based on the filtered data.
  * @param {Array} data - The dataset to update the charts with.
  */
-function updateAllCharts(data) {
-  updateChart(data);
-  console.log("update");
-}
-
-/**
- * Updates the map to display data based on the area.
- */
-function updateMapToArea() {
-  globalFilters.MAP_TYPE = "area";
-  console.log(globalFilters.MAP_TYPE);
+function updateAllCharts() {
+  updateChart(filtered_data);
+  updateViolinPlot(violin_data, ".violinPlot", showViolinPlot);
 }
 
 /**
  * Recreates the chart with all the axes and paths
  */
 function recreateChart() {
-  d3.select(globalSelector).selectAll("svg").remove();
-  createParallelCoordinates(globalSelector);
+  d3.select(parallelCoordinatesSelector).selectAll("svg").remove();
+  createParallelCoordinates(parallelCoordinatesSelector);
 }
 
 /**
- * Updates the map to display data based on the price per square meter.
+ * Updates the map to display data based on the area.
  */
-function updateMapToPricePerSquareMeter() {
-  globalFilters.MAP_TYPE = "price_per_square_meter";
-  console.log(globalFilters.MAP_TYPE);
-}
+function updateMap(option) {
+  if (globalFilters.MAP_TYPE == option) {
+    globalFilters.MAP_TYPE = "none";
+  } else {
+    globalFilters.MAP_TYPE = option;
+  }
 
-/**
- * Updates the map to display the number of availability.
- */
-function updateMapToNumberOfAvailability() {
-  globalFilters.MAP_TYPE = "number_of_availability";
+  const selectedMapOption = document.getElementById('selectedMapOption');
+    
+  selectedMapOption.innerHTML = '';
+
+  let tag = document.createElement('span');
+  tag.textContent = globalFilters.MAP_TYPE;
+  tag.className = 'tag'; 
+  tag.onclick = function() {
+    d3.selectAll(".mapOption-content a")
+    .filter(function() { return d3.select(this).text() === globalFilters.MAP_TYPE; })
+    .classed("selected", false);
+
+    updateMap(globalFilters.MAP_TYPE);
+  };
+
+  selectedMapOption.appendChild(tag);
+
+  if (globalFilters.MAP_TYPE == "none") {
+    selectedMapOption.textContent = '🔍 What to see on the map?';
+  }
+
   console.log(globalFilters.MAP_TYPE);
 }
 
@@ -54,12 +64,42 @@ function updateDistrict(district) {
       (d) => d !== district
     );
   }
+    
+  updateSelectedDistrictsContainer();
 
-  filtered_data = filterDataset();
+  filterDataset();
 
-  updateAllCharts(filtered_data);
+  updateAllCharts();
   console.log("distritos:" + globalFilters.DISTRICT);
   console.log(filtered_data);
+}
+
+/**
+ * Updates the displayed selected districts in the UI.
+ * If a district is selected, it creates a tag for it; otherwise, it clears the selection.
+ */
+function updateSelectedDistrictsContainer() {
+  const selectedDistrictsContainer = document.getElementById('selectedDistricts');
+    
+    selectedDistrictsContainer.innerHTML = '';
+
+    globalFilters.DISTRICT.forEach(district => {
+        let tag = document.createElement('span');
+        tag.textContent = district;
+        tag.className = 'tag'; 
+        tag.onclick = function() {
+          d3.selectAll(".district-content a")
+          .filter(function() { return d3.select(this).text() === district; })
+          .classed("selected", false);
+          
+          updateDistrict(district);
+        };
+        selectedDistrictsContainer.appendChild(tag);
+    });
+
+    if (globalFilters.DISTRICT.length === 0) {
+        selectedDistrictsContainer.textContent = 'District';
+    }
 }
 
 /**
@@ -75,9 +115,9 @@ function updateType(type) {
     globalFilters.TYPE = globalFilters.TYPE.filter((d) => d !== type);
   }
 
-  filtered_data = filterDataset();
+  filterDataset();
 
-  updateAllCharts(filtered_data);
+  updateAllCharts();
   console.log(globalFilters.TYPE);
   console.log(filtered_data);
 }
@@ -96,12 +136,44 @@ function updateCondition(condition) {
       (d) => d !== condition
     );
   }
+  updateSelectedConditionsContainer();
 
-  filtered_data = filterDataset();
+  filterDataset();
 
-  updateAllCharts(filtered_data);
+  updateAllCharts();
   console.log(globalFilters.CONDITION);
   console.log(filtered_data);
+}
+
+/**
+ * Updates the displayed selected condition in the UI.
+ * If a condition is selected, it creates a tag for it; otherwise, it clears the selection.
+ */
+function updateSelectedConditionsContainer() {
+  const selectedConditionsContainer = document.getElementById('selectedConditions');
+    
+  selectedConditionsContainer.innerHTML = '';
+
+    globalFilters.CONDITION.forEach(condition => {
+        let tag = document.createElement('span');
+        tag.textContent = condition;
+        tag.className = 'tag'; 
+
+        tag.onclick = function() {
+
+          d3.selectAll(".condition-content a")
+          .filter(function() { return d3.select(this).text() === condition; })
+          .classed("selected", false);
+
+          updateCondition(condition);
+        };
+
+        selectedConditionsContainer.appendChild(tag);
+    });
+
+    if (globalFilters.CONDITION.length === 0) {
+      selectedConditionsContainer.textContent = 'Condition';
+    }
 }
 
 /**
@@ -111,4 +183,10 @@ function updateCondition(condition) {
 function updateYear(years) {
   globalFilters.YEARS = years;
   console.log(globalFilters.YEARS);
+}
+
+function selectViolinPlot(show) {
+  showViolinPlot = show;
+  filterDataset();
+  updateViolinPlot(violin_data, ".violinPlot", showViolinPlot);
 }

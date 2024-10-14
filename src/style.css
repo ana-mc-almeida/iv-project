@@ -2,7 +2,7 @@
   display: grid;
   grid-auto-columns: 1fr;
   grid-template-columns: 0.7fr 1.7fr 0.5fr;
-  grid-template-rows: 0.5fr 1.5fr;
+  grid-template-rows: 0.5fr 1.1fr;
   gap: 0px 0px;
   grid-template-areas:
     "choropleth_map violin_plot controllers"
@@ -19,6 +19,7 @@ input[type="range"] {
   background-color: rgb(66, 132, 243);
   padding: 20px;
   border: 2px solid #4B7AC4;
+  width: 400px;
 }
 
 .violin_plot {
@@ -32,6 +33,7 @@ input[type="range"] {
 .parallelCoordinates {
   grid-area: parallelCoordinates;
   padding: 20px;
+  height: 320px;
 }
 
 .controllers {
@@ -73,16 +75,16 @@ body {
 }
 
 .mapOption-input {
-  margin-top: 5px;
-  margin-bottom: 0px;
-  position: relative;
-  display: inline-block;
-  font-size: 15px;
-  border-radius: 4px;
-  height: 30px;
-  width: 210px;
   background-color: white;
+  color: black;
+  padding: 8px 15px;
+  font-size: 14px;
   border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  min-width: 210px;
+  margin-left: 0px;
 }
 
 .mapOption-input:hover {
@@ -304,3 +306,60 @@ body {
   color: #4B7AC4;
   margin-bottom: 15px;
 }
+
+
+.violinPlot-selector {
+  min-width: 210px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+}
+
+.violinPlot-input {
+  background-color: white;
+  border: none;
+  color: black;
+  padding: 10px 0;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  margin-left: -0.5px;
+  width: 103px;
+}
+
+.violinPlot-input:hover {
+  background-color: rgb(64, 116, 165);
+}
+
+.violinPlot-input.selected {
+  background-color: rgb(159, 194, 227);
+  color: white;
+}
+
+.tags-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+  justify-content: center;
+}
+
+.tag {
+  display: inline-block;
+  background-color: rgb(75, 109, 154);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.tag:hover {
+  background-color: #e76f51;
+}
+

@@ -125,12 +125,20 @@ function filterDataset() {
   var data = global_data.slice();
 
   data = filterDatasetByDistricts(data);
-  data = filterDatasetByConditions(data);
   data = filterDatasetByRooms(data);
   data = filterDatasetByBathrooms(data);
   data = filterDatasetByPrice(data);
   data = filterDatasetByArea(data);
-  data = filterDatasetByType(data);
 
-  return data;
+  if (showViolinPlot == "AdsType") {
+    data = filterDatasetByConditions(data);
+    violin_data = data;
+    data = filterDatasetByType(data);
+  } else {
+    data = filterDatasetByType(data);
+    violin_data = data;
+    data = filterDatasetByConditions(data);
+  }
+
+  filtered_data = data;
 }

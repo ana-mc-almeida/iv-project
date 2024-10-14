@@ -18,9 +18,8 @@
 
     <!-- Visualization scripts for idioms -->
     <script src="./idioms/parallel_coordinates.js"></script>
-
-    <!-- <script src="./idioms/violin_plot.js"></script>
-    <script src="./idioms/choropleth_map.js"></script> -->
+    <script src="./idioms/violin_plot.js"></script>
+    <script src="./idioms/choropleth_map.js"></script>
 
     <!-- Initialize script to set up the application -->
     <script src="./script.js"></script>
@@ -39,13 +38,14 @@
         <div class="choropleth_map"></div>
 
         <!-- Placeholder for the violin plot visualization -->
-        <div class="violin_plot"></div>
+        <div class="violinPlot"></div>
 
         <!-- Placeholder for the parallel coordinates visualization -->
 
         <div class="parallelCoordinates">
           <label class="parallelCoordinatesSubtitle"
-            >Characteristics of each house</label>
+            >Characteristics of each house</label
+          >
         </div>
 
         <div class="controllers">
@@ -53,7 +53,10 @@
 
           <!-- Map Options Section -->
           <div class="mapOption">
-            <button class="mapOption-input">🔍 What to see on the map?</button>
+            <div id="mapOptionBtn" class="mapOption-input"> 
+              <div id="selectedMapOption" class="tags-container"></div>
+            </div>
+            <!-- <button class="mapOption-input">🔍 What to see on the map?</button> -->
             <div class="mapOption-content">
               <a href="#" onclick="selectMap('Area')">Area</a>
               <a href="#" onclick="selectMap('Price Per Square Meter')"
@@ -67,7 +70,11 @@
 
           <!-- District Selection Section -->
           <div class="district">
-            <button class="dropbtn">District</button>
+            <div id="districtBtn" class="dropbtn"> 
+              <div id="selectedDistricts" class="tags-container"></div>
+            </div>
+
+            <!-- <button id="districtBtn" class="dropbtn">District</button> -->
             <div class="district-content">
               <a href="#" onclick="selectDistrict('Aveiro')">Aveiro</a>
               <a href="#" onclick="selectDistrict('Beja')">Beja</a>
@@ -112,7 +119,10 @@
 
           <!-- Condition Selection Section -->
           <div class="condition">
-            <button class="dropbtn">Condition</button>
+            <div id="conditionBtn" class="dropbtn"> 
+              <div id="selectedConditions" class="tags-container"></div>
+            </div>
+            <!-- <button class="dropbtn">Condition</button> -->
             <div class="condition-content">
               <a href="#" onclick="selectCondition('New')">New</a>
               <a href="#" onclick="selectCondition('Renovated')">Renovated</a>
@@ -133,6 +143,23 @@
                 max="99"
               />
             </div>
+          </div>
+
+          <!-- Button to Violin Plot -->
+          <label style="font-weight: 600; margin-top: 10px">Violin Plot</label>
+          <div class="violinPlot-selector">
+            <button
+              class="violinPlot-input selected"
+              onclick="selectViolinPlot('AdsType')"
+            >
+              AdsType
+            </button>
+            <button
+              class="violinPlot-input"
+              onclick="selectViolinPlot('Condition')"
+            >
+              Condition
+            </button>
           </div>
         </div>
         <!-- End of controllers -->
