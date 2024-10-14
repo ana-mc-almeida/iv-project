@@ -92,6 +92,7 @@ function createPaths(svg, data) {
     .style("stroke", (d) => colorScale(d.Zone)) // Apply color based on Zone
     .style("stroke-width", "1.5px")
     .on("mouseover", function () {
+      d3.select(this).raise();
       d3.select(this).style("stroke-width", "4px");
       d3.select(this).style("stroke", "black");
     })
@@ -115,7 +116,8 @@ function addAxesWithBrush(svg) {
     .attr("transform", (dim) => `translate(${xScale(dim)})`)
     .call(
       // Add drag behavior to make the axis draggable
-      d3.drag()
+      d3
+        .drag()
         .subject((dim) => ({ x: xScale(dim) }))
         .on("start", function (event, dim) {
           dragging[dim] = xScale(dim);
@@ -124,53 +126,60 @@ function addAxesWithBrush(svg) {
           dragging[dim] = Math.min(width, Math.max(0, event.x));
           dimensions.sort((a, b) => position(a) - position(b));
           xScale.domain(dimensions);
-          svg.selectAll(".dimension").attr("transform", (d) => `translate(${position(d)})`);
+          svg
+            .selectAll(".dimension")
+            .attr("transform", (d) => `translate(${position(d)})`);
           updateChart(filterDataset());
         })
         .on("end", function (event, dim) {
           delete dragging[dim];
-          d3.select(this).transition().attr("transform", `translate(${xScale(dim)})`);
+          d3.select(this)
+            .transition()
+            .attr("transform", `translate(${xScale(dim)})`);
         })
     );
 
-  dimensionGroup.each(function (dim) {
-    let axis = d3.axisLeft(yScales[dim]);
+  dimensionGroup
+    .each(function (dim) {
+      let axis = d3.axisLeft(yScales[dim]);
 
-    if (integerTick.includes(dim)) {
-      axis = axis
-        .ticks(Math.floor(yScales[dim].domain()[1] - yScales[dim].domain()[0]))
-        .tickFormat(d3.format("d"));
-    }
+      if (integerTick.includes(dim)) {
+        axis = axis
+          .ticks(
+            Math.floor(yScales[dim].domain()[1] - yScales[dim].domain()[0])
+          )
+          .tickFormat(d3.format("d"));
+      }
 
-    d3.select(this).call(axis).style("fill", "#6599CB");
+      d3.select(this).call(axis).style("fill", "#6599CB");
 
-    d3.select(this)
-      .selectAll(".tick text")
-      .style("fill", "#4B7AC4")
-      .style("font-size", "13px");
+      d3.select(this)
+        .selectAll(".tick text")
+        .style("fill", "#4B7AC4")
+        .style("font-size", "13px");
 
-    const brush = d3
-      .brushY()
-      .extent([
-        [-10, 0],
-        [10, height],
-      ])
-      .on("brush", (event) => brushed(event, dim))
-      .on("end", (event) => brushEnded(event, dim));
+      const brush = d3
+        .brushY()
+        .extent([
+          [-10, 0],
+          [10, height],
+        ])
+        .on("brush", (event) => brushed(event, dim))
+        .on("end", (event) => brushEnded(event, dim));
 
-    d3.select(this)
-      .append("g")
-      .attr("class", "brush")
-      .call(brush)
-      .call(brush.move, [0, height]);
-  })
-  .append("text")
-  .attr("fill", "#4B7AC4")
-  .style("text-anchor", "middle")
-  .attr("y", -9)
-  .text((d) => d)
-  .style("font-size", "18px")
-  .style("font-family", "Arial, sans-serif");
+      d3.select(this)
+        .append("g")
+        .attr("class", "brush")
+        .call(brush)
+        .call(brush.move, [0, height]);
+    })
+    .append("text")
+    .attr("fill", "#4B7AC4")
+    .style("text-anchor", "middle")
+    .attr("y", -9)
+    .text((d) => d)
+    .style("font-size", "18px")
+    .style("font-family", "Arial, sans-serif");
 }
 
 /**
