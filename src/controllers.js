@@ -2,17 +2,17 @@
  * Updates all charts based on the filtered data.
  * @param {Array} data - The dataset to update the charts with.
  */
-function updateAllCharts(data) {
-  updateChart(data);
-  console.log("update");
+function updateAllCharts() {
+  updateChart(filtered_data);
+  updateViolinPlot(violin_data, ".violinPlot", showViolinPlot);
 }
 
 /**
  * Recreates the chart with all the axes and paths
  */
 function recreateChart() {
-  d3.select(globalSelector).selectAll("svg").remove();
-  createParallelCoordinates(globalSelector);
+  d3.select(parallelCoordinatesSelector).selectAll("svg").remove();
+  createParallelCoordinates(parallelCoordinatesSelector);
 }
 
 /**
@@ -67,13 +67,17 @@ function updateDistrict(district) {
     
   updateSelectedDistrictsContainer();
 
-  filtered_data = filterDataset();
+  filterDataset();
 
-  updateAllCharts(filtered_data);
+  updateAllCharts();
   console.log("distritos:" + globalFilters.DISTRICT);
   console.log(filtered_data);
 }
 
+/**
+ * Updates the displayed selected districts in the UI.
+ * If a district is selected, it creates a tag for it; otherwise, it clears the selection.
+ */
 function updateSelectedDistrictsContainer() {
   const selectedDistrictsContainer = document.getElementById('selectedDistricts');
     
@@ -111,9 +115,9 @@ function updateType(type) {
     globalFilters.TYPE = globalFilters.TYPE.filter((d) => d !== type);
   }
 
-  filtered_data = filterDataset();
+  filterDataset();
 
-  updateAllCharts(filtered_data);
+  updateAllCharts();
   console.log(globalFilters.TYPE);
   console.log(filtered_data);
 }
@@ -134,14 +138,17 @@ function updateCondition(condition) {
   }
   updateSelectedConditionsContainer();
 
-  filtered_data = filterDataset();
+  filterDataset();
 
-  updateAllCharts(filtered_data);
+  updateAllCharts();
   console.log(globalFilters.CONDITION);
   console.log(filtered_data);
 }
 
-
+/**
+ * Updates the displayed selected condition in the UI.
+ * If a condition is selected, it creates a tag for it; otherwise, it clears the selection.
+ */
 function updateSelectedConditionsContainer() {
   const selectedConditionsContainer = document.getElementById('selectedConditions');
     
@@ -176,4 +183,10 @@ function updateSelectedConditionsContainer() {
 function updateYear(years) {
   globalFilters.YEARS = years;
   console.log(globalFilters.YEARS);
+}
+
+function selectViolinPlot(show) {
+  showViolinPlot = show;
+  filterDataset();
+  updateViolinPlot(violin_data, ".violinPlot", showViolinPlot);
 }

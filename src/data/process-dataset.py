@@ -97,6 +97,21 @@ def create_zone_column(df: pd.DataFrame) -> pd.DataFrame:
 def remove_area_biggers(df: pd.DataFrame) -> pd.DataFrame:
     return df[df['Area'] <= 30000]
 
+# Remove price outliers when AdsType is 'Rent'
+def remove_rent_price_outliers(df: pd.DataFrame) -> pd.DataFrame:
+    # Filtra apenas os registros onde AdsType é 'Rent'
+    rent_df = df[df['AdsType'] == 'Rent']
+    
+    # Calcula a média e o desvio padrão dos preços de aluguel
+    mean_price = rent_df['Price'].mean()
+    std_price = rent_df['Price'].std()
+    
+    # Remove os outliers
+    filtered_rent_df = rent_df[np.abs(rent_df['Price'] - mean_price) <= (3 * std_price)]
+    
+    # Combina os dados filtrados de aluguel com os outros tipos de anúncios
+    return pd.concat([filtered_rent_df, df[df['AdsType'] != 'Rent']])
+
 def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
     return (
         df
@@ -111,6 +126,7 @@ def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
         .pipe(drop_unused_columns)
         .pipe(remove_PricePerSquareMeter_outliers)
         .pipe(remove_price_outliers)
+        .pipe(remove_rent_price_outliers)
         .pipe(remove_area_outliers)
         .pipe(remove_area_outliers)
         .pipe(add_id_column)
@@ -121,4 +137,5 @@ def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
     )
 
 df_processed = preprocess_data(df)
+df_processed.to_csv('final_dataset.csv', index=False)
 df_processed.to_json('final_dataset.json', index=False, orient="records")
