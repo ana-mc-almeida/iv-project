@@ -50,7 +50,7 @@ function createHorizontalViolinPlot(data, selector, show) {
 
   const domain = domains.find((d) => d.show === show).domain;
 
-  const margin = { top: 20, right: 30, bottom: 40, left: 50 };
+  const margin = { top: 20, right: 30, bottom: 40, left: 70 };
   const divElement = d3.select(selector).node();
   const width = divElement.clientWidth - margin.left - margin.right;
   const height = divElement.clientHeight - margin.top - margin.bottom;

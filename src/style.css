@@ -2,7 +2,7 @@
   display: grid;
   grid-auto-columns: 1fr;
   grid-template-columns: 0.7fr 1.7fr 0.5fr;
-  grid-template-rows: 0.5fr 1.5fr;
+  grid-template-rows: 0.5fr 1.1fr;
   gap: 0px 0px;
   grid-template-areas:
     "choropleth_map violin_plot controllers"
@@ -19,6 +19,7 @@ input[type="range"] {
   background-color: rgb(66, 132, 243);
   padding: 20px;
   border: 2px solid #333;
+  width: 400px;
 }
 
 .violin_plot {
@@ -32,6 +33,7 @@ input[type="range"] {
 .parallelCoordinates {
   grid-area: parallelCoordinates;
   padding: 20px;
+  height: 320px;
 }
 
 .controllers {
