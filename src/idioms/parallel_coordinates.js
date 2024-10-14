@@ -1,7 +1,7 @@
 const dimensions = ["Rooms", "Bathrooms", "Area", "Price"];
 const integerTick = ["Rooms", "Bathrooms"];
 const customColors = ["#1392FF", "#A724FF", "#00FFBF"];
-
+let dragging = {};
 let width, height, colorScale, yScales, xScale;
 let parallelCoordinatesSelector = null;
 
@@ -92,8 +92,9 @@ function createPaths(svg, data) {
     .style("stroke", (d) => colorScale(d.Zone)) // Apply color based on Zone
     .style("stroke-width", "1.5px")
     .on("mouseover", function () {
+      d3.select(this).raise();
       d3.select(this).style("stroke-width", "4px");
-      d3.select(this).style("stroke", "white");
+      d3.select(this).style("stroke", "black");
     })
     .on("mouseout", function () {
       d3.select(this).style("stroke-width", "1.5px");
@@ -102,17 +103,43 @@ function createPaths(svg, data) {
 }
 
 /**
- * Adds axes and brush controls for filtering
+ * Adds axes and brush controls for filtering and allows axes to be reordered
  * @param {Object} svg - The SVG container
  */
 function addAxesWithBrush(svg) {
-  svg
+  const dimensionGroup = svg
     .selectAll(".dimension")
     .data(dimensions)
     .enter()
     .append("g")
     .attr("class", "dimension")
     .attr("transform", (dim) => `translate(${xScale(dim)})`)
+    .call(
+      // Add drag behavior to make the axis draggable
+      d3
+        .drag()
+        .subject((dim) => ({ x: xScale(dim) }))
+        .on("start", function (event, dim) {
+          dragging[dim] = xScale(dim);
+        })
+        .on("drag", function (event, dim) {
+          dragging[dim] = Math.min(width, Math.max(0, event.x));
+          dimensions.sort((a, b) => position(a) - position(b));
+          xScale.domain(dimensions);
+          svg
+            .selectAll(".dimension")
+            .attr("transform", (d) => `translate(${position(d)})`);
+          updateChart(filterDataset());
+        })
+        .on("end", function (event, dim) {
+          delete dragging[dim];
+          d3.select(this)
+            .transition()
+            .attr("transform", `translate(${xScale(dim)})`);
+        })
+    );
+
+  dimensionGroup
     .each(function (dim) {
       let axis = d3.axisLeft(yScales[dim]);
 
@@ -120,15 +147,15 @@ function addAxesWithBrush(svg) {
         axis = axis
           .ticks(
             Math.floor(yScales[dim].domain()[1] - yScales[dim].domain()[0])
-          ) // Definir intervalo de 1
-          .tickFormat(d3.format("d")); // Formato de inteiro
+          )
+          .tickFormat(d3.format("d"));
       }
 
       d3.select(this).call(axis).style("fill", "#6599CB");
 
       d3.select(this)
         .selectAll(".tick text")
-        .style("fill", "white")
+        .style("fill", "#4B7AC4")
         .style("font-size", "13px");
 
       const brush = d3
@@ -147,12 +174,21 @@ function addAxesWithBrush(svg) {
         .call(brush.move, [0, height]);
     })
     .append("text")
-    .attr("fill", "white")
+    .attr("fill", "#4B7AC4")
     .style("text-anchor", "middle")
     .attr("y", -9)
     .text((d) => d)
     .style("font-size", "18px")
     .style("font-family", "Arial, sans-serif");
+}
+
+/**
+ * Computes the position of a dimension, considering dragging
+ * @param {String} dim - The dimension
+ * @returns {Number} - The x position of the dimension
+ */
+function position(dim) {
+  return dragging[dim] !== undefined ? dragging[dim] : xScale(dim);
 }
 
 /**
@@ -177,8 +213,9 @@ function brushed(event, dim) {
  */
 function brushEnded(event, dim) {
   if (!event.selection) {
-    filters[dim] = null;
+    globalFilters[dim] = null;
   }
+  
   filterDataset();
   updateChart(filtered_data);
 }
@@ -187,7 +224,7 @@ function brushEnded(event, dim) {
  * Retrieves min and max values for a given dimension
  * @param {Array} data - The dataset
  * @param {String} dim - Dimension to get min/max for
- * @returns {Object} - Contains min, max, and step values
+ * @returns {Object} - Contains min, max values
  */
 function getMinMaxValues(data, dim) {
   const min = d3.min(data, (d) => +d[dim]);
@@ -197,7 +234,6 @@ function getMinMaxValues(data, dim) {
 
 /**
  * Initializes the default filters for all dimensions
- * @returns {Object} - Filters object with ranges for each dimension
  */
 function initializeFilters() {
   dimensions.forEach((dim) => {
@@ -207,22 +243,7 @@ function initializeFilters() {
 }
 
 /**
- * Applies filters to the dataset
- * @param {Array} data - The dataset
- * @param {Object} filters - The filters to apply
- * @returns {Array} - Filtered dataset
- */
-function applyFilters(data, filters) {
-  return data.filter((d) => {
-    return Object.keys(filters).every((key) => {
-      const [min, max] = filters[key];
-      return d[key] >= min && d[key] <= max;
-    });
-  });
-}
-
-/**
- * Applies the current filters to the dataset and updates the chart
+ * Applies filters to the dataset and updates the chart
  * @param {Array} filtered_data - The filtered dataset
  */
 function updateChart(filtered_data) {
