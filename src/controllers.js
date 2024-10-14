@@ -74,6 +74,10 @@ function updateDistrict(district) {
   console.log(filtered_data);
 }
 
+/**
+ * Updates the displayed selected districts in the UI.
+ * If a district is selected, it creates a tag for it; otherwise, it clears the selection.
+ */
 function updateSelectedDistrictsContainer() {
   const selectedDistrictsContainer = document.getElementById('selectedDistricts');
     
@@ -141,7 +145,10 @@ function updateCondition(condition) {
   console.log(filtered_data);
 }
 
-
+/**
+ * Updates the displayed selected condition in the UI.
+ * If a condition is selected, it creates a tag for it; otherwise, it clears the selection.
+ */
 function updateSelectedConditionsContainer() {
   const selectedConditionsContainer = document.getElementById('selectedConditions');
     
