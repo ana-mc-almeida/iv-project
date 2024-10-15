@@ -12,20 +12,20 @@
     - Peer Grade (5%) : 5/5
 - [CheckPoint 2 - Improved](CPII-23-Improv.pdf)
   - [Notes to Improve CheckPoint 2](CPII-Improv.md)
-  - Grade: TBA
+  - Final Grade: 20
 - [CheckPoint 3](CPIII-23.pdf)
-  - Final Grade: **TBD**
-    - Peer Grade (5%) : **TBD**
+  - Final Grade: 15.3
+    - Peer Grade (5%) : 5/5
 - **(TBD)** [CheckPoint 3 - Improved](CPIII-23-Improv.pdf)
   - [Notes to Improve CheckPoint 3](CPIII-Improv.md)
-  - Grade: TBD
+  - Final Grade: TBD
 - **(TBD)** [CheckPoint 4](CPIV-23.pdf)
-  - Grade: TBD
+  - Final Grade: TBD
 - **(TBD)** [CheckPoint 4 - Improved](CPIV-23-Improv.pdf)
   - **(TBD)** [Notes to Improve CheckPoint 4](CPIV-Improv.md)
-  - Grade: TBD
+  - Final Grade: TBD
 - **(TBD)** [CheckPoint 5](CPV-23.pdf)
-  - Grade: TBD
+  - Final Grade: TBD
 - **(TBD)** [CheckPoint 5 - Improved](CPV-23-Improv.pdf)
   - **(TBD)** [Notes to Improve CheckPoint 5](CPV-Improv.md)
-  - Grade: TBD
+  - Final Grade: TBD
