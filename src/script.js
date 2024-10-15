@@ -16,14 +16,17 @@ let showViolinPlot = "AdsType";
 function init() {
   d3.json("./data/final_dataset.json").then(function (data) {
     inicial_data = data.slice();
-    global_data = processData(inicial_data);
-    filterDataset();
-    violin_data = filtered_data;
+    calculateData(data);
     createParallelCoordinates(".parallelCoordinates");
     createHorizontalViolinPlot(violin_data, ".violinPlot", showViolinPlot);
   });
 }
 
+/**
+ * Process the data by converting specific values to numbers.
+ * @param {Array} data - The dataset to process.
+ * @returns {Array} - The processed dataset.
+ */
 function processData(data) {
   return data.map(function (d) {
     return {
@@ -38,6 +41,16 @@ function processData(data) {
       Zone: d["Zone"],
     };
   });
+}
+
+/**
+ * Filters the dataset based on the global filters.
+ * @param {Array} data - The dataset to filter.
+ */
+function calculateData(data) {
+  global_data = processData(data);
+  filterDataset();
+  violin_data = filtered_data;
 }
 
 // Event listener for DOMContentLoaded to set up the UI interactions
@@ -84,7 +97,6 @@ document.addEventListener("DOMContentLoaded", function () {
   // Years Input
   d3.select("#yearInput").on("input", function () {
     selectedYears = +this.value; // Get the selected years from input
-    console.log(selectedYears);
 
     if (selectedYears <= 0) {
       selectedYears = 1;
@@ -95,8 +107,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     updateYear(selectedYears); // Update the year filter
 
-    global_data = processData(inicial_data);
+    calculateData(inicial_data);
     recreateParallelCoordinates();
+    updateViolinPlot(violin_data, ".violinPlot", showViolinPlot);
   });
 
   // violinPlotButtons

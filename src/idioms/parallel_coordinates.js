@@ -247,7 +247,6 @@ function initializeFilters() {
  * @param {Array} filteredData - The filtered dataset
  */
 function updateParallelCoordinates(filteredData) {
-  console.log(filterDataset());
   const svg = d3.select(parallelCoordinatesSelector).select("svg").select("g");
   d3.select(parallelCoordinatesSelector).selectAll(".foreground").remove();
   createPaths(svg, filteredData);

@@ -39,8 +39,6 @@ function updateMap(option) {
   if (globalFilters.MAP_TYPE == "none") {
     selectedMapOption.textContent = "🔍 What to see on the map?";
   }
-
-  console.log(globalFilters.MAP_TYPE);
 }
 
 /**
@@ -64,8 +62,6 @@ function updateDistrict(district) {
   filterDataset();
 
   updateAllCharts();
-  console.log("distritos:" + globalFilters.DISTRICT);
-  console.log(filtered_data);
 }
 
 /**
@@ -115,8 +111,6 @@ function updateType(type) {
   filterDataset();
 
   updateAllCharts();
-  console.log(globalFilters.TYPE);
-  console.log(filtered_data);
 }
 
 /**
@@ -138,8 +132,6 @@ function updateCondition(condition) {
   filterDataset();
 
   updateAllCharts();
-  console.log(globalFilters.CONDITION);
-  console.log(filtered_data);
 }
 
 /**
@@ -181,7 +173,6 @@ function updateSelectedConditionsContainer() {
  */
 function updateYear(years) {
   globalFilters.YEARS = years;
-  console.log(globalFilters.YEARS);
 }
 
 function selectViolinPlot(show) {
