@@ -45,7 +45,7 @@ function kernelGaussian(bandwidth) {
  * @param {String} selector - Seletor do elemento DOM para o gráfico
  * @param {String} show - Atributo a ser mostrado no eixo Y
  */
-function createHorizontalViolinPlot(data, selector, show) {
+function createViolinPlot(data, selector, show) {
   if (!toShow.includes(show)) {
     console.error(`Invalid show value. Must be one of: ${toShow.join(", ")}`);
     return;
@@ -177,5 +177,5 @@ function createHorizontalViolinPlot(data, selector, show) {
  */
 function updateViolinPlot(data, selector, show) {
   d3.select(selector).selectAll("svg").remove();
-  createHorizontalViolinPlot(data, selector, show);
+  createViolinPlot(data, selector, show);
 }

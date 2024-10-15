@@ -18,7 +18,7 @@ function init() {
     inicial_data = data.slice();
     calculateData(data);
     createParallelCoordinates(".parallelCoordinates");
-    createHorizontalViolinPlot(violin_data, ".violinPlot", showViolinPlot);
+    createViolinPlot(violin_data, ".violinPlot", showViolinPlot);
   });
 }
 
