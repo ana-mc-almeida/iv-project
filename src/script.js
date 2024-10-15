@@ -166,3 +166,13 @@ function selectType(type) {
 function selectCondition(condition) {
   updateCondition(condition);
 }
+
+/**
+ * Selects a violin plot compare for show.
+ * @param {String} show - The compare selected.
+ */
+function selectViolinPlot(show) {
+  showViolinPlot = show;
+  filterDataset();
+  updateViolinPlot(violin_data, ".violinPlot", showViolinPlot);
+}

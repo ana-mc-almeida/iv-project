@@ -174,9 +174,3 @@ function updateSelectedConditionsContainer() {
 function updateYear(years) {
   globalFilters.YEARS = years;
 }
-
-function selectViolinPlot(show) {
-  showViolinPlot = show;
-  filterDataset();
-  updateViolinPlot(violin_data, ".violinPlot", showViolinPlot);
-}
