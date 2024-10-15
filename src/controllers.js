@@ -25,17 +25,19 @@ function updateMap(option) {
     globalFilters.MAP_TYPE = option;
   }
 
-  const selectedMapOption = document.getElementById('selectedMapOption');
-    
-  selectedMapOption.innerHTML = '';
+  const selectedMapOption = document.getElementById("selectedMapOption");
 
-  let tag = document.createElement('span');
+  selectedMapOption.innerHTML = "";
+
+  let tag = document.createElement("span");
   tag.textContent = globalFilters.MAP_TYPE;
-  tag.className = 'tag'; 
-  tag.onclick = function() {
+  tag.className = "tag";
+  tag.onclick = function () {
     d3.selectAll(".mapOption-content a")
-    .filter(function() { return d3.select(this).text() === globalFilters.MAP_TYPE; })
-    .classed("selected", false);
+      .filter(function () {
+        return d3.select(this).text() === globalFilters.MAP_TYPE;
+      })
+      .classed("selected", false);
 
     updateMap(globalFilters.MAP_TYPE);
   };
@@ -43,7 +45,7 @@ function updateMap(option) {
   selectedMapOption.appendChild(tag);
 
   if (globalFilters.MAP_TYPE == "none") {
-    selectedMapOption.textContent = '🔍 What to see on the map?';
+    selectedMapOption.textContent = "🔍 What to see on the map?";
   }
 
   console.log(globalFilters.MAP_TYPE);
@@ -64,7 +66,7 @@ function updateDistrict(district) {
       (d) => d !== district
     );
   }
-    
+
   updateSelectedDistrictsContainer();
 
   filterDataset();
@@ -79,27 +81,30 @@ function updateDistrict(district) {
  * If a district is selected, it creates a tag for it; otherwise, it clears the selection.
  */
 function updateSelectedDistrictsContainer() {
-  const selectedDistrictsContainer = document.getElementById('selectedDistricts');
-    
-    selectedDistrictsContainer.innerHTML = '';
+  const selectedDistrictsContainer =
+    document.getElementById("selectedDistricts");
 
-    globalFilters.DISTRICT.forEach(district => {
-        let tag = document.createElement('span');
-        tag.textContent = district;
-        tag.className = 'tag'; 
-        tag.onclick = function() {
-          d3.selectAll(".district-content a")
-          .filter(function() { return d3.select(this).text() === district; })
-          .classed("selected", false);
-          
-          updateDistrict(district);
-        };
-        selectedDistrictsContainer.appendChild(tag);
-    });
+  selectedDistrictsContainer.innerHTML = "";
 
-    if (globalFilters.DISTRICT.length === 0) {
-        selectedDistrictsContainer.textContent = 'District';
-    }
+  globalFilters.DISTRICT.forEach((district) => {
+    let tag = document.createElement("span");
+    tag.textContent = district;
+    tag.className = "tag";
+    tag.onclick = function () {
+      d3.selectAll(".district-content a")
+        .filter(function () {
+          return d3.select(this).text() === district;
+        })
+        .classed("selected", false);
+
+      updateDistrict(district);
+    };
+    selectedDistrictsContainer.appendChild(tag);
+  });
+
+  if (globalFilters.DISTRICT.length === 0) {
+    selectedDistrictsContainer.textContent = "District";
+  }
 }
 
 /**
@@ -150,30 +155,32 @@ function updateCondition(condition) {
  * If a condition is selected, it creates a tag for it; otherwise, it clears the selection.
  */
 function updateSelectedConditionsContainer() {
-  const selectedConditionsContainer = document.getElementById('selectedConditions');
-    
-  selectedConditionsContainer.innerHTML = '';
+  const selectedConditionsContainer =
+    document.getElementById("selectedConditions");
 
-    globalFilters.CONDITION.forEach(condition => {
-        let tag = document.createElement('span');
-        tag.textContent = condition;
-        tag.className = 'tag'; 
+  selectedConditionsContainer.innerHTML = "";
 
-        tag.onclick = function() {
+  globalFilters.CONDITION.forEach((condition) => {
+    let tag = document.createElement("span");
+    tag.textContent = condition;
+    tag.className = "tag";
 
-          d3.selectAll(".condition-content a")
-          .filter(function() { return d3.select(this).text() === condition; })
-          .classed("selected", false);
+    tag.onclick = function () {
+      d3.selectAll(".condition-content a")
+        .filter(function () {
+          return d3.select(this).text() === condition;
+        })
+        .classed("selected", false);
 
-          updateCondition(condition);
-        };
+      updateCondition(condition);
+    };
 
-        selectedConditionsContainer.appendChild(tag);
-    });
+    selectedConditionsContainer.appendChild(tag);
+  });
 
-    if (globalFilters.CONDITION.length === 0) {
-      selectedConditionsContainer.textContent = 'Condition';
-    }
+  if (globalFilters.CONDITION.length === 0) {
+    selectedConditionsContainer.textContent = "Condition";
+  }
 }
 
 /**

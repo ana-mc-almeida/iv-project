@@ -99,7 +99,6 @@ document.addEventListener("DOMContentLoaded", function () {
     recreateChart();
   });
 
-
   // violinPlotButtons
   const violinPlotButtons = d3.selectAll(".violinPlot-input");
 
@@ -110,17 +109,17 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   if (globalFilters.DISTRICT.length === 0) {
-    document.getElementById('selectedDistricts').textContent = 'District';
+    document.getElementById("selectedDistricts").textContent = "District";
   }
 
   if (globalFilters.CONDITION.length === 0) {
-    document.getElementById('selectedConditions').textContent = 'Condition';
+    document.getElementById("selectedConditions").textContent = "Condition";
   }
 
   if (globalFilters.MAP_TYPE == "none") {
-    document.getElementById('selectedMapOption').textContent = '🔍 What to see on the map?';
+    document.getElementById("selectedMapOption").textContent =
+      "🔍 What to see on the map?";
   }
-
 });
 
 /**
