@@ -130,7 +130,7 @@ function addAxesWithBrush(svg) {
             .selectAll(".dimension")
             .attr("transform", (d) => `translate(${position(d)})`);
           filterDataset();
-          updateChart(filtered_data);
+          updateParallelCoordinates(filtered_data);
         })
         .on("end", function (event, dim) {
           delete dragging[dim];
@@ -204,7 +204,7 @@ function brushed(event, dim) {
     globalFilters[dim] = [yMin, yMax];
   }
   filterDataset();
-  updateChart(filtered_data);
+  updateParallelCoordinates(filtered_data);
 }
 
 /**
@@ -217,7 +217,7 @@ function brushEnded(event, dim) {
     globalFilters[dim] = null;
   }
   filterDataset();
-  updateChart(filtered_data);
+  updateParallelCoordinates(filtered_data);
 }
 
 /**
@@ -246,9 +246,17 @@ function initializeFilters() {
  * Applies filters to the dataset and updates the chart
  * @param {Array} filteredData - The filtered dataset
  */
-function updateChart(filteredData) {
+function updateParallelCoordinates(filteredData) {
   console.log(filterDataset());
   const svg = d3.select(parallelCoordinatesSelector).select("svg").select("g");
   d3.select(parallelCoordinatesSelector).selectAll(".foreground").remove();
   createPaths(svg, filteredData);
+}
+
+/**
+ * Recreates the chart with all the axes and paths
+ */
+function recreateParallelCoordinates() {
+  d3.select(parallelCoordinatesSelector).selectAll("svg").remove();
+  createParallelCoordinates(parallelCoordinatesSelector);
 }

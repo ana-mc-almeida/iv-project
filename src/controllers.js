@@ -3,16 +3,8 @@
  * @param {Array} data - The dataset to update the charts with.
  */
 function updateAllCharts() {
-  updateChart(filtered_data);
+  updateParallelCoordinates(filtered_data);
   updateViolinPlot(violin_data, ".violinPlot", showViolinPlot);
-}
-
-/**
- * Recreates the chart with all the axes and paths
- */
-function recreateChart() {
-  d3.select(parallelCoordinatesSelector).selectAll("svg").remove();
-  createParallelCoordinates(parallelCoordinatesSelector);
 }
 
 /**

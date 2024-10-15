@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
     updateYear(selectedYears); // Update the year filter
 
     global_data = processData(inicial_data);
-    recreateChart();
+    recreateParallelCoordinates();
   });
 
   // violinPlotButtons
