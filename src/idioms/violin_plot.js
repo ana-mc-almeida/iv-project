@@ -4,8 +4,13 @@ const domains = [
 ];
 const toShow = ["Condition", "AdsType"];
 
+const ticksNumber = 10;
+
 /**
  * Função para calcular Kernel Density Estimation (KDE)
+ * @param {Function} kernel - Função do kernel
+ * @param {Array} xValues - Valores para aplicar KDE
+ * @returns {Function} - Função para estimar densidade com base em amostra
  */
 function kernelDensityEstimator(kernel, xValues) {
   return function (sample) {
@@ -22,6 +27,8 @@ function kernelDensityEstimator(kernel, xValues) {
 
 /**
  * Kernel gaussiano para a KDE
+ * @param {Number} bandwidth - Largura de banda para suavização
+ * @returns {Function} - Função de kernel Gaussiano
  */
 function kernelGaussian(bandwidth) {
   return function (x) {
@@ -36,6 +43,7 @@ function kernelGaussian(bandwidth) {
  * Cria um Violin Plot Horizontal com distribuições simétricas sobre o mesmo eixo
  * @param {Array} data - O dataset
  * @param {String} selector - Seletor do elemento DOM para o gráfico
+ * @param {String} show - Atributo a ser mostrado no eixo Y
  */
 function createHorizontalViolinPlot(data, selector, show) {
   if (!toShow.includes(show)) {
@@ -63,26 +71,20 @@ function createHorizontalViolinPlot(data, selector, show) {
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
-  // Escala para o eixo x (Price)
   const xScale = d3
     .scaleLinear()
     .domain([0, d3.max(data, (d) => +d.Price)])
     .range([0, width]);
 
   const yScale = d3.scaleBand().domain(domain).range([0, height]).padding(0.5);
+  const violinWidthScale = d3.scaleLinear().range([0, 100]);
 
-  // Escala para a largura do violino
-  const violinWidthScale = d3.scaleLinear().range([0, 100]); // Controle de largura do violino
-
-  // Kernel Density Estimation
   const kde = kernelDensityEstimator(kernelGaussian(200), xScale.ticks(50));
-
   const groupedData = d3.group(data, (d) => d[show]);
 
   let maxDensity = 0;
-
   const upValue = domain[0];
-  // Para cada grupo (Sell e Rent), cria os violinos
+
   domain.forEach((attribute) => {
     const dataAttribute = groupedData.get(attribute);
 
@@ -92,8 +94,6 @@ function createHorizontalViolinPlot(data, selector, show) {
     }
 
     const prices = dataAttribute.map((d) => +d.Price);
-
-    // Calcula a densidade para cada grupo
     const density = kde(prices);
 
     const maxDensityEach = d3.max(density, (d) => d[1]);
@@ -104,7 +104,6 @@ function createHorizontalViolinPlot(data, selector, show) {
       maxDensity = maxDensityEach;
     }
 
-    // Cria as formas de área (violin plot) sobre o mesmo eixo x
     svg
       .append("g")
       .append("path")
@@ -131,39 +130,35 @@ function createHorizontalViolinPlot(data, selector, show) {
       .style("stroke", "#4d4d4d");
   });
 
-  // Adicionar linhas verticais (gridlines) nos ticks do eixo x
   svg
     .append("g")
-    .attr("class", "grid") // Classe para estilização futura, se necessário
+    .attr("class", "grid")
     .selectAll("line")
-    .data(xScale.ticks(10)) // Usa os mesmos ticks do eixo x
+    .data(xScale.ticks(ticksNumber))
     .enter()
     .append("line")
-    .attr("x1", (d) => xScale(d)) // Posição inicial no eixo x
-    .attr("x2", (d) => xScale(d)) // Posição final no eixo x
-    .attr("y1", 0) // Começa do topo do gráfico
-    .attr("y2", height) // Vai até o fim da altura do gráfico
-    .style("stroke", "#808080") // Cor das linhas, pode ser ajustada
-    .style("stroke-width", 1) // Largura das linhas
-    .style("stroke-dasharray", "4,4"); // Linha tracejada para ficar mais sutil
+    .attr("x1", (d) => xScale(d))
+    .attr("x2", (d) => xScale(d))
+    .attr("y1", 0)
+    .attr("y2", height)
+    .style("stroke", "#808080")
+    .style("stroke-width", 1)
+    .style("stroke-dasharray", "4,4");
 
-  // Adiciona o eixo x (Price)
   svg
     .append("g")
-    .attr("transform", `translate(0,${height})`) // Aumente o valor para mover o eixo mais abaixo
-    .call(d3.axisBottom(xScale).ticks(10).tickFormat(d3.format(".2s")))
+    .attr("transform", `translate(0,${height})`)
+    .call(d3.axisBottom(xScale).ticks(ticksNumber).tickFormat(d3.format(".2s")))
     .selectAll("text")
     .style("fill", "#4B7AC4")
-    .style("dy", "1.5em"); // Mantém os valores abaixo do eixo
+    .style("dy", "1.5em");
 
-  // Adiciona o eixo y (Rent e Sell)
   svg
     .append("g")
     .call(d3.axisLeft(yScale))
     .selectAll("text")
     .style("fill", "#4B7AC4");
 
-  // Adiciona título
   svg
     .append("text")
     .attr("x", width / 2)
@@ -174,6 +169,12 @@ function createHorizontalViolinPlot(data, selector, show) {
     .style("font-size", "16px");
 }
 
+/**
+ * Atualiza o Violin Plot existente com novos dados
+ * @param {Array} data - O dataset atualizado
+ * @param {String} selector - Seletor do elemento DOM para o gráfico
+ * @param {String} show - Atributo a ser mostrado no eixo Y
+ */
 function updateViolinPlot(data, selector, show) {
   d3.select(selector).selectAll("svg").remove();
   createHorizontalViolinPlot(data, selector, show);
