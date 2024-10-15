@@ -84,7 +84,14 @@ function createHorizontalViolinPlot(data, selector, show) {
   const upValue = domain[0];
   // Para cada grupo (Sell e Rent), cria os violinos
   domain.forEach((attribute) => {
-    const prices = groupedData.get(attribute).map((d) => +d.Price);
+    const dataAttribute = groupedData.get(attribute);
+
+    if (!dataAttribute) {
+      console.log(`No data for attribute ${attribute}`);
+      return;
+    }
+
+    const prices = dataAttribute.map((d) => +d.Price);
 
     // Calcula a densidade para cada grupo
     const density = kde(prices);
@@ -109,15 +116,15 @@ function createHorizontalViolinPlot(data, selector, show) {
           .area()
           .x((d) => xScale(d[0]))
           .y0((d) =>
-            attribute === upValue
+            attribute !== upValue
               ? height / 2
               : height / 2 - violinWidthScale(d[1])
-          ) // Sell embaixo, Rent em cima
+          )
           .y1((d) =>
-            attribute === upValue
+            attribute !== upValue
               ? height / 2 + violinWidthScale(d[1])
               : height / 2
-          ) // Rent em cima, Sell embaixo
+          )
           .curve(d3.curveBasis)
       )
       .style("fill", attribute === upValue ? "#1392FF" : "#A724FF")
