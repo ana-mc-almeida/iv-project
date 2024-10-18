@@ -176,6 +176,7 @@ function createViolinPlot(data, selector, show) {
  * @param {String} show - Atributo a ser mostrado no eixo Y
  */
 function updateViolinPlot(data, selector, show) {
+  console.log(selector);
   d3.select(selector).selectAll("svg").remove();
   createViolinPlot(data, selector, show);
 }

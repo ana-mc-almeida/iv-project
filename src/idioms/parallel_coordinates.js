@@ -213,11 +213,13 @@ function brushed(event, dim) {
  * @param {String} dim - Dimension being brushed
  */
 function brushEnded(event, dim) {
+  console.log("brushEnded", event);
+  if (event.mode === undefined) return;
   if (!event.selection) {
     globalFilters[dim] = null;
   }
   filterDataset();
-  updateParallelCoordinates(filtered_data);
+  updateAllCharts();
 }
 
 /**
