@@ -1,8 +1,7 @@
 const dimensions = ["Rooms", "Bathrooms", "Area", "Price"];
 const integerTick = ["Rooms", "Bathrooms"];
-const customColors = ["#1392FF", "#A724FF", "#00FFBF"];
 let dragging = {};
-let width, height, colorScale, yScales, xScale;
+let width, height, yScales, xScale;
 let parallelCoordinatesSelector = null;
 
 /**
@@ -56,15 +55,6 @@ function createYScales(data) {
  */
 function createXScale() {
   return d3.scalePoint().range([0, width]).padding(0.1).domain(dimensions);
-}
-
-/**
- * Creates color scale based on Zone
- * @param {Array} data - The dataset
- * @returns {d3.ScaleOrdinal} - Color scale for Zone
- */
-function createColorScale(data) {
-  return d3.scaleOrdinal(customColors).domain(data.map((d) => d.Zone));
 }
 
 /**

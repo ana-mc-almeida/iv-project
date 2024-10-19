@@ -3,11 +3,14 @@ var inicial_data; // Initial data from the dataset
 var global_data; // Global data to apply filters
 var filtered_data; // Filtered data to update the charts
 var violin_data; // Data to create the violin plot
+var geo_data;
+var colorScale;
 
 // Variable to hold the selected year value
 let selectedYears = 50;
 
 let showViolinPlot = "AdsType";
+const customColors = ["#1392FF", "#A724FF", "#00FFBF"];
 
 /**
  * Initializes the application by loading the dataset.
@@ -17,8 +20,14 @@ function init() {
   d3.json("./data/final_dataset.json").then(function (data) {
     inicial_data = data.slice();
     calculateData(data);
+    colorScale = createColorScale();
     createParallelCoordinates(".parallelCoordinates");
     createViolinPlot(violin_data, ".violinPlot", showViolinPlot);
+
+    d3.json('./data/final_portugal_district.geojson').then(function (geoData) {
+      geo_data = geoData.features.slice();
+      createChoroplethMap(".choroplethMap");
+    });
   });
 }
 
@@ -175,4 +184,12 @@ function selectViolinPlot(show) {
   showViolinPlot = show;
   filterDataset();
   updateViolinPlot(violin_data, ".violinPlot", showViolinPlot);
+}
+
+/**
+ * Creates color scale based on Zone
+ * @returns {d3.ScaleOrdinal} - Color scale for Zone
+ */
+function createColorScale() {
+  return d3.scaleOrdinal(customColors).domain(global_data.map((d) => d.Zone));
 }

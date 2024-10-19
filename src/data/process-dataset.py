@@ -1,10 +1,18 @@
 import pandas as pd
 import numpy as np
+import json
+
+zones = {
+    'Norte': ['Porto', 'Braga', 'Viana do Castelo', 'Vila Real', 'Bragança'],
+    'Centro': ['Aveiro', 'Viseu', 'Guarda', 'Coimbra', 'Castelo Branco', 'Leiria', 'Santarém', 'Lisboa', 'Portalegre'],
+    'Sul': ['Setúbal', 'Évora', 'Beja', 'Faro'],
+}
 
 initial_dataset_path = 'initial_dataset.csv'
+initial_geoData_path = 'initial_portugal_district.geojson'
 
 # Import dataset
-df = pd.read_csv(initial_dataset_path)
+df_dataSet = pd.read_csv(initial_dataset_path) 
 
 ##### DATA PROCESSING FUNCTIONS #####
 
@@ -85,11 +93,6 @@ def remove_islands(df: pd.DataFrame) -> pd.DataFrame:
 
 # Create nem column 'Zone' based on the 'District' column
 def create_zone_column(df: pd.DataFrame) -> pd.DataFrame:
-    zones = {
-        'Norte': ['Porto', 'Braga', 'Viana do Castelo', 'Vila Real', 'Bragança'],
-        'Centro': ['Aveiro', 'Viseu', 'Guarda', 'Coimbra', 'Castelo Branco', 'Leiria', 'Santarém', 'Lisboa', 'Portalegre'],
-        'Sul': ['Setúbal', 'Évora', 'Beja', 'Faro'],
-    }
     district_to_zone = {district: zone for zone, districts in zones.items() for district in districts}
     return df.assign(Zone=lambda x: x['District'].apply(lambda y: district_to_zone.get(y, 'aaaaaaa')))
 
@@ -136,6 +139,37 @@ def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
         # .pipe(slice_data)
     )
 
-df_processed = preprocess_data(df)
-df_processed.to_csv('final_dataset.csv', index=False)
-df_processed.to_json('final_dataset.json', index=False, orient="records")
+df_dataset_processed = preprocess_data(df_dataSet)
+df_dataset_processed.to_csv('final_dataset.csv', index=False)
+df_dataset_processed.to_json('final_dataset.json', index=False, orient="records")
+
+# Converts to 'Title' (first letter of each word capitalized)
+def format_district_name(district: str) -> str:
+    return district.title()
+
+# Function for processing GeoJSON data
+def process_geoData(geojson_path: str) -> dict:
+    with open(geojson_path) as f:
+        geojson_data = json.load(f)
+    
+    district_to_zone = {district: zone for zone, districts in zones.items() for district in districts}
+    
+    for feature in geojson_data['features']:
+        # Pega o nome do distrito original
+        district = feature['properties']['Distrito']
+        
+        # Verifica se o nome do distrito é "VIANA DO CASTELO" e aplica a formatação
+        if district.upper() == "VIANA DO CASTELO":
+            formatted_district = "Viana do Castelo"
+        else:
+            formatted_district = district.title()  # Aplica title() para outros distritos
+
+        feature['properties']['Zone'] = district_to_zone.get(formatted_district, 'Zona Desconhecida')
+        feature['properties']['District'] = formatted_district
+        del feature['properties']['Distrito']  # Remove a propriedade original 'Distrito'
+    
+    return geojson_data
+
+df_geoData_processed = process_geoData(initial_geoData_path)
+with open('final_portugal_district.geojson', 'w', encoding='utf-8') as f:
+    json.dump(df_geoData_processed, f, ensure_ascii=False, indent=4)
