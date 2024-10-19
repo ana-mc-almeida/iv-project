@@ -27,6 +27,11 @@ function createChoroplethMap(selector) {
         d.clicked = false; // Inicialmente, nenhum distrito está clicado
     });
 
+    // Criação do tooltip
+    const tooltip = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
     svg
         .selectAll('path')
         .data(geo_data)
@@ -40,11 +45,28 @@ function createChoroplethMap(selector) {
             if (!d.clicked) { // Só muda para laranja se não estiver clicado
                 d3.select(this).attr('fill', 'orange');
             }
+
+            // Exibir o tooltip
+            tooltip.transition()
+                .duration(200)
+                .style("opacity", .9);
+            tooltip.html(d.properties.District)
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY) + "px");
+        })
+        .on('mousemove', function (event) {
+            tooltip.style("left", (event.pageX + 10) + "px")
+                   .style("top", (event.pageY) + "px");
         })
         .on('mouseout', function (event, d) {
             if (!d.clicked) { // Só retorna à cor original se não estiver clicado
                 d3.select(this).attr('fill', 'black');
             }
+
+            // Ocultar o tooltip
+            tooltip.transition()
+                .duration(500)
+                .style("opacity", 0);
         })
         .on('click', function (event, d) {
             // Altera o estado clicado
@@ -57,4 +79,19 @@ function createChoroplethMap(selector) {
                 d3.select(this).attr('fill', 'rgb(101, 153, 203)');
             }
         });
+
+    // Estilizando o tooltip
+    d3.select("body").append("style").text(`
+        .tooltip {
+            position: absolute;
+            text-align: center;
+            width: auto;
+            padding: 5px;
+            font: 12px sans-serif;
+            background: lightsteelblue;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+    `);
 }
