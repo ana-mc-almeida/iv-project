@@ -58,7 +58,7 @@ function createViolinPlot(data, selector, show) {
 
   const domain = domains.find((d) => d.show === show).domain;
 
-  const margin = { top: 60, right: 30, bottom: 40, left: 70 }; // Aumentei o topo para acomodar o eixo superior
+  const margin = { top: 60, right: 30, bottom: 60, left: 70 };
   const divElement = d3.select(selector).node();
   const width = divElement.clientWidth - margin.left - margin.right;
   const height = divElement.clientHeight - margin.top - margin.bottom;
@@ -79,7 +79,7 @@ function createViolinPlot(data, selector, show) {
 
   const xScaleTotal = d3
     .scaleLinear()
-    .domain([0, d3.max(data, (d) => +d.Price)]) // Preço total
+    .domain([0, d3.max(data, (d) => +d.Price)]) // Preço total (anual)
     .range([0, width]);
 
   const yScale = d3.scaleBand().domain(domain).range([0, height]).padding(0.5);
@@ -204,6 +204,26 @@ function createViolinPlot(data, selector, show) {
     .attr("fill", "#4B7AC4")
     .text("Price Distribution")
     .style("font-size", "16px");
+
+  // Rótulo para o eixo X superior (preço mensal)
+  svg
+    .append("text")
+    .attr("x", width - margin.right)
+    .attr("y", -margin.top / 3) // Ajusta a posição do rótulo
+    .attr("text-anchor", "middle")
+    .style("fill", "#4B7AC4")
+    .text("Monthly Price")
+    .style("font-size", "12px");
+
+  // Rótulo para o eixo X inferior (preço total)
+  svg
+    .append("text")
+    .attr("x", width  - margin.right)
+    .attr("y", height + margin.bottom / 2) // Ajusta a posição do rótulo
+    .attr("text-anchor", "middle")
+    .style("fill", "#4B7AC4")
+    .text("Total Price")
+    .style("font-size", "12px");
 }
 
 /**
