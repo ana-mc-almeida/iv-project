@@ -58,7 +58,7 @@ function createViolinPlot(data, selector, show) {
 
   const domain = domains.find((d) => d.show === show).domain;
 
-  const margin = { top: 60, right: 30, bottom: 60, left: 70 };
+  const margin = { top: 60, right: 30, bottom: 60, left: 70 }; // Aumentei o topo e o fundo para acomodar os rótulos dos eixos
   const divElement = d3.select(selector).node();
   const width = divElement.clientWidth - margin.left - margin.right;
   const height = divElement.clientHeight - margin.top - margin.bottom;
@@ -74,7 +74,7 @@ function createViolinPlot(data, selector, show) {
   // Criar escalas para o preço mensal e total
   const xScaleRent = d3
     .scaleLinear()
-    .domain([0, d3.max(data, (d) => +d.Price / 12)]) // Preço mensal
+    .domain([0, d3.max(data, (d) => +d.Price / globalFilters.YEARS / 12)]) // Preço mensal corrigido
     .range([0, width]);
 
   const xScaleTotal = d3
@@ -120,8 +120,8 @@ function createViolinPlot(data, selector, show) {
         d3
           .area()
           .x((d) =>
-            attribute === "Rent" ? xScaleRent(d[0] / 12) : xScaleTotal(d[0])
-          ) // Diferenciar escalas para Rent (mensal) e Sell (total)
+            attribute === "Rent" ? xScaleRent(d[0] / globalFilters.YEARS / 12) : xScaleTotal(d[0])
+          ) // Diferenciar escalas para Rent (mensal corrigido) e Sell (total)
           .y0((d) =>
             attribute !== upValue
               ? height / 2
