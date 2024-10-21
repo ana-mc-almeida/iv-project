@@ -1,5 +1,10 @@
 let path;
-let colors = ['#a8e6a3', '#66c266', '#339966', '#1f6033'];
+let rangeColors = ['#a8e6a3', '#66c266', '#339966', '#1f6033'];
+
+// Adicionar propriedade `clicked` para controlar o estado de clique
+geo_data.forEach(d => {
+    d.clicked = false; // Inicialmente, nenhum distrito está clicado
+});
 
 function createChoroplethMap(selector) {
     const margin = { top: 140, right: 80, bottom: 10, left: 0 };
@@ -24,11 +29,6 @@ function createChoroplethMap(selector) {
     path = d3.geoPath().projection(projection);
 
     svg.selectAll('path').remove();
-    
-    // Adicionar propriedade `clicked` para controlar o estado de clique
-    geo_data.forEach(d => {
-        d.clicked = false; // Inicialmente, nenhum distrito está clicado
-    });
 
     // Criação do tooltip
     const tooltip = d3.select("body").append("div")
@@ -44,6 +44,17 @@ function createChoroplethMap(selector) {
         .attr('fill', 'white')
         .attr('stroke', (d) => colorScale(d.properties.Zone)) // Mapeia a cor do stroke para a zona
         .attr('stroke-width', 1) // Você pode ajustar a largura do stroke
+        .each(function (d) {
+            if (globalFilters.DISTRICT.includes(d.properties.District)) {
+                d.clicked = true;
+                d3.select(this).attr('fill', 'red')
+                .attr('stroke-width', 6);
+            } else {
+                d.clicked = false;
+                d3.select(this).attr('fill', 'white')
+                .attr('stroke-width', 1);
+            }
+        })
         .on('mouseover', function (event, d) {
             if (!d.clicked) {
                 d3.select(this).attr('fill', 'orange');
@@ -108,7 +119,7 @@ function updateChoroplethMapHoverDistrict(district, isHover) {
     console.log(district);
     d3.selectAll('path')
         .each(function (d) {
-            if (d && d.properties && d.properties.District === district) {
+            if (d && d.properties && !d.clicked && d.properties.District === district) {
                 if (isHover) {
                     d3.select(this).attr('stroke-width', 6);
                 } else {
