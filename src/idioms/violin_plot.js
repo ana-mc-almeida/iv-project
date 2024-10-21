@@ -58,7 +58,7 @@ function createViolinPlot(data, selector, show) {
 
   const domain = domains.find((d) => d.show === show).domain;
 
-  const margin = { top: 20, right: 30, bottom: 40, left: 70 };
+  const margin = { top: 60, right: 30, bottom: 40, left: 70 }; // Aumentei o topo para acomodar o eixo superior
   const divElement = d3.select(selector).node();
   const width = divElement.clientWidth - margin.left - margin.right;
   const height = divElement.clientHeight - margin.top - margin.bottom;
@@ -71,15 +71,21 @@ function createViolinPlot(data, selector, show) {
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
-  const xScale = d3
+  // Criar escalas para o preço mensal e total
+  const xScaleRent = d3
     .scaleLinear()
-    .domain([0, d3.max(data, (d) => +d.Price)])
+    .domain([0, d3.max(data, (d) => +d.Price / 12)]) // Preço mensal
+    .range([0, width]);
+
+  const xScaleTotal = d3
+    .scaleLinear()
+    .domain([0, d3.max(data, (d) => +d.Price)]) // Preço total
     .range([0, width]);
 
   const yScale = d3.scaleBand().domain(domain).range([0, height]).padding(0.5);
   const violinWidthScale = d3.scaleLinear().range([0, 100]);
 
-  const kde = kernelDensityEstimator(kernelGaussian(200), xScale.ticks(50));
+  const kde = kernelDensityEstimator(kernelGaussian(200), xScaleTotal.ticks(50));
   const groupedData = d3.group(data, (d) => d[show]);
 
   let maxDensity = 0;
@@ -97,7 +103,7 @@ function createViolinPlot(data, selector, show) {
     const density = kde(prices);
 
     const maxDensityEach = d3.max(density, (d) => d[1]);
-
+    
     violinWidthScale.domain([0, maxDensityEach]);
 
     if (maxDensityEach > maxDensity) {
@@ -113,7 +119,9 @@ function createViolinPlot(data, selector, show) {
         "d",
         d3
           .area()
-          .x((d) => xScale(d[0]))
+          .x((d) =>
+            attribute === "Rent" ? xScaleRent(d[0] / 12) : xScaleTotal(d[0])
+          ) // Diferenciar escalas para Rent (mensal) e Sell (total)
           .y0((d) =>
             attribute !== upValue
               ? height / 2
@@ -130,39 +138,68 @@ function createViolinPlot(data, selector, show) {
       .style("stroke", "#4d4d4d");
   });
 
+  // Grade para o preço mensal (parte de cima)
   svg
     .append("g")
     .attr("class", "grid")
     .selectAll("line")
-    .data(xScale.ticks(ticksNumber))
+    .data(xScaleRent.ticks(ticksNumber))
     .enter()
     .append("line")
-    .attr("x1", (d) => xScale(d))
-    .attr("x2", (d) => xScale(d))
+    .attr("x1", (d) => xScaleRent(d))
+    .attr("x2", (d) => xScaleRent(d))
     .attr("y1", 0)
+    .attr("y2", height) // Agora as gridlines vão de cima a baixo
+    .style("stroke", "#808080")
+    .style("stroke-width", 1)
+    .style("stroke-dasharray", "4,4");
+
+  // Grade para o preço total (parte de baixo)
+  svg
+    .append("g")
+    .attr("class", "grid")
+    .selectAll("line")
+    .data(xScaleTotal.ticks(ticksNumber))
+    .enter()
+    .append("line")
+    .attr("x1", (d) => xScaleTotal(d))
+    .attr("x2", (d) => xScaleTotal(d))
+    .attr("y1", 0) // Agora as gridlines vão de cima a baixo também
     .attr("y2", height)
     .style("stroke", "#808080")
     .style("stroke-width", 1)
     .style("stroke-dasharray", "4,4");
 
+  // Eixo X para preço total (parte de baixo)
   svg
     .append("g")
     .attr("transform", `translate(0,${height})`)
-    .call(d3.axisBottom(xScale).ticks(ticksNumber).tickFormat(d3.format(".2s")))
+    .call(d3.axisBottom(xScaleTotal).ticks(ticksNumber).tickFormat(d3.format(".2s")))
     .selectAll("text")
     .style("fill", "#4B7AC4")
     .style("dy", "1.5em");
 
+  // Eixo X para preço mensal (parte de cima)
+  svg
+    .append("g")
+    .attr("transform", `translate(0,0)`) // Colocar o eixo no topo
+    .call(d3.axisTop(xScaleRent).ticks(ticksNumber).tickFormat(d3.format(".2s"))) // Usar axisTop
+    .selectAll("text")
+    .style("fill", "#4B7AC4")
+    .style("dy", "-1.5em"); // Colocar os textos acima do eixo
+
+  // Eixo Y (categorias)
   svg
     .append("g")
     .call(d3.axisLeft(yScale))
     .selectAll("text")
     .style("fill", "#4B7AC4");
 
+  // Título do gráfico
   svg
     .append("text")
     .attr("x", width / 2)
-    .attr("y", -5)
+    .attr("y", -margin.top / 2) // Ajustar o título para acomodar o eixo superior
     .attr("text-anchor", "middle")
     .attr("fill", "#4B7AC4")
     .text("Price Distribution")
