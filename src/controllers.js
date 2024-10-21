@@ -5,7 +5,6 @@
 function updateAllCharts() {
   updateParallelCoordinates(filtered_data);
   updateViolinPlot(violin_data, ".violinPlot", showViolinPlot);
-  //updateChoroplethMap(".choroplethMap");
 }
 
 /**
@@ -40,6 +39,8 @@ function updateMap(option) {
   if (globalFilters.MAP_TYPE == "none") {
     selectedMapOption.textContent = "🔍 What to see on the map?";
   }
+
+  updateChoroplethMap(".choroplethMap");
 }
 
 /**

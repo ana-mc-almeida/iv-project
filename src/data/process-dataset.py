@@ -143,33 +143,70 @@ df_dataset_processed = preprocess_data(df_dataSet)
 df_dataset_processed.to_csv('final_dataset.csv', index=False)
 df_dataset_processed.to_json('final_dataset.json', index=False, orient="records")
 
-# Converts to 'Title' (first letter of each word capitalized)
+
+def count_districts(df: pd.DataFrame) -> pd.Series:
+    return df['District'].value_counts()
+
+def mean_area_by_district(df: pd.DataFrame) -> pd.Series:
+    return df.groupby('District')['Area'].mean()
+
+def mean_pricePerSquareMeter_by_district(df: pd.DataFrame) -> pd.Series:
+    return df.groupby('District')['PricePerSquareMeter'].mean()
+
 def format_district_name(district: str) -> str:
     return district.title()
 
 # Function for processing GeoJSON data
-def process_geoData(geojson_path: str) -> dict:
+def process_geoData(geojson_path: str, district_counts: pd.Series, 
+                    mean_area: pd.Series, mean_pricePerSquareMeter: pd.Series) -> dict:
     with open(geojson_path) as f:
         geojson_data = json.load(f)
     
     district_to_zone = {district: zone for zone, districts in zones.items() for district in districts}
     
+    # Calcular os quartis
+    countQuartiles = pd.qcut(district_counts, q=4, labels=['Q1', 'Q2', 'Q3', 'Q4'])
+    areaQuartiles = pd.qcut(mean_area, q=4, labels=['Q1', 'Q2', 'Q3', 'Q4'])
+    priceQuartiles = pd.qcut(mean_pricePerSquareMeter, q=4, labels=['Q1', 'Q2', 'Q3', 'Q4'])
+
+    # Criar um DataFrame para armazenar as contagens e quartis
+    countQuartile_df = pd.DataFrame({'Count': district_counts, 'Quartile': countQuartiles})
+    areaQuartiles_df = pd.DataFrame({'AreaQuartile': mean_area, 'Quartile': areaQuartiles})
+    priceQuartiles_df = pd.DataFrame({'AreaQuartile': mean_pricePerSquareMeter, 'Quartile': priceQuartiles})
+
     for feature in geojson_data['features']:
-        # Pega o nome do distrito original
-        district = feature['properties']['Distrito']
+        # Get the original district name
+        district = feature['properties'].get('Distrito')
         
-        # Verifica se o nome do distrito é "VIANA DO CASTELO" e aplica a formatação
-        if district.upper() == "VIANA DO CASTELO":
-            formatted_district = "Viana do Castelo"
-        else:
-            formatted_district = district.title()  # Aplica title() para outros distritos
+        if not district:
+            continue  # Skip if 'Distrito' is not present
+
+        # Format district name
+        formatted_district = "Viana do Castelo" if district.upper() == "VIANA DO CASTELO" else district.title()
 
         feature['properties']['Zone'] = district_to_zone.get(formatted_district, 'Zona Desconhecida')
         feature['properties']['District'] = formatted_district
-        del feature['properties']['Distrito']  # Remove a propriedade original 'Distrito'
-    
+        del feature['properties']['Distrito']
+
+        feature['properties']['Count'] = int(district_counts.get(formatted_district, 0))
+        quartile = countQuartile_df.loc[formatted_district, 'Quartile'] if formatted_district in countQuartile_df.index else 'Unknown'
+        feature['properties']['NumberOfAvailabilityQuartile'] = quartile
+
+        feature['properties']['AreaMean'] = float(mean_area.get(formatted_district, 0))
+        quartile = areaQuartiles_df.loc[formatted_district, 'Quartile'] if formatted_district in areaQuartiles_df.index else 'Unknown'
+        feature['properties']['AreaQuartile'] = quartile
+
+        feature['properties']['PriceMean'] = float(mean_pricePerSquareMeter.get(formatted_district, 0))
+        quartile = priceQuartiles_df.loc[formatted_district, 'Quartile'] if formatted_district in priceQuartiles_df.index else 'Unknown'
+        feature['properties']['PriceQuartile'] = quartile
+        
     return geojson_data
 
-df_geoData_processed = process_geoData(initial_geoData_path)
+# Process the GeoJSON data and save the output
+district_counts = count_districts(df_dataset_processed)
+mean_area = mean_area_by_district(df_dataset_processed)
+mean_pricePerSquareMeter = mean_pricePerSquareMeter_by_district(df_dataset_processed)
+
+df_geoData_processed = process_geoData(initial_geoData_path, district_counts, mean_area, mean_pricePerSquareMeter)
 with open('final_portugal_district.geojson', 'w', encoding='utf-8') as f:
     json.dump(df_geoData_processed, f, ensure_ascii=False, indent=4)

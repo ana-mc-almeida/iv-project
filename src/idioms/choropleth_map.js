@@ -1,10 +1,5 @@
 let path;
-let rangeColors = ['#a8e6a3', '#66c266', '#339966', '#1f6033'];
-
-// Adicionar propriedade `clicked` para controlar o estado de clique
-geo_data.forEach(d => {
-    d.clicked = false; // Inicialmente, nenhum distrito está clicado
-});
+let rangeColorScale, rangeColors = ['#a8e6a3', '#66c266', '#339966', '#1f6033'];
 
 function createChoroplethMap(selector) {
     const margin = { top: 140, right: 80, bottom: 10, left: 0 };
@@ -27,6 +22,8 @@ function createChoroplethMap(selector) {
         .translate([width / 2, height / 2]);
 
     path = d3.geoPath().projection(projection);
+    
+    rangeColorScale = createRangeColorScale();
 
     svg.selectAll('path').remove();
 
@@ -41,7 +38,7 @@ function createChoroplethMap(selector) {
         .enter()
         .append('path')
         .attr('d', path)
-        .attr('fill', 'white')
+        .attr('fill', (d) => rangeColorScale(mapType(d)))
         .attr('stroke', (d) => colorScale(d.properties.Zone)) // Mapeia a cor do stroke para a zona
         .attr('stroke-width', 1) // Você pode ajustar a largura do stroke
         .each(function (d) {
@@ -51,7 +48,7 @@ function createChoroplethMap(selector) {
                 .attr('stroke-width', 6);
             } else {
                 d.clicked = false;
-                d3.select(this).attr('fill', 'white')
+                d3.select(this).attr('fill', (d) => rangeColorScale(mapType(d)))
                 .attr('stroke-width', 1);
             }
         })
@@ -72,7 +69,7 @@ function createChoroplethMap(selector) {
         })
         .on('mouseout', function (event, d) {
             if (!d.clicked) {
-                d3.select(this).attr('fill', 'white');
+                d3.select(this).attr('fill', (d) => rangeColorScale(mapType(d)));
             }
 
             tooltip.transition()
@@ -82,6 +79,37 @@ function createChoroplethMap(selector) {
         .on('click', function (event, d) {
             selectDistrict(d.properties.District);
         });
+    
+    // Crie os retângulos da legenda
+    const colorDomain = rangeColorScale.domain();
+    const colorRange = rangeColorScale.range();
+
+    const legendWidth = 270;
+    const legendInitialHeight = 450;
+    const legendHeight = 20;
+    
+    svg.append("text")
+        .attr("x", legendWidth + 30)
+        .attr("y", legendInitialHeight - 10)
+        .attr("font-weight", "bold")
+        .text(mapTypeStr());
+
+    colorDomain.forEach((d, i) => {
+        svg.append("rect")
+            .attr("x", legendWidth)
+            .attr("y", legendInitialHeight + i * legendHeight)
+            .attr("width", 20) // largura do retângulo
+            .attr("height", legendHeight - 2) // altura do retângulo
+            .style("fill", colorRange[i]);
+
+        // Adicione texto à direita dos retângulos
+        svg.append("text")
+            .attr("x", legendWidth + 30) // espaço entre o retângulo e o texto
+            .attr("y", legendInitialHeight + i * legendHeight + (legendHeight - 2) / 2)
+            .attr("dy", "0.35em") // alinha verticalmente o texto
+            .text(rangeLabels(i)) // Use os rótulos definidos acima
+            .style("font-size", "14px")
+    });
 
     d3.select("body").append("style").text(`
         .tooltip {
@@ -96,10 +124,73 @@ function createChoroplethMap(selector) {
             pointer-events: none;
         }
     `);
+
+    createLegend(selector);
+}
+
+function rangeLabels(index) {
+    const labels = [
+        'Minimum',
+        'Average',
+        'High',
+        'Maximum'
+    ];
+
+    const numberOfAvailabilityLabels = [
+        'Low',
+        'Medium',
+        'High',
+        'Maximum'
+    ];
+
+    if (globalFilters.MAP_TYPE === "Area" || globalFilters.MAP_TYPE === "PricePerSquareMeter") {
+        return labels[index];
+    } else if (globalFilters.MAP_TYPE === "NumberOfAvailability") {
+        return numberOfAvailabilityLabels[index];
+    } else {
+        return labels[index];
+    }
+
+
+}
+
+function mapTypeStr() {
+    if (globalFilters.MAP_TYPE === "Area") {
+        return "Area";
+    } else if (globalFilters.MAP_TYPE === "PricePerSquareMeter") {
+        return "Price";
+    } else if (globalFilters.MAP_TYPE === "NumberOfAvailability") {
+        return "Availability";
+    } else {
+        return "Area";
+    }
+}
+
+function mapType(d) {
+    if (globalFilters.MAP_TYPE === "Area") {
+        return d.properties.AreaQuartile;
+    } else if (globalFilters.MAP_TYPE === "PricePerSquareMeter") {
+        return d.properties.PriceQuartile;
+    } else if (globalFilters.MAP_TYPE === "NumberOfAvailability") {
+        return d.properties.NumberOfAvailabilityQuartile;
+    } else {
+        return d.properties.AreaQuartile;
+    }
+}
+
+function createRangeColorScale() {
+    if (globalFilters.MAP_TYPE === "Area") {
+        return d3.scaleOrdinal(rangeColors).domain(geo_data.map((d) => d.properties.AreaQuartile));
+    } else if (globalFilters.MAP_TYPE === "PricePerSquareMeter") {
+        return d3.scaleOrdinal(rangeColors).domain(geo_data.map((d) => d.properties.PriceQuartile));
+    } else if (globalFilters.MAP_TYPE === "NumberOfAvailability") {
+        return d3.scaleOrdinal(rangeColors).domain(geo_data.map((d) => d.properties.NumberOfAvailabilityQuartile));
+    } else {
+        return d3.scaleOrdinal(rangeColors).domain(geo_data.map((d) => d.properties.AreaQuartile));
+    }
 }
 
 function updateChoroplethMapSelectedDistrict(district) {
-    console.log(district);
     d3.selectAll('path')
         .each(function (d) {
             if (d && d.properties && d.properties.District === district) {
@@ -108,7 +199,7 @@ function updateChoroplethMapSelectedDistrict(district) {
                     d3.select(this).attr('fill', 'red')
                     .attr('stroke-width', 6);
                 } else {
-                    d3.select(this).attr('fill', 'white')
+                    d3.select(this).attr('fill', (d) => rangeColorScale(mapType(d)))
                     .attr('stroke-width', 1);
                 }
             }
@@ -116,7 +207,6 @@ function updateChoroplethMapSelectedDistrict(district) {
 }
 
 function updateChoroplethMapHoverDistrict(district, isHover) {
-    console.log(district);
     d3.selectAll('path')
         .each(function (d) {
             if (d && d.properties && !d.clicked && d.properties.District === district) {
