@@ -100,6 +100,29 @@ function createChoroplethMap(selector) {
             selectDistrict(d.properties.District);
         });
     
+    createLegend(svg);
+
+    // Style for the tooltip
+    d3.select("body").append("style").text(`
+        .tooltip {
+            position: absolute;
+            text-align: center;
+            width: auto;
+            padding: 5px;
+            font: 12px sans-serif;
+            background: lightsteelblue;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+    `);
+}
+
+/**
+ * Creates a legend for the choropleth map.
+ * @param {object} svg - The SVG element where the legend will be added.
+ */
+function createLegend (svg) {
     const colorDomain = rangeColorScale.domain();
     const colorRange = rangeColorScale.range();
 
@@ -131,23 +154,6 @@ function createChoroplethMap(selector) {
             .text(rangeLabels(i))
             .style("font-size", "14px")
     });
-
-    // Style for the tooltip
-    d3.select("body").append("style").text(`
-        .tooltip {
-            position: absolute;
-            text-align: center;
-            width: auto;
-            padding: 5px;
-            font: 12px sans-serif;
-            background: lightsteelblue;
-            border: 0px;
-            border-radius: 8px;
-            pointer-events: none;
-        }
-    `);
-
-    createLegend(selector);
 }
 
 /**
