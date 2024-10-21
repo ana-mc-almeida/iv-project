@@ -217,15 +217,8 @@ function mapType(d) {
  * @returns {object} - The D3 color scale.
  */
 function createRangeColorScale() {
-    if (globalFilters.MAP_TYPE === "Area") {
-        return d3.scaleOrdinal(rangeColors).domain(geo_data.map((d) => d.properties.AreaQuartile));
-    } else if (globalFilters.MAP_TYPE === "PricePerSquareMeter") {
-        return d3.scaleOrdinal(rangeColors).domain(geo_data.map((d) => d.properties.PriceQuartile));
-    } else if (globalFilters.MAP_TYPE === "NumberOfAvailability") {
-        return d3.scaleOrdinal(rangeColors).domain(geo_data.map((d) => d.properties.NumberOfAvailabilityQuartile));
-    } else {
-        return d3.scaleOrdinal(rangeColors).domain(geo_data.map((d) => d.properties.AreaQuartile));
-    }
+    const quartileDomain = ['Q1', 'Q2', 'Q3', 'Q4'];
+    return d3.scaleOrdinal().domain(quartileDomain).range(rangeColors);
 }
 
 /**
