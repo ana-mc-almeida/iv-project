@@ -81,14 +81,16 @@ function createPaths(svg, data) {
     .style("fill", "none")
     .style("stroke", (d) => colorScale(d.Zone)) // Apply color based on Zone
     .style("stroke-width", "1.5px")
-    .on("mouseover", function () {
+    .on("mouseover", function (event, d) {
       d3.select(this).raise();
       d3.select(this).style("stroke-width", "4px");
       d3.select(this).style("stroke", "black");
+      updateChoroplethMapHoverDistrict(d.District, true);
     })
-    .on("mouseout", function () {
+    .on("mouseout", function (event, d) {
       d3.select(this).style("stroke-width", "1.5px");
       d3.select(this).style("stroke", (d) => colorScale(d.Zone));
+      updateChoroplethMapHoverDistrict(d.District, false);
     });
 }
 

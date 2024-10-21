@@ -1,3 +1,6 @@
+let path;
+let colors = ['#a8e6a3', '#66c266', '#339966', '#1f6033'];
+
 function createChoroplethMap(selector) {
     const margin = { top: 140, right: 80, bottom: 10, left: 0 };
     const divElement = d3.select(selector).node();
@@ -18,7 +21,7 @@ function createChoroplethMap(selector) {
         .scale(6000) // Ajuste a escala conforme necessário
         .translate([width / 2, height / 2]);
 
-    const path = d3.geoPath().projection(projection);
+    path = d3.geoPath().projection(projection);
 
     svg.selectAll('path').remove();
     
@@ -38,15 +41,13 @@ function createChoroplethMap(selector) {
         .enter()
         .append('path')
         .attr('d', path)
-        .attr('fill', 'black')
+        .attr('fill', 'white')
         .attr('stroke', (d) => colorScale(d.properties.Zone)) // Mapeia a cor do stroke para a zona
         .attr('stroke-width', 1) // Você pode ajustar a largura do stroke
         .on('mouseover', function (event, d) {
-            if (!d.clicked) { // Só muda para laranja se não estiver clicado
+            if (!d.clicked) {
                 d3.select(this).attr('fill', 'orange');
             }
-
-            // Exibir o tooltip
             tooltip.transition()
                 .duration(200)
                 .style("opacity", .9);
@@ -59,28 +60,18 @@ function createChoroplethMap(selector) {
                    .style("top", (event.pageY) + "px");
         })
         .on('mouseout', function (event, d) {
-            if (!d.clicked) { // Só retorna à cor original se não estiver clicado
-                d3.select(this).attr('fill', 'black');
+            if (!d.clicked) {
+                d3.select(this).attr('fill', 'white');
             }
 
-            // Ocultar o tooltip
             tooltip.transition()
                 .duration(500)
                 .style("opacity", 0);
         })
         .on('click', function (event, d) {
-            // Altera o estado clicado
-            d.clicked = !d.clicked; // Alterna entre clicado e não clicado
-
-            // Altera a cor dependendo do estado de clique
-            if (d.clicked) {
-                d3.select(this).attr('fill', 'red');
-            } else {
-                d3.select(this).attr('fill', 'rgb(101, 153, 203)');
-            }
+            selectDistrict(d.properties.District);
         });
 
-    // Estilizando o tooltip
     d3.select("body").append("style").text(`
         .tooltip {
             position: absolute;
@@ -94,4 +85,41 @@ function createChoroplethMap(selector) {
             pointer-events: none;
         }
     `);
+}
+
+function updateChoroplethMapSelectedDistrict(district) {
+    console.log(district);
+    d3.selectAll('path')
+        .each(function (d) {
+            if (d && d.properties && d.properties.District === district) {
+                d.clicked = !d.clicked;
+                if (d.clicked) {
+                    d3.select(this).attr('fill', 'red')
+                    .attr('stroke-width', 6);
+                } else {
+                    d3.select(this).attr('fill', 'white')
+                    .attr('stroke-width', 1);
+                }
+            }
+        });
+}
+
+function updateChoroplethMapHoverDistrict(district, isHover) {
+    console.log(district);
+    d3.selectAll('path')
+        .each(function (d) {
+            if (d && d.properties && d.properties.District === district) {
+                if (isHover) {
+                    d3.select(this).attr('stroke-width', 6);
+                } else {
+                    d3.select(this).attr('stroke-width', 1);
+                }
+            }
+        });
+}
+
+// type
+function updateChoroplethMap(selector){
+    d3.select(selector).selectAll("svg").remove();
+    createChoroplethMap(selector);
 }

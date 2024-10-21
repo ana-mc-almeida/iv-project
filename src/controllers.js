@@ -5,6 +5,7 @@
 function updateAllCharts() {
   updateParallelCoordinates(filtered_data);
   updateViolinPlot(violin_data, ".violinPlot", showViolinPlot);
+  //updateChoroplethMap(".choroplethMap");
 }
 
 /**
@@ -62,6 +63,8 @@ function updateDistrict(district) {
   filterDataset();
 
   updateAllCharts();
+
+  updateChoroplethMapSelectedDistrict(district);
 }
 
 /**
