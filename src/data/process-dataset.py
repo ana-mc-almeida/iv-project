@@ -169,6 +169,29 @@ def process_geoData(geojson_path: str, district_counts: pd.Series,
     areaQuartiles = pd.qcut(mean_area, q=4, labels=['Q1', 'Q2', 'Q3', 'Q4'])
     priceQuartiles = pd.qcut(mean_pricePerSquareMeter, q=4, labels=['Q1', 'Q2', 'Q3', 'Q4'])
 
+    # Obter os limites reais dos quartis
+    _, district_bins = pd.qcut(district_counts, q=4, retbins=True)
+    _, area_bins = pd.qcut(mean_area, q=4, retbins=True)
+    _, price_bins = pd.qcut(mean_pricePerSquareMeter, q=4, retbins=True)
+
+    # Criar um DataFrame com os valores concretos dos quartis
+    quartiles_df = pd.DataFrame({
+        'District Count Limits': [district_bins[0], district_bins[1], district_bins[2], district_bins[3]],
+        'Area Limits': [area_bins[0], area_bins[1], area_bins[2], area_bins[3]],
+        'Price Per Sq Meter Limits': [price_bins[0], price_bins[1], price_bins[2], price_bins[3]]
+    })
+
+    quartiles_list = [{
+        "District Count Limits": [round(value, 1) for value in quartiles_df["District Count Limits"]],
+        "Area Limits": [round(value, 1) for value in quartiles_df["Area Limits"]],
+        "Price Per Sq Meter Limits": [round(value, 1) for value in quartiles_df["Price Per Sq Meter Limits"]]
+    }]
+
+    # Salvar como JSON
+    with open('quartiles_values.json', 'w') as f:
+        json.dump(quartiles_list, f, indent=4)
+
+
     # Criar um DataFrame para armazenar as contagens e quartis
     countQuartile_df = pd.DataFrame({'Count': district_counts, 'Quartile': countQuartiles})
     areaQuartiles_df = pd.DataFrame({'AreaQuartile': mean_area, 'Quartile': areaQuartiles})

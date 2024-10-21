@@ -5,6 +5,7 @@ var filtered_data; // Filtered data to update the charts
 var violin_data; // Data to create the violin plot
 var geo_data;
 var colorScale;
+var quartile_value;
 
 // Variable to hold the selected year value
 let selectedYears = 50;
@@ -28,6 +29,10 @@ function init() {
       geo_data = geoData.features.slice();
       createChoroplethMap(".choroplethMap");
     });
+  });
+  
+  d3.json('./data/quartiles_values.json').then(function (quartile_data) {
+    quartile_value = quartile_data.slice();
   });
 }
 

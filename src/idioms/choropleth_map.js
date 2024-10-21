@@ -228,26 +228,45 @@ function unhighlightDistrictsByQuartile(quartile) {
  * @returns {string} - The label corresponding to the given index.
  */
 function rangeLabels(index) {
-    const labels = [
-        'Minimum',
-        'Average',
-        'High',
-        'Maximum'
+
+    const priceLimitsArray = Object.keys(quartile_value[0]).map(key => quartile_value[0][key]);
+    const numberOfAvailabilityArray = priceLimitsArray[0];
+    const areaArray = priceLimitsArray[1];
+    const priceArray = priceLimitsArray[2];
+
+    const areaLabels = [
+        '0.0 - ' + parseFloat(areaArray[0]).toFixed(1),
+        parseFloat(areaArray[0]).toFixed(1) + ' - ' + parseFloat(areaArray[1]).toFixed(1),
+        parseFloat(areaArray[1]).toFixed(1) + ' - ' + parseFloat(areaArray[2]).toFixed(1),
+        parseFloat(areaArray[2]).toFixed(1) + ' - ' + parseFloat(areaArray[3]).toFixed(1),
+        parseFloat(areaArray[3]).toFixed(1) + ' - ' + parseFloat(areaArray[4]).toFixed(1)
+    ];
+
+    const priceLabels = [
+        '0.0 - ' + parseFloat(priceArray[0]).toFixed(1),
+        parseFloat(priceArray[0]).toFixed(1) + ' - ' + parseFloat(priceArray[1]).toFixed(1),
+        parseFloat(priceArray[1]).toFixed(1) + ' - ' + parseFloat(priceArray[2]).toFixed(1),
+        parseFloat(priceArray[2]).toFixed(1) + ' - ' + parseFloat(priceArray[3]).toFixed(1),
+        parseFloat(priceArray[3]).toFixed(1) + ' - ' + parseFloat(priceArray[4]).toFixed(1)
     ];
 
     const numberOfAvailabilityLabels = [
-        'Low',
-        'Medium',
-        'High',
-        'Maximum'
+        '0 - ' + numberOfAvailabilityArray[0],
+        numberOfAvailabilityArray[0] + ' - ' + numberOfAvailabilityArray[1],
+        numberOfAvailabilityArray[1] + ' - ' + numberOfAvailabilityArray[2],
+        numberOfAvailabilityArray[2] + ' - ' + numberOfAvailabilityArray[3],
+        numberOfAvailabilityArray[3] + ' - ' + numberOfAvailabilityArray[4]
     ];
 
-    if (globalFilters.MAP_TYPE === "Area" || globalFilters.MAP_TYPE === "PricePerSquareMeter") {
-        return labels[index];
+    console.log(areaLabels);
+    if (globalFilters.MAP_TYPE === "Area") {
+        return areaLabels[index];
+    } else if (globalFilters.MAP_TYPE === "PricePerSquareMeter") {
+        return priceLabels[index];
     } else if (globalFilters.MAP_TYPE === "NumberOfAvailability") {
         return numberOfAvailabilityLabels[index];
     } else {
-        return labels[index];
+        return areaLabels[index];
     }
 }
 
@@ -257,13 +276,13 @@ function rangeLabels(index) {
  */
 function mapTypeStr() {
     if (globalFilters.MAP_TYPE === "Area") {
-        return "Area";
+        return "Area(m²)";
     } else if (globalFilters.MAP_TYPE === "PricePerSquareMeter") {
-        return "Price";
+        return "Price(€)";
     } else if (globalFilters.MAP_TYPE === "NumberOfAvailability") {
         return "Availability";
     } else {
-        return "Area";
+        return "Area(m²)";
     }
 }
 
