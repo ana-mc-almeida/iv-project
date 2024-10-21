@@ -56,9 +56,13 @@ function createViolinPlot(data, selector, show) {
     return;
   }
 
+  const tooltip = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
   const domain = domains.find((d) => d.show === show).domain;
 
-  const margin = { top: 60, right: 30, bottom: 60, left: 70 }; // Aumentei o topo e o fundo para acomodar os rótulos dos eixos
+  const margin = { top: 60, right: 30, bottom: 60, left: 70 };
   const divElement = d3.select(selector).node();
   const width = divElement.clientWidth - margin.left - margin.right;
   const height = divElement.clientHeight - margin.top - margin.bottom;
@@ -103,7 +107,7 @@ function createViolinPlot(data, selector, show) {
     const density = kde(prices);
 
     const maxDensityEach = d3.max(density, (d) => d[1]);
-    
+
     violinWidthScale.domain([0, maxDensityEach]);
 
     if (maxDensityEach > maxDensity) {
@@ -121,7 +125,7 @@ function createViolinPlot(data, selector, show) {
           .area()
           .x((d) =>
             attribute === "Rent" ? xScaleRent(d[0] / globalFilters.YEARS / 12) : xScaleTotal(d[0])
-          ) // Diferenciar escalas para Rent (mensal corrigido) e Sell (total)
+          )
           .y0((d) =>
             attribute !== upValue
               ? height / 2
@@ -132,11 +136,58 @@ function createViolinPlot(data, selector, show) {
               ? height / 2 + violinWidthScale(d[1])
               : height / 2
           )
-          .curve(d3.curveBasis)
+          .curve(d3.curveMonotoneX)
       )
       .style("fill", attribute === upValue ? "#1392FF" : "#A724FF")
-      .style("stroke", "#4d4d4d");
-  });
+      .style("stroke", "#4d4d4d")
+
+    // Adicionar pontos relevantes (onde a densidade não é zero)
+    density.forEach((d) => {
+      if (d[1] > 0) { // Verifica se a densidade é maior que 0
+        const xPos = attribute === "Rent" ? xScaleRent(d[0] / globalFilters.YEARS / 12) : xScaleTotal(d[0]);
+
+        // Calcular a posição Y usando a curva do violin plot
+        const yPos = attribute === upValue
+          ? height / 2 - violinWidthScale(d[1])
+          : height / 2 + violinWidthScale(d[1]);
+
+        // Adicionar círculo na posição correspondente da curva
+        svg.append("circle")
+          .attr("cx", xPos)
+          .attr("cy", yPos)
+          .attr("r", 7)
+          .style("opacity", 0)
+          .on("mouseover", function (event) {
+            const countAtDensity = dataAttribute.filter(price => price.Price >= d[0] - 0.01 && price.Price <= d[0] + 0.01).length;
+            const monthlyPrice = d[0] / globalFilters.YEARS / 12
+            const tooltipContent = `
+              <strong>Total Price:</strong> ${d[0].toFixed(2)}<br>
+              <strong>Monthly Price:</strong> ${monthlyPrice.toFixed(2)}<br>
+              <strong>Number of Houses:</strong> ${countAtDensity}
+            `;
+
+            tooltip.transition()
+              .duration(200)
+              .style("opacity", .9);
+
+            tooltip.html(tooltipContent)
+              .style("left", (event.pageX + 10) + "px")
+              .style("top", (event.pageY + 10) + "px");
+          })
+          .on("mousemove", function (event) {
+            tooltip.style("left", (event.pageX + 10) + "px")
+              .style("top", (event.pageY + 10) + "px");
+          })
+          .on("mouseout", function () {
+            tooltip.transition()
+              .duration(500)
+              .style("opacity", 0);
+          });
+      }
+    }
+    )
+  })
+
 
   // Grade para o preço mensal (parte de cima)
   svg
@@ -218,7 +269,7 @@ function createViolinPlot(data, selector, show) {
   // Rótulo para o eixo X inferior (preço total)
   svg
     .append("text")
-    .attr("x", width  - margin.right)
+    .attr("x", width - margin.right)
     .attr("y", height + margin.bottom / 2) // Ajusta a posição do rótulo
     .attr("text-anchor", "middle")
     .style("fill", "#4B7AC4")
@@ -233,7 +284,6 @@ function createViolinPlot(data, selector, show) {
  * @param {String} show - Atributo a ser mostrado no eixo Y
  */
 function updateViolinPlot(data, selector, show) {
-  console.log(selector);
   d3.select(selector).selectAll("svg").remove();
   createViolinPlot(data, selector, show);
 }
