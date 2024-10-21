@@ -56,13 +56,22 @@ function createChoroplethMap(selector) {
             if (!d.clicked) {
                 d3.select(this).attr('fill', 'orange');
             }
+            const tooltipContent = `
+            <strong>District:</strong> ${d.properties.District}<br>
+            <strong>Area Mean:</strong> ${d.properties.AreaMean}<br>
+            <strong>Price Mean:</strong> ${d.properties.PriceMean}<br>
+            <strong>Number of Availability:</strong> ${d.properties.Count}
+            `;
+        
+            // Show the tooltip with a transition
             tooltip.transition()
                 .duration(200)
                 .style("opacity", .9);
-            tooltip.html(d.properties.District)
+            tooltip.html(tooltipContent) // Set the combined HTML
                 .style("left", (event.pageX + 10) + "px")
-                .style("top", (event.pageY) + "px");
-        })
+                .style("top", (event.pageY + 10) + "px");
+            })
+            
         .on('mousemove', function (event) {
             tooltip.style("left", (event.pageX + 10) + "px")
                    .style("top", (event.pageY) + "px");
@@ -80,7 +89,6 @@ function createChoroplethMap(selector) {
             selectDistrict(d.properties.District);
         });
     
-    // Crie os retângulos da legenda
     const colorDomain = rangeColorScale.domain();
     const colorRange = rangeColorScale.range();
 
@@ -98,16 +106,16 @@ function createChoroplethMap(selector) {
         svg.append("rect")
             .attr("x", legendWidth)
             .attr("y", legendInitialHeight + i * legendHeight)
-            .attr("width", 20) // largura do retângulo
-            .attr("height", legendHeight - 2) // altura do retângulo
+            .attr("width", 20) 
+            .attr("height", legendHeight - 2)
             .style("fill", colorRange[i]);
 
         // Adicione texto à direita dos retângulos
         svg.append("text")
-            .attr("x", legendWidth + 30) // espaço entre o retângulo e o texto
+            .attr("x", legendWidth + 30)
             .attr("y", legendInitialHeight + i * legendHeight + (legendHeight - 2) / 2)
-            .attr("dy", "0.35em") // alinha verticalmente o texto
-            .text(rangeLabels(i)) // Use os rótulos definidos acima
+            .attr("dy", "0.35em")
+            .text(rangeLabels(i))
             .style("font-size", "14px")
     });
 
@@ -150,8 +158,6 @@ function rangeLabels(index) {
     } else {
         return labels[index];
     }
-
-
 }
 
 function mapTypeStr() {
@@ -219,7 +225,6 @@ function updateChoroplethMapHoverDistrict(district, isHover) {
         });
 }
 
-// type
 function updateChoroplethMap(selector){
     d3.select(selector).selectAll("svg").remove();
     createChoroplethMap(selector);
