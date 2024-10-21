@@ -45,6 +45,7 @@ input[type="range"] {
   display: flex;
   flex-direction: column;
 }
+
 html,
 * {
   box-sizing: border-box;
@@ -297,6 +298,11 @@ body {
   transform: translateY(-50%);
   color: black;
   pointer-events: none;
+}
+
+.year-input-explanation {
+  font-size: xx-small;
+  font-weight: lighter;
 }
 
 .parallelCoordinatesSubtitle {
