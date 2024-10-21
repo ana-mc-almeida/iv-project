@@ -137,14 +137,43 @@ function createLegend (svg) {
         .attr("font-weight", "bold")
         .text(mapTypeStr());
 
-    // Create the legend for the map
+   // Create the legend for the map
     colorDomain.forEach((d, i) => {
+        let isClicked = false; // Flag to track whether the item has been clicked
+
         svg.append("rect")
             .attr("x", legendWidth)
             .attr("y", legendInitialHeight + i * legendHeight)
             .attr("width", 20) 
             .attr("height", legendHeight - 2)
-            .style("fill", colorRange[i]);
+            .style("fill", colorRange[i])
+            .style('stroke', colorRange[i]) // Add an initial stroke (optional)
+            .style('stroke-width', 1) // Set initial stroke width
+            .on('mouseover', function () {
+                if (!isClicked) { // Only change stroke if not clicked
+                    d3.select(this)
+                        .style('stroke-width', 3); // Increase stroke width on hover
+                }
+            })
+            .on('mouseout', function () {
+                if (!isClicked) { // Only change stroke if not clicked
+                    d3.select(this)
+                        .style('stroke-width', 1); // Reset stroke width when not hovered
+                }
+            })
+            .on('click', function () {
+                isClicked = !isClicked; // Toggle click state
+
+                if (isClicked) {
+                    d3.select(this)
+                        .style('stroke-width', 6); // Set stroke width to 6 when clicked
+                    highlightDistrictsByQuartile(d);
+                } else {
+                    d3.select(this)
+                        .style('stroke-width', 1); // Reset to normal if unclicked
+                    unhighlightDistrictsByQuartile(d);
+                }
+            });
 
         // Add text labels next to the legend rectangles
         svg.append("text")
@@ -152,8 +181,45 @@ function createLegend (svg) {
             .attr("y", legendInitialHeight + i * legendHeight + (legendHeight - 2) / 2)
             .attr("dy", "0.35em")
             .text(rangeLabels(i))
-            .style("font-size", "14px")
+            .style("font-size", "14px");
     });
+
+}
+
+/**
+ * Highlights the districts that belong to the clicked quartile.
+ * @param {string} quartile - The quartile associated with the legend item clicked.
+ */
+function highlightDistrictsByQuartile(quartile) {
+    d3.selectAll('path')
+        .each(function (d) {
+            if (d && d.properties && mapType(d) === quartile) {
+                if (!d.clicked) {
+                    selectDistrict(d.properties.District);
+                }
+                d.clicked = true; // Set clicked state
+                d3.select(this).attr('fill', 'red') // Highlight district
+                    .attr('stroke-width', 6);
+            }
+        });
+}
+
+/**
+ * Unhighlights the districts that belong to the unclicked quartile.
+ * @param {string} quartile - The quartile associated with the legend item unclicked.
+ */
+function unhighlightDistrictsByQuartile(quartile) {
+    d3.selectAll('path')
+        .each(function (d) {
+            if (d && d.properties && mapType(d) === quartile) {
+                if (d.clicked) {
+                    selectDistrict(d.properties.District);
+                }
+                d.clicked = false; // Reset clicked state
+                d3.select(this).attr('fill', (d) => rangeColorScale(mapType(d))) // Reset color
+                    .attr('stroke-width', 1);
+            }
+        });
 }
 
 /**
