@@ -4,8 +4,10 @@ var global_data; // Global data to apply filters
 var filtered_data; // Filtered data to update the charts
 var violin_data; // Data to create the violin plot
 var geo_data;
+var initial_geo_data;
 var colorScale;
 var quartile_value;
+var initial_quartile_value;
 
 // Variable to hold the selected year value
 let selectedYears = 50;
@@ -27,12 +29,14 @@ function init() {
 
     d3.json('./data/final_portugal_district.geojson').then(function (geoData) {
       geo_data = geoData.features.slice();
+      initial_geo_data = geoData.features.slice();
       createChoroplethMap(".choroplethMap");
     });
   });
   
   d3.json('./data/quartiles_values.json').then(function (quartile_data) {
     quartile_value = quartile_data.slice();
+    initial_quartile_value = quartile_data.slice();
   });
 }
 
@@ -53,6 +57,7 @@ function processData(data) {
       AdsType: d["AdsType"],
       Condition: d["Condition"],
       Zone: d["Zone"],
+      PricePerSquareMeter: d["PricePerSquareMeter"],
     };
   });
 }
@@ -162,7 +167,7 @@ function selectMap(typeOfMap) {
  * @param {String} district - The district to be filtered.
  */
 function selectDistrict(district) {
-  updateDistrict(district);
+  updateDistrict(district, false);
 }
 
 /**

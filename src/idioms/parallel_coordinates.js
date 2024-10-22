@@ -208,8 +208,8 @@ function brushEnded(event, dim) {
   if (!event.selection) {
     globalFilters[dim] = null;
   }
-  filterDataset();
-  updateAllCharts();
+  filterDataset(true);
+  updateAllCharts("none");
 }
 
 /**
