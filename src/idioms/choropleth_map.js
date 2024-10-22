@@ -50,7 +50,7 @@ function createChoroplethMap(selector) {
             // Highlight selected districts based on global filters
             if (globalFilters.DISTRICT.includes(d.properties.District)) {
                 d.clicked = true;
-                d3.select(this).attr('fill', '#005CEE ')
+                d3.select(this).attr('fill', '#8282FA')
                 .attr('stroke-width', 6);
             } else {
                 d.clicked = false;
@@ -61,7 +61,7 @@ function createChoroplethMap(selector) {
         .on('mouseover', function (event, d) {
             // Change color on mouse over
             if (!d.clicked) {
-                d3.select(this).attr('fill', '#E3F0FD');
+                d3.select(this).attr('fill', '#D2D2FA');
             }
             const tooltipContent = `
             <strong>District:</strong> ${d.properties.District}<br>
@@ -141,7 +141,7 @@ function createLegend (svg) {
             .on('mouseout', function () {
                 if (!isClicked) { // Only change stroke if not clicked
                     d3.select(this)
-                        .style('stroke-width', 1); // Reset stroke width when not hove#005CEE 
+                        .style('stroke-width', 1); // Reset stroke width when not hove#8282FA 
                 }
             })
             .on('click', function () {
@@ -182,7 +182,7 @@ function highlightDistrictsByQuartile(quartile) {
                     updateDistrict(d.properties.District, false);
                 }
                 d.clicked = true; // Set clicked state
-                d3.select(this).attr('fill', '#005CEE ') // Highlight district
+                d3.select(this).attr('fill', '#8282FA ') // Highlight district
                     .attr('stroke-width', 6);
             }
         });
@@ -306,7 +306,7 @@ function updateChoroplethMapSelectedDistrict(district) {
             if (d && d.properties && d.properties.District === district) {
                 d.clicked = !d.clicked; // Toggle the clicked state
                 if (d.clicked) {
-                    d3.select(this).attr('fill', '#005CEE ') // Highlight clicked district
+                    d3.select(this).attr('fill', '#8282FA ') // Highlight clicked district
                     .attr('stroke-width', 6);
                 } else {
                     d3.select(this).attr('fill', (d) => rangeColorScale(mapType(d))) // Reset color
@@ -317,9 +317,9 @@ function updateChoroplethMapSelectedDistrict(district) {
 }
 
 /**
- * Updates the visual indication of a district when hove#005CEE  over.
- * @param {string} district - The name of the district being hove#005CEE .
- * @param {boolean} isHover - Indicates if the district is being hove#005CEE  over.
+ * Updates the visual indication of a district when hove#8282FA  over.
+ * @param {string} district - The name of the district being hove#8282FA .
+ * @param {boolean} isHover - Indicates if the district is being hove#8282FA  over.
  */
 function updateChoroplethMapHoverDistrict(district, isHover) {
     d3.selectAll('path')
@@ -336,7 +336,7 @@ function updateChoroplethMapHoverDistrict(district, isHover) {
 }
 
 /**
- * Updates the choropleth map by #005CEE rawing it in the specified selector.
+ * Updates the choropleth map by #8282FA rawing it in the specified selector.
  * @param {string} selector - The CSS selector for the element to update the map in.
  */
 function updateChoroplethMap(selector) {
