@@ -4,7 +4,7 @@ const globalFilters = {
   DISTRICT: [],
   TYPE: ["Rent", "Sell"],
   CONDITION: [],
-  YEARS: 0,
+  YEARS: 50,
 };
 
 /**
