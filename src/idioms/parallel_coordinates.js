@@ -73,15 +73,8 @@ function createPaths(svg, data) {
   // Create tooltip
   const tooltip = d3.select("body").append("div")
     .attr("class", "tooltip")
-    .style("opacity", 0)
-    .style("position", "absolute")
-    .style("background", "white")
-    .style("border", "1px solid #ccc")
-    .style("border-radius", "5px")
-    .style("padding", "10px")
-    .style("pointer-events", "none")
-    .style("z-index", 10); // Ensure tooltip appears above other elements
-
+    .style("opacity", 0);
+    
   return svg
     .append("g")
     .attr("class", "foreground")
