@@ -172,6 +172,8 @@ function addAxesWithBrush(svg) {
             .attr("transform", (d) => `translate(${position(d)})`);
           filterDataset();
           updateParallelCoordinates(filtered_data);
+          // tick labels on the top
+          dimensionGroup.raise();
         })
         .on("end", function (event, dim) {
           delete dragging[dim];
