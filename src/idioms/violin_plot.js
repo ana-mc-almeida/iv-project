@@ -144,7 +144,7 @@ function createViolinPlot(data, selector, show) {
           .curve(d3.curveMonotoneX)
       )
 
-      .style("fill", attribute === upValue ? "#88A6CE" : "#A2C6F6")
+      .style("fill", attribute === upValue ? "#A7F9E9" : "#FBCFB1")
       .style("stroke", "#4d4d4d")
 
     // Adicionar pontos relevantes (onde a densidade não é zero)
