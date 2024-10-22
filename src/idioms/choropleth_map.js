@@ -66,7 +66,7 @@ function createChoroplethMap(selector) {
             const tooltipContent = `
             <strong>District:</strong> ${d.properties.District}<br>
             <strong>Area Mean:</strong> ${d.properties.AreaMean}<br>
-            <strong>Price Mean:</strong> ${d.properties.PriceMean}<br>
+            <strong>Price Per Square Meter Mean:</strong> ${d.properties.PriceMean}<br>
             <strong>Number of Availability:</strong> ${d.properties.Count}
             `;
         
