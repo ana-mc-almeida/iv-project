@@ -161,6 +161,8 @@ function createViolinPlot(data, selector, show) {
           .attr("cx", xPos)
           .attr("cy", yPos)
           .attr("r", 7)
+          .attr("class", `violin-point price-${d[0].toFixed(2)}`)
+          .style("color", "black")
           .style("opacity", 0)
           .on("mouseover", function (event) {
             const previusRange = previusDensity[0] + (d[0] -previusDensity[0]) / 2;
@@ -293,4 +295,47 @@ function createViolinPlot(data, selector, show) {
 function updateViolinPlot(data, selector, show) {
   d3.select(selector).selectAll("svg").remove();
   createViolinPlot(data, selector, show);
+}
+
+/**
+ * Updates the visual indication of a house when hovered over in the violin plot.
+ * A circle will be displayed at the corresponding price on the x-axis of the violin plot.
+ * 
+ * @param {Number} housePrice - The price of the house being hovered.
+ * @param {Boolean} isHover - Indicates if the house is being hovered over.
+ */
+function updateViolinPlotHoverHouse(housePrice, isHover) {
+  // Reset the opacity of all points
+  d3.selectAll(".violin-point")
+    .style("opacity", 0);
+    
+  if (isHover) {
+    // Find the closest point to the house price
+    const points = d3.selectAll(".violin-point");
+    let minDiff = Infinity;
+    let closestPoint = null;
+    
+    points.each(function() {
+      const className = d3.select(this).attr("class");
+      const priceMatch = className.match(/price-(\d+\.?\d*)/);
+      if (priceMatch) {
+        const pointPrice = parseFloat(priceMatch[1]);
+        const diff = Math.abs(pointPrice - housePrice);
+        if (diff < minDiff) {
+          minDiff = diff;
+          closestPoint = this;
+        }
+      }
+    });
+    
+    if (closestPoint) {
+      d3.select(closestPoint)
+        .style("opacity", 0.5);
+    }
+  }
+  else {
+    // Reset the opacity of all points
+    d3.selectAll(".violin-point")
+      .style("opacity", 0);
+  }
 }

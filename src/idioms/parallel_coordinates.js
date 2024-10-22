@@ -125,6 +125,8 @@ function createPaths(svg, data) {
       tooltip.html(tooltipContent)
         .style("left", (event.pageX + 10) + "px")
         .style("top", (event.pageY + 10) + "px");
+      
+        updateViolinPlotHoverHouse(d.Price, true);
     })
     .on("mousemove", function (event) {
       tooltip.style("left", (event.pageX + 10) + "px")
@@ -136,6 +138,8 @@ function createPaths(svg, data) {
       tooltip.transition()
         .duration(500)
         .style("opacity", 0); // Hide tooltip
+      
+      updateViolinPlotHoverHouse(d.Price, false);
     });
 }
 
