@@ -138,7 +138,8 @@ function createViolinPlot(data, selector, show) {
           )
           .curve(d3.curveMonotoneX)
       )
-      .style("fill", attribute === upValue ? "#1392FF" : "#A724FF")
+
+      .style("fill", attribute === upValue ? "#88A6CE" : "#A2C6F6")
       .style("stroke", "#4d4d4d")
 
     // Adicionar pontos relevantes (onde a densidade não é zero)
@@ -175,6 +176,7 @@ function createViolinPlot(data, selector, show) {
             tooltip.transition()
               .duration(200)
               .style("opacity", .9);
+
 
             tooltip.html(tooltipContent)
               .style("left", (event.pageX + 10) + "px")
