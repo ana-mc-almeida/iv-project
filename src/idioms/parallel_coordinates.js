@@ -106,7 +106,7 @@ function createPaths(svg, data) {
       // Show tooltip
       tooltip.transition()
         .duration(200)
-        .style("opacity", 0.8);
+        .style("opacity", 0.9);
       tooltip.html(tooltipContent)
         .style("left", (event.pageX + 10) + "px")
         .style("top", (event.pageY + 10) + "px");
