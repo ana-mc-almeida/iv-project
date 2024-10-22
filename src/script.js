@@ -13,7 +13,7 @@ var initial_quartile_value;
 let selectedYears = 50;
 
 let showViolinPlot = "AdsType";
-const customColors = ["#1392FF", "#A724FF", "#00FFBF"];
+const customColors = ["#FFFF7F", "#FF7F7F", "#59B259"];    // centro, norte, sul
 
 /**
  * Initializes the application by loading the dataset.
