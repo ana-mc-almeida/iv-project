@@ -4,6 +4,7 @@ const customColors = ["#1392FF", "#A724FF", "#00FFBF"];
 let dragging = {};
 let width, height, colorScale, yScales, xScale;
 let parallelCoordinatesSelector = null;
+let dimensionGroup = null;
 
 /**
  * Initializes the Parallel Coordinates chart
@@ -148,7 +149,7 @@ function createPaths(svg, data) {
  * @param {Object} svg - The SVG container
  */
 function addAxesWithBrush(svg) {
-  const dimensionGroup = svg
+  dimensionGroup = svg
     .selectAll(".dimension")
     .data(dimensions)
     .enter()
@@ -227,7 +228,7 @@ function addAxesWithBrush(svg) {
     .text((d) => d)
     .style("font-size", "18px")
     .style("font-family", "Arial, sans-serif");
-
+    
     // tick labels on the top
     dimensionGroup.raise();
 }
@@ -301,6 +302,9 @@ function updateParallelCoordinates(filteredData) {
   const svg = d3.select(parallelCoordinatesSelector).select("svg").select("g");
   d3.select(parallelCoordinatesSelector).selectAll(".foreground").remove();
   createPaths(svg, filteredData);
+  if (dimensionGroup != null) {
+    dimensionGroup.raise();
+  }
 }
 
 /**
