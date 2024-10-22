@@ -110,7 +110,8 @@ function createPaths(svg, data) {
 
       // Tooltip content
       const tooltipContent = `
-        <strong>District:</strong> ${d.Zone}<br>
+        <strong>Zone:</strong> ${d.Zone}<br>
+        <strong>District:</strong> ${d.District}<br>
         <strong>Rooms:</strong> ${d.Rooms}<br>
         <strong>Bathrooms:</strong> ${d.Bathrooms}<br>
         <strong>Area:</strong> ${d.Area} m²<br>
