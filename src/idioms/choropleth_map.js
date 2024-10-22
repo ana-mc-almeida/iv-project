@@ -118,7 +118,8 @@ function createLegend (svg) {
         .attr("x", legendWidth + 30)
         .attr("y", legendInitialHeight - 10)
         .attr("font-weight", "bold")
-        .text(mapTypeStr());
+        .text(mapTypeStr())
+        .style("fill", "#4B7AC4");
 
    // Create the legend for the map
     colorDomain.forEach((d, i) => {
@@ -164,6 +165,7 @@ function createLegend (svg) {
             .attr("y", legendInitialHeight + i * legendHeight + (legendHeight - 2) / 2)
             .attr("dy", "0.35em")
             .text(rangeLabels(i))
+            .style("fill", "#4B7AC4")
             .style("font-size", "14px");
     });
 
@@ -260,13 +262,13 @@ function rangeLabels(index) {
  */
 function mapTypeStr() {
     if (globalFilters.MAP_TYPE === "Area") {
-        return "Area(m²)";
+        return "Area (m²)";
     } else if (globalFilters.MAP_TYPE === "PricePerSquareMeter") {
-        return "Price(€)";
+        return "Price (€)";
     } else if (globalFilters.MAP_TYPE === "NumberOfAvailability") {
         return "Availability";
     } else {
-        return "Area(m²)";
+        return "Area (m²)";
     }
 }
 
