@@ -80,6 +80,18 @@ function createPaths(svg, data) {
     return;
   }
 
+  // Create tooltip
+  const tooltip = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0)
+    .style("position", "absolute")
+    .style("background", "white")
+    .style("border", "1px solid #ccc")
+    .style("border-radius", "5px")
+    .style("padding", "10px")
+    .style("pointer-events", "none")
+    .style("z-index", 10); // Ensure tooltip appears above other elements
+
   return svg
     .append("g")
     .attr("class", "foreground")
@@ -91,14 +103,38 @@ function createPaths(svg, data) {
     .style("fill", "none")
     .style("stroke", (d) => colorScale(d.Zone)) // Apply color based on Zone
     .style("stroke-width", "1.5px")
-    .on("mouseover", function () {
+    .on("mouseover", function (event, d) {
       d3.select(this).raise();
       d3.select(this).style("stroke-width", "4px");
       d3.select(this).style("stroke", "black");
+
+      // Tooltip content
+      const tooltipContent = `
+        <strong>District:</strong> ${d.Zone}<br>
+        <strong>Rooms:</strong> ${d.Rooms}<br>
+        <strong>Bathrooms:</strong> ${d.Bathrooms}<br>
+        <strong>Area:</strong> ${d.Area} m²<br>
+        <strong>Price:</strong> ${d.Price} €<br>
+      `;
+      
+      // Show tooltip
+      tooltip.transition()
+        .duration(200)
+        .style("opacity", 0.8);
+      tooltip.html(tooltipContent)
+        .style("left", (event.pageX + 10) + "px")
+        .style("top", (event.pageY + 10) + "px");
+    })
+    .on("mousemove", function (event) {
+      tooltip.style("left", (event.pageX + 10) + "px")
+             .style("top", (event.pageY + 10) + "px");
     })
     .on("mouseout", function () {
       d3.select(this).style("stroke-width", "1.5px");
       d3.select(this).style("stroke", (d) => colorScale(d.Zone));
+      tooltip.transition()
+        .duration(500)
+        .style("opacity", 0); // Hide tooltip
     });
 }
 
