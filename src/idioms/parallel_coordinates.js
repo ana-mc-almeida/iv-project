@@ -106,6 +106,8 @@ function createPaths(svg, data) {
         <strong>Bathrooms:</strong> ${d.Bathrooms}<br>
         <strong>Area:</strong> ${d.Area} m²<br>
         <strong>Price:</strong> ${d.Price} €<br>
+        <strong>AdsType:</strong> ${d.AdsType}<br>
+        <strong>Condition:</strong> ${d.Condition}<br>
       `;
       
       // Show tooltip
@@ -116,7 +118,7 @@ function createPaths(svg, data) {
         .style("left", (event.pageX + 10) + "px")
         .style("top", (event.pageY + 10) + "px");
       
-      updateViolinPlotHoverHouse(d.Price, true);
+      updateViolinPlotHoverHouse(d.Price, true, d.AdsType, d.Condition);
       updateChoroplethMapHoverDistrict(d.District, true);
     })
     .on("mousemove", function (event) {
@@ -130,7 +132,7 @@ function createPaths(svg, data) {
         .duration(500)
         .style("opacity", 0); // Hide tooltip
       
-      updateViolinPlotHoverHouse(d.Price, false);
+      updateViolinPlotHoverHouse(d.Price, false, d.AdsType, d.Condition);
       updateChoroplethMapHoverDistrict(d.District, false);
     });
 }

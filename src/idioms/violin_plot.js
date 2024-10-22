@@ -3,8 +3,11 @@ const domains = [
   { show: "Condition", domain: ["New", "Renovated"] },
 ];
 const toShow = ["Condition", "AdsType"];
+let currentShow = "AdsType";
 
 const ticksNumber = 10;
+
+let stepDensity = null;
 
 /**
  * Função para calcular Kernel Density Estimation (KDE)
@@ -50,6 +53,7 @@ function createViolinPlot(data, selector, show) {
     console.error(`Invalid show value. Must be one of: ${toShow.join(", ")}`);
     return;
   }
+  currentShow = show;
 
   if (!data) {
     console.log("No data to create violin plot");
@@ -105,6 +109,7 @@ function createViolinPlot(data, selector, show) {
 
     const prices = dataAttribute.map((d) => +d.Price);
     const density = kde(prices);
+    stepDensity = density[1][0] - density[0][0];
 
     const maxDensityEach = d3.max(density, (d) => d[1]);
 
@@ -146,7 +151,7 @@ function createViolinPlot(data, selector, show) {
     for(let i=0; i<density.length; i++){
       const d = density[i]
       const previusDensity = i === 0 ? [0,0] : density[i-1];
-      const posteriorDensity = i === density.length - 1 ? [0,0] : density[i+1];
+      const posteriorDensity = i === density.length - 1 ? density[density.length-1] : density[i+1];
 
       if (d[1] > 1e-10) { // Verifica se a densidade é maior que 0
         const xPos = xScaleTotal(d[0]);
@@ -157,14 +162,16 @@ function createViolinPlot(data, selector, show) {
           : height / 2 + violinWidthScale(d[1]);
 
         // Adicionar círculo na posição correspondente da curva
-        svg.append("circle")
+        const circle =svg.append("circle")
           .attr("cx", xPos)
           .attr("cy", yPos)
-          .attr("r", 7)
-          .attr("class", `violin-point price-${d[0].toFixed(2)}`)
-          .style("color", "black")
+          .attr("r", 5)
+          .attr("class", `violin-point ${attribute}-price-${d[0].toFixed(2)}`)
+          .style("fill", "#FF0000")
           .style("opacity", 0)
           .on("mouseover", function (event) {
+            circle.style("opacity", 0.5);
+
             const previusRange = previusDensity[0] + (d[0] -previusDensity[0]) / 2;
             const posteriorRange = d[0] + (posteriorDensity[0] - d[0]) / 2;
             const countAtDensity = dataAttribute.filter(price => price.Price >= previusRange && price.Price <= posteriorRange).length;
@@ -189,6 +196,8 @@ function createViolinPlot(data, selector, show) {
               .style("top", (event.pageY + 10) + "px");
           })
           .on("mouseout", function () {
+            circle.style("opacity", 0);
+
             tooltip.transition()
               .duration(500)
               .style("opacity", 0);
@@ -304,10 +313,12 @@ function updateViolinPlot(data, selector, show) {
  * @param {Number} housePrice - The price of the house being hovered.
  * @param {Boolean} isHover - Indicates if the house is being hovered over.
  */
-function updateViolinPlotHoverHouse(housePrice, isHover) {
+function updateViolinPlotHoverHouse(housePrice, isHover, AdsType, Condition) {
   // Reset the opacity of all points
   d3.selectAll(".violin-point")
     .style("opacity", 0);
+
+  const domain = currentShow === "AdsType" ? AdsType : Condition;
     
   if (isHover) {
     // Find the closest point to the house price
@@ -317,7 +328,10 @@ function updateViolinPlotHoverHouse(housePrice, isHover) {
     
     points.each(function() {
       const className = d3.select(this).attr("class");
-      const priceMatch = className.match(/price-(\d+\.?\d*)/);
+      const regex = new RegExp(`${domain}-price-(\\d+\\.?\\d*)`);
+      const priceMatch = className.match(regex);
+      console.log('priceMatch', priceMatch);
+
       if (priceMatch) {
         const pointPrice = parseFloat(priceMatch[1]);
         const diff = Math.abs(pointPrice - housePrice);
@@ -327,10 +341,17 @@ function updateViolinPlotHoverHouse(housePrice, isHover) {
         }
       }
     });
+
+    let color = '#FF0000';
+
+    if(minDiff > stepDensity){
+      color = '#FFFF00';
+    }
     
     if (closestPoint) {
       d3.select(closestPoint)
-        .style("opacity", 0.5);
+        .style("opacity", 0.5)
+        .style("fill", color);
     }
   }
   else {
