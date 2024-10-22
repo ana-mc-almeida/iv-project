@@ -89,7 +89,7 @@ function createViolinPlot(data, selector, show) {
   const yScale = d3.scaleBand().domain(domain).range([0, height]).padding(0.5);
   const violinWidthScale = d3.scaleLinear().range([0, 100]);
 
-  const kde = kernelDensityEstimator(kernelGaussian(200), xScaleTotal.ticks(50));
+  const kde = kernelDensityEstimator(kernelGaussian(200), xScaleTotal.ticks(100));
   const groupedData = d3.group(data, (d) => d[show]);
 
   let maxDensity = 0;
@@ -142,9 +142,13 @@ function createViolinPlot(data, selector, show) {
       .style("stroke", "#4d4d4d")
 
     // Adicionar pontos relevantes (onde a densidade não é zero)
-    density.forEach((d) => {
-      if (d[1] > 0) { // Verifica se a densidade é maior que 0
-        const xPos = attribute === "Rent" ? xScaleRent(d[0] / globalFilters.YEARS / 12) : xScaleTotal(d[0]);
+    for(let i=0; i<density.length; i++){
+      const d = density[i]
+      const previusDensity = i === 0 ? [0,0] : density[i-1];
+      const posteriorDensity = i === density.length - 1 ? [0,0] : density[i+1];
+
+      if (d[1] > 1e-10) { // Verifica se a densidade é maior que 0
+        const xPos = xScaleTotal(d[0]);
 
         // Calcular a posição Y usando a curva do violin plot
         const yPos = attribute === upValue
@@ -158,7 +162,9 @@ function createViolinPlot(data, selector, show) {
           .attr("r", 7)
           .style("opacity", 0)
           .on("mouseover", function (event) {
-            const countAtDensity = dataAttribute.filter(price => price.Price >= d[0] - 0.01 && price.Price <= d[0] + 0.01).length;
+            const previusRange = previusDensity[0] + (d[0] -previusDensity[0]) / 2;
+            const posteriorRange = d[0] + (posteriorDensity[0] - d[0]) / 2;
+            const countAtDensity = dataAttribute.filter(price => price.Price >= previusRange && price.Price <= posteriorRange).length;
             const monthlyPrice = d[0] / globalFilters.YEARS / 12
             const tooltipContent = `
               <strong>Total Price:</strong> ${d[0].toFixed(2)}<br>
@@ -185,7 +191,6 @@ function createViolinPlot(data, selector, show) {
           });
       }
     }
-    )
   })
 
 
