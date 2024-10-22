@@ -167,7 +167,7 @@ function createViolinPlot(data, selector, show) {
           .attr("cy", yPos)
           .attr("r", 5)
           .attr("class", `violin-point ${attribute}-price-${d[0].toFixed(2)}`)
-          .style("fill", "#FF0000")
+          .style("fill", "#000000")
           .style("opacity", 0)
           .on("mouseover", function (event) {
             circle.style("opacity", 0.8);
