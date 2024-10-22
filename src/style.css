@@ -5,29 +5,23 @@
   grid-template-rows: 0.5fr 1.1fr;
   gap: 0px 0px;
   grid-template-areas:
-    "choropleth_map violin_plot controllers"
-    "choropleth_map parallelCoordinates parallelCoordinates";
+    "choroplethMap violin_plot controllers"
+    "choroplethMap parallelCoordinates parallelCoordinates";
 }
 
 input[type="range"] {
   margin: 10px;
 }
 
-.choropleth_map {
-  grid-area: choropleth_map;
-
-  background-color: rgb(66, 132, 243);
+.choroplethMap {
+  grid-area: choroplethMap;
   padding: 20px;
-  border: 2px solid #4b7ac4;
   width: 400px;
 }
 
 .violin_plot {
   grid-area: violin_plot;
-
-  background-color: rgb(86, 162, 174);
   padding: 20px;
-  border: 2px solid #4b7ac4;
 }
 
 .parallelCoordinates {

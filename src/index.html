@@ -34,24 +34,15 @@
       </div>
 
       <div class="container">
-        <!-- Placeholder for the choropleth map visualization -->
-        <div class="choropleth_map">
-          <img
-            src="./imgs/fake_choropleth_map.jpg"
-            alt=""
-            style="width: 100%; height: 100%"
-          />
-        </div>
 
-        <!-- Placeholder for the violin plot visualization -->
+        <div class="choroplethMap"></div>
+
         <div class="violinPlot"></div>
 
-        <!-- Placeholder for the parallel coordinates visualization -->
-
         <div class="parallelCoordinates">
-          <label class="parallelCoordinatesSubtitle"
-            >Characteristics of each house</label
-          >
+          <label class="parallelCoordinatesSubtitle">
+            Characteristics of each house
+          </label>
         </div>
 
         <div class="controllers">
@@ -65,10 +56,10 @@
             <!-- <button class="mapOption-input">🔍 What to see on the map?</button> -->
             <div class="mapOption-content">
               <a href="#" onclick="selectMap('Area')">Area</a>
-              <a href="#" onclick="selectMap('Price Per Square Meter')"
+              <a href="#" onclick="selectMap('PricePerSquareMeter')"
                 >Price Per Square Meter</a
               >
-              <a href="#" onclick="selectMap('Number of availability')"
+              <a href="#" onclick="selectMap('NumberOfAvailability')"
                 >Number of availability</a
               >
             </div>

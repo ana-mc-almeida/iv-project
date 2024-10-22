@@ -1,20 +1,28 @@
 /**
  * Updates all charts based on the filtered data.
- * @param {Array} data - The dataset to update the charts with.
+ * @param {String} district - The district to update the choropleth map with; "none" if no specific district is selected.
  */
-function updateAllCharts() {
+function updateAllCharts(district) {
   updateParallelCoordinates(filtered_data);
   updateViolinPlot(violin_data, ".violinPlot", showViolinPlot);
+  
+  if (district != "none") {
+    updateChoroplethMapSelectedDistrict(district);
+  } else {
+    updateChoroplethMap(".choroplethMap");
+  }
 }
 
 /**
- * Updates the map to display data based on the area.
+ * Updates the map type based on user selection.
+ * If the selected option is the same as the current map type, it resets to "none".
+ * @param {String} option - The map option to update.
  */
 function updateMap(option) {
   if (globalFilters.MAP_TYPE == option) {
-    globalFilters.MAP_TYPE = "none";
+    globalFilters.MAP_TYPE = "none"; // Reset to none if the same option is selected
   } else {
-    globalFilters.MAP_TYPE = option;
+    globalFilters.MAP_TYPE = option; // Update to the selected map option
   }
 
   const selectedMapOption = document.getElementById("selectedMapOption");
@@ -31,25 +39,28 @@ function updateMap(option) {
       })
       .classed("selected", false);
 
-    updateMap(globalFilters.MAP_TYPE);
+    updateMap(globalFilters.MAP_TYPE); // Update the map with the selected option
   };
 
   selectedMapOption.appendChild(tag);
 
   if (globalFilters.MAP_TYPE == "none") {
-    selectedMapOption.textContent = "🔍 What to see on the map?";
+    selectedMapOption.textContent = "🔍 What to see on the map?"; // Placeholder text when no option is selected
   }
+
+  updateAllCharts("none"); // Update all charts after changing the map type
 }
 
 /**
  * Updates the district filter based on user selection.
  * If the district already exists in the filter, it removes it; otherwise, it adds it.
  * @param {String} district - The district to update the filter with.
+ * @param {boolean} isBrushEvent - Indicates if the update is triggered by a brush event.
  */
-function updateDistrict(district) {
+function updateDistrict(district, isBrushEvent) {
   const exists = globalFilters.DISTRICT.includes(district);
   if (!exists) {
-    globalFilters.DISTRICT.push(district);
+    globalFilters.DISTRICT.push(district); // Add district if not already present
   } else {
     // Remove if exists
     globalFilters.DISTRICT = globalFilters.DISTRICT.filter(
@@ -57,11 +68,11 @@ function updateDistrict(district) {
     );
   }
 
-  updateSelectedDistrictsContainer();
+  updateSelectedDistrictsContainer(); // Update UI with selected districts
 
-  filterDataset();
+  filterDataset(isBrushEvent); // Apply filters to the dataset
 
-  updateAllCharts();
+  updateAllCharts(district); // Update all charts based on the filtered data
 }
 
 /**
@@ -72,7 +83,7 @@ function updateSelectedDistrictsContainer() {
   const selectedDistrictsContainer =
     document.getElementById("selectedDistricts");
 
-  selectedDistrictsContainer.innerHTML = "";
+  selectedDistrictsContainer.innerHTML = ""; // Clear current selections
 
   globalFilters.DISTRICT.forEach((district) => {
     let tag = document.createElement("span");
@@ -85,13 +96,13 @@ function updateSelectedDistrictsContainer() {
         })
         .classed("selected", false);
 
-      updateDistrict(district);
+      updateDistrict(district); // Update district filter on tag click
     };
     selectedDistrictsContainer.appendChild(tag);
   });
 
   if (globalFilters.DISTRICT.length === 0) {
-    selectedDistrictsContainer.textContent = "District";
+    selectedDistrictsContainer.textContent = "District"; // Placeholder text when no districts are selected
   }
 }
 
@@ -102,15 +113,15 @@ function updateSelectedDistrictsContainer() {
  */
 function updateType(type) {
   if (!globalFilters.TYPE.includes(type)) {
-    globalFilters.TYPE.push(type);
+    globalFilters.TYPE.push(type); // Add type if not already present
   } else {
     // Remove if exists
     globalFilters.TYPE = globalFilters.TYPE.filter((d) => d !== type);
   }
 
-  filterDataset();
+  filterDataset(false); // Apply filters to the dataset
 
-  updateAllCharts();
+  updateAllCharts("none"); // Update all charts based on the filtered data
 }
 
 /**
@@ -120,18 +131,18 @@ function updateType(type) {
  */
 function updateCondition(condition) {
   if (!globalFilters.CONDITION.includes(condition)) {
-    globalFilters.CONDITION.push(condition);
+    globalFilters.CONDITION.push(condition); // Add condition if not already present
   } else {
     // Remove if exists
     globalFilters.CONDITION = globalFilters.CONDITION.filter(
       (d) => d !== condition
     );
   }
-  updateSelectedConditionsContainer();
+  updateSelectedConditionsContainer(); // Update UI with selected conditions
 
-  filterDataset();
+  filterDataset(false); // Apply filters to the dataset
 
-  updateAllCharts();
+  updateAllCharts("none"); // Update all charts based on the filtered data
 }
 
 /**
@@ -142,7 +153,7 @@ function updateSelectedConditionsContainer() {
   const selectedConditionsContainer =
     document.getElementById("selectedConditions");
 
-  selectedConditionsContainer.innerHTML = "";
+  selectedConditionsContainer.innerHTML = ""; // Clear current selections
 
   globalFilters.CONDITION.forEach((condition) => {
     let tag = document.createElement("span");
@@ -156,14 +167,14 @@ function updateSelectedConditionsContainer() {
         })
         .classed("selected", false);
 
-      updateCondition(condition);
+      updateCondition(condition); // Update condition filter on tag click
     };
 
     selectedConditionsContainer.appendChild(tag);
   });
 
   if (globalFilters.CONDITION.length === 0) {
-    selectedConditionsContainer.textContent = "Condition";
+    selectedConditionsContainer.textContent = "Condition"; // Placeholder text when no conditions are selected
   }
 }
 
@@ -172,5 +183,5 @@ function updateSelectedConditionsContainer() {
  * @param {Number} years - The number of years to set in the globalFilters.
  */
 function updateYear(years) {
-  globalFilters.YEARS = years;
+  globalFilters.YEARS = years; // Update the years filter
 }

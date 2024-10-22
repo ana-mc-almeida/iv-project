@@ -1,8 +1,7 @@
 const dimensions = ["Rooms", "Bathrooms", "Area", "Price"];
 const integerTick = ["Rooms", "Bathrooms"];
-const customColors = ["#1392FF", "#A724FF", "#00FFBF"];
 let dragging = {};
-let width, height, colorScale, yScales, xScale;
+let width, height, yScales, xScale;
 let parallelCoordinatesSelector = null;
 let dimensionGroup = null;
 
@@ -28,7 +27,6 @@ function createParallelCoordinates(selector) {
 
   yScales = createYScales(global_data);
   xScale = createXScale();
-  colorScale = createColorScale(global_data);
 
   createPaths(svg, global_data);
 
@@ -57,15 +55,6 @@ function createYScales(data) {
  */
 function createXScale() {
   return d3.scalePoint().range([0, width]).padding(0.1).domain(dimensions);
-}
-
-/**
- * Creates color scale based on Zone
- * @param {Array} data - The dataset
- * @returns {d3.ScaleOrdinal} - Color scale for Zone
- */
-function createColorScale(data) {
-  return d3.scaleOrdinal(customColors).domain(data.map((d) => d.Zone));
 }
 
 /**
@@ -127,7 +116,8 @@ function createPaths(svg, data) {
         .style("left", (event.pageX + 10) + "px")
         .style("top", (event.pageY + 10) + "px");
       
-        updateViolinPlotHoverHouse(d.Price, true);
+      updateViolinPlotHoverHouse(d.Price, true);
+      updateChoroplethMapHoverDistrict(d.District, true);
     })
     .on("mousemove", function (event) {
       tooltip.style("left", (event.pageX + 10) + "px")
@@ -141,6 +131,7 @@ function createPaths(svg, data) {
         .style("opacity", 0); // Hide tooltip
       
       updateViolinPlotHoverHouse(d.Price, false);
+      updateChoroplethMapHoverDistrict(d.District, false);
     });
 }
 
@@ -171,7 +162,7 @@ function addAxesWithBrush(svg) {
           svg
             .selectAll(".dimension")
             .attr("transform", (d) => `translate(${position(d)})`);
-          filterDataset();
+          filterDataset(false);
           updateParallelCoordinates(filtered_data);
           // tick labels on the top
           dimensionGroup.raise();
@@ -253,7 +244,7 @@ function brushed(event, dim) {
     const [yMax, yMin] = selection.map((d) => yScales[dim].invert(d));
     globalFilters[dim] = [yMin, yMax];
   }
-  filterDataset();
+  filterDataset(false);
   updateParallelCoordinates(filtered_data);
 }
 
@@ -263,13 +254,12 @@ function brushed(event, dim) {
  * @param {String} dim - Dimension being brushed
  */
 function brushEnded(event, dim) {
-  console.log("brushEnded", event);
   if (event.mode === undefined) return;
   if (!event.selection) {
     globalFilters[dim] = null;
   }
-  filterDataset();
-  updateAllCharts();
+  filterDataset(true);
+  updateAllCharts("none");
 }
 
 /**
