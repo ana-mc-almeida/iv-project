@@ -156,6 +156,9 @@ function addAxesWithBrush(svg) {
 
       d3.select(this)
         .selectAll(".tick text")
+        .style("stroke", "rgba(255, 255, 255, 0.8)")
+        .style("stroke-width", "4.0px")
+        .style("paint-order", "stroke")
         .style("fill", "#4B7AC4")
         .style("font-size", "13px");
 
@@ -181,6 +184,9 @@ function addAxesWithBrush(svg) {
     .text((d) => d)
     .style("font-size", "18px")
     .style("font-family", "Arial, sans-serif");
+
+    // tick labels on the top
+    dimensionGroup.raise();
 }
 
 /**
