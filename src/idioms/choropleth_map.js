@@ -6,7 +6,7 @@ let rangeColorScale, rangeColors = ['#B3D3F3', '#8CC0F3', '#65ADF3', '#3E9AF3'];
  * @param {string} selector - The CSS selector for the element where the map will be created.
  */
 function createChoroplethMap(selector) {
-    const margin = { top: 140, right: 80, bottom: 10, left: 0 };
+    const margin = { top: 80, right: 80, bottom: 10, left: 0 };
     const divElement = d3.select(selector).node();
     const width = divElement.clientWidth - margin.left - margin.right;
     const height = divElement.clientHeight - margin.top - margin.bottom;
@@ -110,7 +110,7 @@ function createLegend (svg) {
     const colorDomain = rangeColorScale.domain();
     const colorRange = rangeColorScale.range();
     const legendWidth = 270;
-    const legendInitialHeight = 480;
+    const legendInitialHeight = 500;
     const legendHeight = 20;
     
     // Add legend title
