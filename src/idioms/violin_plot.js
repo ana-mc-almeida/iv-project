@@ -170,7 +170,7 @@ function createViolinPlot(data, selector, show) {
           .style("fill", "#FF0000")
           .style("opacity", 0)
           .on("mouseover", function (event) {
-            circle.style("opacity", 0.5);
+            circle.style("opacity", 0.8);
 
             const previusRange = previusDensity[0] + (d[0] -previusDensity[0]) / 2;
             const posteriorRange = d[0] + (posteriorDensity[0] - d[0]) / 2;
@@ -342,15 +342,15 @@ function updateViolinPlotHoverHouse(housePrice, isHover, AdsType, Condition) {
       }
     });
 
-    let color = '#FF0000';
+    let color = '#000000';
 
     if(minDiff > stepDensity){
-      color = '#FFFF00';
+      color = '#808080';
     }
     
     if (closestPoint) {
       d3.select(closestPoint)
-        .style("opacity", 0.5)
+        .style("opacity", 0.8)
         .style("fill", color);
     }
   }
