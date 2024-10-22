@@ -126,7 +126,7 @@ function createViolinPlot(data, selector, show) {
           )
           .curve(d3.curveBasis)
       )
-      .style("fill", attribute === upValue ? "#1392FF" : "#A724FF")
+      .style("fill", attribute === upValue ? "#88A6CE" : "#A2C6F6")
       .style("stroke", "#4d4d4d");
   });
 
