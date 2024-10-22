@@ -132,7 +132,7 @@ function createPaths(svg, data) {
       tooltip.style("left", (event.pageX + 10) + "px")
              .style("top", (event.pageY + 10) + "px");
     })
-    .on("mouseout", function () {
+    .on("mouseout", function (d) {
       d3.select(this).style("stroke-width", "1.5px");
       d3.select(this).style("stroke", (d) => colorScale(d.Zone));
       tooltip.transition()
