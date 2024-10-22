@@ -210,7 +210,7 @@ function createViolinPlot(data, selector, show) {
     .attr("x2", (d) => xScaleRent(d))
     .attr("y1", 0)
     .attr("y2", height) // Agora as gridlines vão de cima a baixo
-    .style("stroke", "#808080")
+    .style("stroke", "#999999")
     .style("stroke-width", 1)
     .style("stroke-dasharray", "4,4");
 
@@ -226,7 +226,7 @@ function createViolinPlot(data, selector, show) {
     .attr("x2", (d) => xScaleTotal(d))
     .attr("y1", 0) // Agora as gridlines vão de cima a baixo também
     .attr("y2", height)
-    .style("stroke", "#808080")
+    .style("stroke", "#333333")
     .style("stroke-width", 1)
     .style("stroke-dasharray", "4,4");
 
