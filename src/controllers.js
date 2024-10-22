@@ -5,6 +5,7 @@
 function updateAllCharts(district) {
   updateParallelCoordinates(filtered_data);
   updateViolinPlot(violin_data, ".violinPlot", showViolinPlot);
+  
   if (district != "none") {
     updateChoroplethMapSelectedDistrict(district);
   } else {
@@ -118,7 +119,7 @@ function updateType(type) {
     globalFilters.TYPE = globalFilters.TYPE.filter((d) => d !== type);
   }
 
-  filterDataset(); // Apply filters to the dataset
+  filterDataset(false); // Apply filters to the dataset
 
   updateAllCharts("none"); // Update all charts based on the filtered data
 }
@@ -139,7 +140,7 @@ function updateCondition(condition) {
   }
   updateSelectedConditionsContainer(); // Update UI with selected conditions
 
-  filterDataset(); // Apply filters to the dataset
+  filterDataset(false); // Apply filters to the dataset
 
   updateAllCharts("none"); // Update all charts based on the filtered data
 }

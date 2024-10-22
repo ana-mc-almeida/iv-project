@@ -68,7 +68,7 @@ function processData(data) {
  */
 function calculateData(data) {
   global_data = processData(data);
-  filterDataset();
+  filterDataset(false);
   violin_data = filtered_data;
 }
 
@@ -192,7 +192,7 @@ function selectCondition(condition) {
  */
 function selectViolinPlot(show) {
   showViolinPlot = show;
-  filterDataset();
+  filterDataset(false);
   updateViolinPlot(violin_data, ".violinPlot", showViolinPlot);
 }
 

@@ -125,11 +125,12 @@ function filterDatasetByArea(data) {
 function filterDataset(isBrushEvent) {
   var data = global_data.slice();
   
-  
   data = filterDatasetByRooms(data);
   data = filterDatasetByBathrooms(data);
   data = filterDatasetByPrice(data);
   data_without_district = filterDatasetByArea(data);
+
+  data = filterDatasetByDistricts(data_without_district);
 
   if (showViolinPlot == "AdsType") {
     data = filterDatasetByConditions(data);
@@ -144,8 +145,6 @@ function filterDataset(isBrushEvent) {
   if (initial_geo_data !== undefined && isBrushEvent) {
     filtered_choroplethMap(data_without_district);
   }
-
-  data = filterDatasetByDistricts(data_without_district);
 
   filtered_data = data; // Store the final filtered data
 }

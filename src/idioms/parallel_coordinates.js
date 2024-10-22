@@ -120,7 +120,7 @@ function addAxesWithBrush(svg) {
           svg
             .selectAll(".dimension")
             .attr("transform", (d) => `translate(${position(d)})`);
-          filterDataset();
+          filterDataset(false);
           updateParallelCoordinates(filtered_data);
         })
         .on("end", function (event, dim) {
@@ -194,7 +194,7 @@ function brushed(event, dim) {
     const [yMax, yMin] = selection.map((d) => yScales[dim].invert(d));
     globalFilters[dim] = [yMin, yMax];
   }
-  filterDataset();
+  filterDataset(false);
   updateParallelCoordinates(filtered_data);
 }
 
