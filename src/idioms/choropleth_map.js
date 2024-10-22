@@ -125,7 +125,7 @@ function createLegend (svg) {
     const colorDomain = rangeColorScale.domain();
     const colorRange = rangeColorScale.range();
     const legendWidth = 270;
-    const legendInitialHeight = 450;
+    const legendInitialHeight = 480;
     const legendHeight = 20;
     
     // Add legend title
