@@ -281,7 +281,7 @@ function createViolinPlot(data, selector, show) {
     .attr("y", -margin.top / 3) // Ajusta a posição do rótulo
     .attr("text-anchor", "middle")
     .style("fill", "#4B7AC4")
-    .text("Monthly Price")
+    .text("Monthly Price (€)")
     .style("font-size", "12px");
 
   // Rótulo para o eixo X inferior (preço total)
@@ -291,7 +291,7 @@ function createViolinPlot(data, selector, show) {
     .attr("y", height + margin.bottom / 2) // Ajusta a posição do rótulo
     .attr("text-anchor", "middle")
     .style("fill", "#4B7AC4")
-    .text("Total Price")
+    .text("Total Price (€)")
     .style("font-size", "12px");
 }
 

@@ -211,7 +211,15 @@ function addAxesWithBrush(svg) {
     .attr("fill", "#4B7AC4")
     .style("text-anchor", "middle")
     .attr("y", -9)
-    .text((d) => d)
+    .text((d) => {
+      if(d === "Area") {
+        return "Area (m²)";
+      }
+      if(d === "Price") {
+        return "Price (€)";
+      }
+      return d;
+    })
     .style("font-size", "18px")
     .style("font-family", "Arial, sans-serif");
     
