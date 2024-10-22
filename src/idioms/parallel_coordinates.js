@@ -1,8 +1,7 @@
 const dimensions = ["Rooms", "Bathrooms", "Area", "Price"];
 const integerTick = ["Rooms", "Bathrooms"];
-const customColors = ["#1392FF", "#A724FF", "#00FFBF"];
 let dragging = {};
-let width, height, colorScale, yScales, xScale;
+let width, height, yScales, xScale;
 let parallelCoordinatesSelector = null;
 
 /**
@@ -27,7 +26,6 @@ function createParallelCoordinates(selector) {
 
   yScales = createYScales(global_data);
   xScale = createXScale();
-  colorScale = createColorScale(global_data);
 
   createPaths(svg, global_data);
 
@@ -59,15 +57,6 @@ function createXScale() {
 }
 
 /**
- * Creates color scale based on Zone
- * @param {Array} data - The dataset
- * @returns {d3.ScaleOrdinal} - Color scale for Zone
- */
-function createColorScale(data) {
-  return d3.scaleOrdinal(customColors).domain(data.map((d) => d.Zone));
-}
-
-/**
  * Creates and renders paths for each data point
  * @param {Array} data - The dataset
  * @param {Object} svg - The SVG container
@@ -91,14 +80,16 @@ function createPaths(svg, data) {
     .style("fill", "none")
     .style("stroke", (d) => colorScale(d.Zone)) // Apply color based on Zone
     .style("stroke-width", "1.5px")
-    .on("mouseover", function () {
+    .on("mouseover", function (event, d) {
       d3.select(this).raise();
       d3.select(this).style("stroke-width", "4px");
       d3.select(this).style("stroke", "black");
+      updateChoroplethMapHoverDistrict(d.District, true);
     })
-    .on("mouseout", function () {
+    .on("mouseout", function (event, d) {
       d3.select(this).style("stroke-width", "1.5px");
       d3.select(this).style("stroke", (d) => colorScale(d.Zone));
+      updateChoroplethMapHoverDistrict(d.District, false);
     });
 }
 
@@ -129,7 +120,7 @@ function addAxesWithBrush(svg) {
           svg
             .selectAll(".dimension")
             .attr("transform", (d) => `translate(${position(d)})`);
-          filterDataset();
+          filterDataset(false);
           updateParallelCoordinates(filtered_data);
         })
         .on("end", function (event, dim) {
@@ -203,7 +194,7 @@ function brushed(event, dim) {
     const [yMax, yMin] = selection.map((d) => yScales[dim].invert(d));
     globalFilters[dim] = [yMin, yMax];
   }
-  filterDataset();
+  filterDataset(false);
   updateParallelCoordinates(filtered_data);
 }
 
@@ -213,13 +204,12 @@ function brushed(event, dim) {
  * @param {String} dim - Dimension being brushed
  */
 function brushEnded(event, dim) {
-  console.log("brushEnded", event);
   if (event.mode === undefined) return;
   if (!event.selection) {
     globalFilters[dim] = null;
   }
-  filterDataset();
-  updateAllCharts();
+  filterDataset(true);
+  updateAllCharts("none");
 }
 
 /**
