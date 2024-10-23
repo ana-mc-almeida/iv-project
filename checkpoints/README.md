@@ -16,15 +16,16 @@
 - [CheckPoint 3](CPIII-23.pdf)
   - Final Grade: 15.3
     - Peer Grade (5%) : 5/5
-- **(TBD)** [CheckPoint 3 - Improved](CPIII-23-Improv.pdf)
+- [CheckPoint 3 - Improved](CPIII-23-Improv.pdf)
   - [Notes to Improve CheckPoint 3](CPIII-Improv.md)
-  - Final Grade: TBD
-- **(TBD)** [CheckPoint 4](CPIV-23.pdf)
-  - Final Grade: TBD
+  - Final Grade: 17.3
+- [CheckPoint 4](CPIV-23.pdf)
+  - Final Grade: 17.1
+    - Peer Grade: 4.5/5
 - **(TBD)** [CheckPoint 4 - Improved](CPIV-23-Improv.pdf)
-  - **(TBD)** [Notes to Improve CheckPoint 4](CPIV-Improv.md)
+  - [Notes to Improve CheckPoint 4](CPIV-Improv.md)
   - Final Grade: TBD
-- **(TBD)** [CheckPoint 5](CPV-23.pdf)
+- [CheckPoint 5](CPV-23.pdf)
   - Final Grade: TBD
 - **(TBD)** [CheckPoint 5 - Improved](CPV-23-Improv.pdf)
   - **(TBD)** [Notes to Improve CheckPoint 5](CPV-Improv.md)
