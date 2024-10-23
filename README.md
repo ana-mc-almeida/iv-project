@@ -10,3 +10,4 @@
   - [ ] ViolinPlot
   - [ ] ParallelCoordinates
 - [ ] Change opacity of the others ParallelCoordinates lines when hovering instead of changing color of the hovered line
+- [ ] Check if we really want a box shadow in the ParallelCoordinates
