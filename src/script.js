@@ -16,6 +16,26 @@ let showViolinPlot = "AdsType";
 const customColors = ["#FFFF7F", "#FF7F7F", "#59B259"];    // centro, norte, sul
 
 /**
+ * Callback function that is executed when the page is fully loaded.
+ * A timeout is used to simulate a loading delay before hiding the loader
+ * and displaying the page content.
+ * 
+ * @timeout {number} 1500 - The time in milliseconds to wait before hiding the loader.
+ */
+window.addEventListener("load", function() {
+  setTimeout(function() {
+      const loader = document.getElementById("loader");
+      const content = document.getElementById("content");
+
+      loader.style.display = "none";
+      content.style.display = "block";
+      content.style.opacity = "1";
+      document.body.style.overflow = "auto";
+  }, 700);
+  init();
+});
+
+/**
  * Initializes the application by loading the dataset.
  * It processes the dataset by converting specific values to numbers.
  */

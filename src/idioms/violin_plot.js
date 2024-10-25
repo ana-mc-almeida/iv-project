@@ -120,32 +120,43 @@ function createViolinPlot(data, selector, show) {
     }
 
     svg
-      .append("g")
-      .append("path")
-      .datum(density)
-      .attr("class", "violin")
-      .attr(
-        "d",
-        d3
-          .area()
-          .x((d) =>
-            attribute === "Rent" ? xScaleRent(d[0] / globalFilters.YEARS / 12) : xScaleTotal(d[0])
-          )
-          .y0((d) =>
-            attribute !== upValue
-              ? height / 2
-              : height / 2 - violinWidthScale(d[1])
-          )
-          .y1((d) =>
-            attribute !== upValue
-              ? height / 2 + violinWidthScale(d[1])
-              : height / 2
-          )
-          .curve(d3.curveMonotoneX)
+    .append("g")
+    .append("path")
+    .datum(density)
+    .attr("class", "violin")
+    .attr("d", d3
+      .area()
+      .x((d) =>
+        attribute === "Rent" ? xScaleRent(d[0] / globalFilters.YEARS / 12) : xScaleTotal(d[0])
       )
+      .y0(height / 2)
+      .y1(height / 2)
+      .curve(d3.curveMonotoneX)
+    )
+    .style("fill", attribute === upValue ? "#A7F9E9" : "#FBCFB1")
+    .style("stroke", "#4d4d4d")
+    .style("opacity", 0)
+    .transition()
+    .duration(1500)
+    .style("opacity", 1)
 
-      .style("fill", attribute === upValue ? "#A7F9E9" : "#FBCFB1")
-      .style("stroke", "#4d4d4d")
+    .attr("d", d3
+      .area()
+      .x((d) =>
+        attribute === "Rent" ? xScaleRent(d[0] / globalFilters.YEARS / 12) : xScaleTotal(d[0])
+      )
+      .y0((d) =>
+        attribute !== upValue
+          ? height / 2
+          : height / 2 - violinWidthScale(d[1])
+      )
+      .y1((d) =>
+        attribute !== upValue
+          ? height / 2 + violinWidthScale(d[1])
+          : height / 2
+      )
+      .curve(d3.curveMonotoneX)
+    );
 
     // Adicionar pontos relevantes (onde a densidade não é zero)
     for(let i=0; i<density.length; i++){
