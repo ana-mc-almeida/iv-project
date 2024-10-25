@@ -28,8 +28,6 @@ window.addEventListener("load", function() {
       const content = document.getElementById("content");
 
       loader.style.display = "none";
-      content.style.display = "block";
-      content.style.opacity = "1";
       document.body.style.overflow = "auto";
   }, 700);
   init();
