@@ -98,7 +98,7 @@ function createPaths(svg, data) {
         <strong>Rooms:</strong> ${d.Rooms}<br>
         <strong>Bathrooms:</strong> ${d.Bathrooms}<br>
         <strong>Area:</strong> ${d.Area} m²<br>
-        <strong>Price:</strong> ${d.Price} €<br>
+        <strong>Price:</strong> ${d.Price/1000} k€<br>
         <strong>AdsType:</strong> ${d.AdsType}<br>
         <strong>Condition:</strong> ${d.Condition}<br>
       `;
