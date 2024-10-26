@@ -182,7 +182,7 @@ function createViolinPlot(data, selector, show) {
           .style("fill-opacity", 0)
           .style("stroke", "#000000")
           .style("stroke-width", 0.5)
-          .style("stroke-opacity", 0.5)
+          .style("stroke-opacity", 0)
           .on("mouseover", function (event) {
             circle.style("fill-opacity", 0.8);
 
@@ -216,6 +216,10 @@ function createViolinPlot(data, selector, show) {
               .duration(500)
               .style("opacity", 0);
           });
+
+        circle.transition()
+        .duration(2500)
+        .style("stroke-opacity", 0.5);
       }
     }
   })
