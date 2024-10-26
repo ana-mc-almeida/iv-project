@@ -114,9 +114,10 @@ function updateSelectedDistrictsContainer() {
 function updateType(type) {
   if (!globalFilters.TYPE.includes(type)) {
     globalFilters.TYPE.push(type); // Add type if not already present
-  } else {
-    // Remove if exists
-    globalFilters.TYPE = globalFilters.TYPE.filter((d) => d !== type);
+  } else { // Remove if exists
+    if (globalFilters.TYPE.length === 2) { // At least one type should be selected
+      globalFilters.TYPE = globalFilters.TYPE.filter((d) => d !== type);
+    }
   }
 
   filterDataset(false); // Apply filters to the dataset
