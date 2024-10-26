@@ -88,8 +88,11 @@ function createPaths(svg, data) {
     .style("stroke-width", "1.5px")
     .on("mouseover", function (event, d) {
       d3.select(this).raise();
+      paths.style("opacity", 0.1);
       d3.select(this).style("stroke-width", "4px");
       d3.select(this).style("stroke", "black");
+      
+      d3.select(this).style("opacity", 1);
 
       // Tooltip content
       const tooltipContent = `
@@ -124,6 +127,8 @@ function createPaths(svg, data) {
       tooltip.transition()
         .duration(500)
         .style("opacity", 0); // Hide tooltip
+      
+      paths.style("opacity", 1);
       
       updateViolinPlotHoverHouse(d.Price, false, d.AdsType, d.Condition);
       updateChoroplethMapHoverDistrict(d.District, false);
