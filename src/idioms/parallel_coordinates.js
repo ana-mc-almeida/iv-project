@@ -174,11 +174,12 @@ function addAxesWithBrush(svg) {
     .each(function (dim) {
       let axis = d3.axisLeft(yScales[dim]);
 
-      if (integerTick.includes(dim)) {
-        axis = axis
-          .ticks(
-            Math.floor(yScales[dim].domain()[1] - yScales[dim].domain()[0])
-          )
+      if (dim === "Price") {
+        axis
+          .tickFormat(d => `${d / 1000}`);
+      } else if (integerTick.includes(dim)) {
+        axis
+          .ticks(Math.floor(yScales[dim].domain()[1] - yScales[dim].domain()[0]))
           .tickFormat(d3.format("d"));
       }
 
@@ -212,11 +213,11 @@ function addAxesWithBrush(svg) {
     .style("text-anchor", "middle")
     .attr("y", -9)
     .text((d) => {
-      if(d === "Area") {
+      if (d === "Area") {
         return "Area (m²)";
       }
-      if(d === "Price") {
-        return "Price (€)";
+      if (d === "Price") {
+        return "Price (k€)";
       }
       return d;
     })
