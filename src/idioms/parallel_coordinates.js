@@ -71,10 +71,12 @@ function createPaths(svg, data) {
   }
 
   // Create tooltip
-  const tooltip = d3.select("body").append("div")
+  const tooltip = d3
+    .select("body")
+    .append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
-    
+
   return svg
     .append("g")
     .attr("class", "foreground")
@@ -98,33 +100,31 @@ function createPaths(svg, data) {
         <strong>Rooms:</strong> ${d.Rooms}<br>
         <strong>Bathrooms:</strong> ${d.Bathrooms}<br>
         <strong>Area:</strong> ${d.Area} m²<br>
-        <strong>Price:</strong> ${d.Price/1000} k€<br>
+        <strong>Price:</strong> ${d.Price / 1000} k€<br>
         <strong>AdsType:</strong> ${d.AdsType}<br>
         <strong>Condition:</strong> ${d.Condition}<br>
       `;
-      
+
       // Show tooltip
-      tooltip.transition()
-        .duration(200)
-        .style("opacity", 0.9);
-      tooltip.html(tooltipContent)
-        .style("left", (event.pageX + 10) + "px")
-        .style("top", (event.pageY + 10) + "px");
-      
+      tooltip.transition().duration(200).style("opacity", 0.9);
+      tooltip
+        .html(tooltipContent)
+        .style("left", event.pageX + 10 + "px")
+        .style("top", event.pageY + 10 + "px");
+
       updateViolinPlotHoverHouse(d.Price, true, d.AdsType, d.Condition);
       updateChoroplethMapHoverDistrict(d.District, true);
     })
     .on("mousemove", function (event) {
-      tooltip.style("left", (event.pageX + 10) + "px")
-             .style("top", (event.pageY + 10) + "px");
+      tooltip
+        .style("left", event.pageX + 10 + "px")
+        .style("top", event.pageY + 10 + "px");
     })
     .on("mouseout", function (event, d) {
       d3.select(this).style("stroke-width", "1.5px");
       d3.select(this).style("stroke", (d) => colorScale(d.Zone));
-      tooltip.transition()
-        .duration(500)
-        .style("opacity", 0); // Hide tooltip
-      
+      tooltip.transition().duration(500).style("opacity", 0); // Hide tooltip
+
       updateViolinPlotHoverHouse(d.Price, false, d.AdsType, d.Condition);
       updateChoroplethMapHoverDistrict(d.District, false);
     });
@@ -175,11 +175,12 @@ function addAxesWithBrush(svg) {
       let axis = d3.axisLeft(yScales[dim]);
 
       if (dim === "Price") {
-        axis
-          .tickFormat(d => `${d / 1000}`);
+        axis.tickFormat((d) => `${d / 1000}`);
       } else if (integerTick.includes(dim)) {
         axis
-          .ticks(Math.floor(yScales[dim].domain()[1] - yScales[dim].domain()[0]))
+          .ticks(
+            Math.floor(yScales[dim].domain()[1] - yScales[dim].domain()[0])
+          )
           .tickFormat(d3.format("d"));
       }
 
@@ -223,9 +224,9 @@ function addAxesWithBrush(svg) {
     })
     .style("font-size", "18px")
     .style("font-family", "Arial, sans-serif");
-    
-    // tick labels on the top
-    dimensionGroup.raise();
+
+  // tick labels on the top
+  dimensionGroup.raise();
 }
 
 /**
