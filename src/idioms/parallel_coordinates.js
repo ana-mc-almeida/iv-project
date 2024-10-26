@@ -86,7 +86,6 @@ function createPaths(svg, data) {
     .style("fill", "none")
     .style("stroke", (d) => colorScale(d.Zone)) // Apply color based on Zone
     .style("stroke-width", "1.5px")
-    .attr("transform", "translate(-1000, 0)") // Start off-screen to the left
     .on("mouseover", function (event, d) {
       d3.select(this).raise();
       d3.select(this).style("stroke-width", "4px");
@@ -131,13 +130,18 @@ function createPaths(svg, data) {
     });
   
   // Transition the paths to move them from left to right and fade in
-  paths.transition()
+  if (inicialized) {
+    paths.transition()
+    .duration(3000) // Duration of the movement animation
+    .ease(d3.easeCubicInOut) // Apply easing
+    .style("opacity", 1); // Change opacity to 1
+  } else {
+    paths.transition()
     .duration(300) // Duration of the movement animation
     .ease(d3.easeCubicInOut) // Apply easing
-    .delay((d, i) => i*0.20) // Stagger by 50ms per path
-    .attr("transform", "translate(0, 0)") // Move to the original position
     .style("opacity", 1); // Change opacity to 1
-
+  }
+  
   dimensionGroup.raise();
 }
 

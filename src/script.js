@@ -8,6 +8,7 @@ var initial_geo_data;
 var colorScale;
 var quartile_value;
 var initial_quartile_value;
+var inicialized = false;
 
 // Variable to hold the selected year value
 let selectedYears = 50;
@@ -31,6 +32,7 @@ window.addEventListener("load", function() {
       document.body.style.overflow = "auto";
   }, 700);
   init();
+  inicialized = true;
 });
 
 /**
@@ -116,10 +118,12 @@ document.addEventListener("DOMContentLoaded", function () {
   // Toggle map option selection on click
   mapOptionLinks.on("click", function (event) {
     event.preventDefault();
-    const isSelected = d3.select(this).classed("selected");
+
     mapOptionLinks.classed("selected", false); // Deselect all options
-    if (!isSelected) {
+    if (globalFilters.MAP_TYPE != 'none') {
       d3.select(this).classed("selected", true); // Select the clicked option
+    } else {
+      d3.select(this).classed("selected", false); // Deselect the clicked option
     }
   });
 
