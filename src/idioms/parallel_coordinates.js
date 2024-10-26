@@ -132,7 +132,7 @@ function createPaths(svg, data) {
   
   // Transition the paths to move them from left to right and fade in
   paths.transition()
-    .duration(1000) // Duration of the movement animation
+    .duration(300) // Duration of the movement animation
     .ease(d3.easeCubicInOut) // Apply easing
     .delay((d, i) => i*0.20) // Stagger by 50ms per path
     .attr("transform", "translate(0, 0)") // Move to the original position

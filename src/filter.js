@@ -181,10 +181,9 @@ function filtered_choroplethMap(data){
     feature['properties']['AreaMean'] = areaValue;
     feature['properties']['PriceMean'] = priceValue;
 
-    //feature['properties']['NumberOfAvailabilityQuartile'] = assignQuartile(countValue, countQuartiles);
+    feature['properties']['NumberOfAvailabilityQuartile'] = assignQuartile(countValue, countQuartiles);
     feature['properties']['AreaQuartile'] = assignQuartile(areaValue, areaQuartiles);
-    //feature['properties']['PriceQuartile'] = assignQuartile(priceValue, priceQuartiles);
-
+    feature['properties']['PriceQuartile'] = assignQuartile(priceValue, priceQuartiles);
   });
 
   quartile_value = initial_quartile_value.slice();
