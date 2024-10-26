@@ -33,12 +33,7 @@ function updateMap(option) {
   tag.textContent = globalFilters.MAP_TYPE;
   tag.className = "tag";
   tag.onclick = function () {
-    d3.selectAll(".mapOption-content a")
-      .filter(function () {
-        return d3.select(this).text() === globalFilters.MAP_TYPE;
-      })
-      .classed("selected", false);
-
+    d3.selectAll(".mapOption-content a").classed("selected", false);
     updateMap(globalFilters.MAP_TYPE); // Update the map with the selected option
   };
 

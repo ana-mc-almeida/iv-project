@@ -28,10 +28,9 @@ function createParallelCoordinates(selector) {
   yScales = createYScales(global_data);
   xScale = createXScale();
 
-  createPaths(svg, global_data);
-
-  initializeFilters();
   addAxesWithBrush(svg);
+  initializeFilters();
+  createPaths(svg, global_data);
 }
 
 /**
@@ -75,7 +74,7 @@ function createPaths(svg, data) {
     .attr("class", "tooltip")
     .style("opacity", 0);
     
-  return svg
+  const paths = svg
     .append("g")
     .attr("class", "foreground")
     .selectAll("path")
@@ -83,13 +82,17 @@ function createPaths(svg, data) {
     .enter()
     .append("path")
     .attr("d", lineGenerator)
+    .style("opacity", 0) // Start with zero opacity
     .style("fill", "none")
     .style("stroke", (d) => colorScale(d.Zone)) // Apply color based on Zone
     .style("stroke-width", "1.5px")
     .on("mouseover", function (event, d) {
       d3.select(this).raise();
+      paths.style("opacity", 0.1);
       d3.select(this).style("stroke-width", "4px");
       d3.select(this).style("stroke", "black");
+      
+      d3.select(this).style("opacity", 1);
 
       // Tooltip content
       const tooltipContent = `
@@ -125,9 +128,26 @@ function createPaths(svg, data) {
         .duration(500)
         .style("opacity", 0); // Hide tooltip
       
+      paths.style("opacity", 1);
+      
       updateViolinPlotHoverHouse(d.Price, false, d.AdsType, d.Condition);
       updateChoroplethMapHoverDistrict(d.District, false);
     });
+  
+  // Transition the paths to move them from left to right and fade in
+  if (inicialized) {
+    paths.transition()
+    .duration(3000) // Duration of the movement animation
+    .ease(d3.easeCubicInOut) // Apply easing
+    .style("opacity", 1); // Change opacity to 1
+  } else {
+    paths.transition()
+    .duration(300) // Duration of the movement animation
+    .ease(d3.easeCubicInOut) // Apply easing
+    .style("opacity", 1); // Change opacity to 1
+  }
+  
+  dimensionGroup.raise();
 }
 
 /**
@@ -135,13 +155,14 @@ function createPaths(svg, data) {
  * @param {Object} svg - The SVG container
  */
 function addAxesWithBrush(svg) {
+  // Create a group for each dimension
   dimensionGroup = svg
     .selectAll(".dimension")
     .data(dimensions)
     .enter()
     .append("g")
     .attr("class", "dimension")
-    .attr("transform", (dim) => `translate(${xScale(dim)})`)
+    .attr("transform", `translate(0, 0)`) // Start all axes at (0, 0) to overlap
     .call(
       // Add drag behavior to make the axis draggable
       d3
@@ -159,8 +180,7 @@ function addAxesWithBrush(svg) {
             .attr("transform", (d) => `translate(${position(d)})`);
           filterDataset(false);
           updateParallelCoordinates(filtered_data);
-          // tick labels on the top
-          dimensionGroup.raise();
+          dimensionGroup.raise(); // Bring to front
         })
         .on("end", function (event, dim) {
           delete dragging[dim];
@@ -170,62 +190,77 @@ function addAxesWithBrush(svg) {
         })
     );
 
-  dimensionGroup
-    .each(function (dim) {
-      let axis = d3.axisLeft(yScales[dim]);
+  // Create the axes and animate their positions
+  dimensionGroup.each(function (dim, index) {
+    let axis = d3.axisLeft(yScales[dim]);
+    if (dim === "Price") {
+      axis
+        .tickFormat(d => `${d / 1000}`);
+    } else if (integerTick.includes(dim)) {
+      axis
+        .ticks(Math.floor(yScales[dim].domain()[1] - yScales[dim].domain()[0]))
+        .tickFormat(d3.format("d"));
+    }
+    // Apply axis and style
+    d3.select(this).call(axis).style("fill", "#6599CB");
+    // Style ticks
+    d3.select(this)
+      .selectAll(".tick text")
+      .style("stroke", "rgba(255, 255, 255, 0.8)")
+      .style("stroke-width", "4.0px")
+      .style("paint-order", "stroke")
+      .style("fill", "#4B7AC4")
+      .style("font-size", "13px");
 
-      if (dim === "Price") {
-        axis
-          .tickFormat(d => `${d / 1000}`);
-      } else if (integerTick.includes(dim)) {
-        axis
-          .ticks(Math.floor(yScales[dim].domain()[1] - yScales[dim].domain()[0]))
-          .tickFormat(d3.format("d"));
-      }
+    // Add the brush for filtering
+    const brush = d3
+      .brushY()
+      .extent([
+        [-10, 0],
+        [10, height],
+      ])
+      .on("brush", (event) => brushed(event, dim))
+      .on("end", (event) => brushEnded(event, dim));
 
-      d3.select(this).call(axis).style("fill", "#6599CB");
+    d3.select(this)
+      .append("g")
+      .attr("class", "brush")
+      .call(brush)
+      .call(brush.move, [0, height]);
 
-      d3.select(this)
-        .selectAll(".tick text")
-        .style("stroke", "rgba(255, 255, 255, 0.8)")
-        .style("stroke-width", "4.0px")
-        .style("paint-order", "stroke")
-        .style("fill", "#4B7AC4")
-        .style("font-size", "13px");
+    // Animate the axes moving to their final positions
+    d3.select(this)
+      .transition() // Transition for moving
+      .duration(1000) // Duration of the transition
+      .delay(index * 200) // Stagger the delay for each axis (200 ms apart)
+      .attr("transform", `translate(${xScale(dim)}, 0)`); // Move to the final position
 
-      const brush = d3
-        .brushY()
-        .extent([
-          [-10, 0],
-          [10, height],
-        ])
-        .on("brush", (event) => brushed(event, dim))
-        .on("end", (event) => brushEnded(event, dim));
+    // Add axis labels with fade-in effect
+    d3.select(this)
+      .append("text")
+      .attr("fill", "#4B7AC4")
+      .style("text-anchor", "middle")
+      .attr("y", -9)
+      .text((d) => {
+        if (d === "Area") {
+          return "Area (m²)";
+        }
+        if (d === "Price") {
+          return "Price (k€)";
+        }
+        return d;
+      })
+      .style("font-size", "18px")
+      .style("font-family", "Arial, sans-serif")
+      .attr("opacity", 0) // Start invisible
+      .transition()
+      .delay(index * 200 + 250) // Delay for label to appear after axis
+      .duration(1500)
+      .attr("opacity", 1); // Fade in the label
+  });
 
-      d3.select(this)
-        .append("g")
-        .attr("class", "brush")
-        .call(brush)
-        .call(brush.move, [0, height]);
-    })
-    .append("text")
-    .attr("fill", "#4B7AC4")
-    .style("text-anchor", "middle")
-    .attr("y", -9)
-    .text((d) => {
-      if (d === "Area") {
-        return "Area (m²)";
-      }
-      if (d === "Price") {
-        return "Price (k€)";
-      }
-      return d;
-    })
-    .style("font-size", "18px")
-    .style("font-family", "Arial, sans-serif");
-    
-    // tick labels on the top
-    dimensionGroup.raise();
+  // Raise the dimension group to the top
+  dimensionGroup.raise();
 }
 
 /**

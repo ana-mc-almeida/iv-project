@@ -8,12 +8,32 @@ var initial_geo_data;
 var colorScale;
 var quartile_value;
 var initial_quartile_value;
+var inicialized = false;
 
 // Variable to hold the selected year value
 let selectedYears = 50;
 
 let showViolinPlot = "AdsType";
 const customColors = ["#FFFF7F", "#FF7F7F", "#59B259"];    // centro, norte, sul
+
+/**
+ * Callback function that is executed when the page is fully loaded.
+ * A timeout is used to simulate a loading delay before hiding the loader
+ * and displaying the page content.
+ * 
+ * @timeout {number} 1500 - The time in milliseconds to wait before hiding the loader.
+ */
+window.addEventListener("load", function() {
+  setTimeout(function() {
+      const loader = document.getElementById("loader");
+      const content = document.getElementById("content");
+
+      loader.style.display = "none";
+      document.body.style.overflow = "auto";
+  }, 700);
+  init();
+  inicialized = true;
+});
 
 /**
  * Initializes the application by loading the dataset.
@@ -98,10 +118,12 @@ document.addEventListener("DOMContentLoaded", function () {
   // Toggle map option selection on click
   mapOptionLinks.on("click", function (event) {
     event.preventDefault();
-    const isSelected = d3.select(this).classed("selected");
+
     mapOptionLinks.classed("selected", false); // Deselect all options
-    if (!isSelected) {
+    if (globalFilters.MAP_TYPE != 'none') {
       d3.select(this).classed("selected", true); // Select the clicked option
+    } else {
+      d3.select(this).classed("selected", false); // Deselect the clicked option
     }
   });
 
