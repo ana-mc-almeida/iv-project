@@ -22,11 +22,11 @@
 - [CheckPoint 4](CPIV-23.pdf)
   - Final Grade: 17.1
     - Peer Grade: 4.5/5
-- **(TBD)** [CheckPoint 4 - Improved](CPIV-23-Improv.pdf)
+- [CheckPoint 4 - Improved](CPIV-23-Improv.pdf)
   - [Notes to Improve CheckPoint 4](CPIV-Improv.md)
   - Final Grade: TBD
 - [CheckPoint 5](CPV-23.pdf)
   - Final Grade: TBD
 - **(TBD)** [CheckPoint 5 - Improved](CPV-23-Improv.pdf)
-  - **(TBD)** [Notes to Improve CheckPoint 5](CPV-Improv.md)
+  - [Notes to Improve CheckPoint 5](CPV-Improv.md)
   - Final Grade: TBD

@@ -129,9 +129,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Rent or Buy Buttons
   const rentOrBuyButtons = d3.selectAll(".rentOrBuy-button");
+  rentOrBuyButtons.classed("selected", true);
 
   // Toggle selection on rent/buy buttons
   rentOrBuyButtons.on("click", function () {
+    const selectedButtons = rentOrBuyButtons.filter(".selected");
+    if (selectedButtons.size() === 1 && d3.select(this).classed("selected")) {
+      return;
+    }
     d3.select(this).classed("selected", !d3.select(this).classed("selected"));
   });
 

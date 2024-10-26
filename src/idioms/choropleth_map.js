@@ -67,8 +67,8 @@ function createChoroplethMap(selector) {
             }
             const tooltipContent = `
             <strong>District:</strong> ${d.properties.District}<br>
-            <strong>Area Mean:</strong> ${d.properties.AreaMean}<br>
-            <strong>Price Per Square Meter Mean:</strong> ${d.properties.PriceMean}<br>
+            <strong>Mean Area:</strong> ${Math.round(d.properties.AreaMean)} m²<br>
+            <strong>Mean Price:</strong> ${Math.round(d.properties.PriceMean)} €/m²<br>
             <strong>Number of Availability:</strong> ${d.properties.Count}
             `;
 
@@ -243,29 +243,26 @@ function rangeLabels(index) {
     const areaArray = priceLimitsArray[1];
     const priceArray = priceLimitsArray[2];
 
-    const areaLabels = [
-        '0.0 - ' + parseFloat(areaArray[0]).toFixed(1),
-        parseFloat(areaArray[0]).toFixed(1) + ' - ' + parseFloat(areaArray[1]).toFixed(1),
-        parseFloat(areaArray[1]).toFixed(1) + ' - ' + parseFloat(areaArray[2]).toFixed(1),
-        parseFloat(areaArray[2]).toFixed(1) + ' - ' + parseFloat(areaArray[3]).toFixed(1),
-        parseFloat(areaArray[3]).toFixed(1) + ' - ' + parseFloat(areaArray[4]).toFixed(1)
-    ];
+    const areaLabels = [];
+    for (let i = 0; i < areaArray.length; i++) {
+        const start = i === 0 ? 0 : Math.round(areaArray[i - 1]) + 1;
+        const end = Math.round(areaArray[i]);
+        areaLabels.push(`${start} - ${end}`);
+    }
 
-    const priceLabels = [
-        '0.0 - ' + parseFloat(priceArray[0]).toFixed(1),
-        parseFloat(priceArray[0]).toFixed(1) + ' - ' + parseFloat(priceArray[1]).toFixed(1),
-        parseFloat(priceArray[1]).toFixed(1) + ' - ' + parseFloat(priceArray[2]).toFixed(1),
-        parseFloat(priceArray[2]).toFixed(1) + ' - ' + parseFloat(priceArray[3]).toFixed(1),
-        parseFloat(priceArray[3]).toFixed(1) + ' - ' + parseFloat(priceArray[4]).toFixed(1)
-    ];
+    const priceLabels = [];
+    for (let i = 0; i < priceArray.length; i++) {
+        const start = i === 0 ? 0 : Math.round(priceArray[i - 1]) + 1;
+        const end = Math.round(priceArray[i]);
+        priceLabels.push(`${start} - ${end}`);
+    }
 
-    const numberOfAvailabilityLabels = [
-        '0 - ' + numberOfAvailabilityArray[0],
-        numberOfAvailabilityArray[0] + ' - ' + numberOfAvailabilityArray[1],
-        numberOfAvailabilityArray[1] + ' - ' + numberOfAvailabilityArray[2],
-        numberOfAvailabilityArray[2] + ' - ' + numberOfAvailabilityArray[3],
-        numberOfAvailabilityArray[3] + ' - ' + numberOfAvailabilityArray[4]
-    ];
+    const numberOfAvailabilityLabels = [];
+    for (let i = 0; i < numberOfAvailabilityArray.length; i++) {
+        const start = i === 0 ? 0 : Math.round(numberOfAvailabilityArray[i - 1]) + 1;
+        const end = Math.round(numberOfAvailabilityArray[i]);
+        numberOfAvailabilityLabels.push(`${start} - ${end}`);
+    }
 
     if (globalFilters.MAP_TYPE === "Area") {
         return areaLabels[index];

@@ -101,7 +101,7 @@ function createPaths(svg, data) {
         <strong>Rooms:</strong> ${d.Rooms}<br>
         <strong>Bathrooms:</strong> ${d.Bathrooms}<br>
         <strong>Area:</strong> ${d.Area} m²<br>
-        <strong>Price:</strong> ${d.Price} €<br>
+        <strong>Price:</strong> ${d.Price/1000} k€<br>
         <strong>AdsType:</strong> ${d.AdsType}<br>
         <strong>Condition:</strong> ${d.Condition}<br>
       `;
@@ -193,11 +193,12 @@ function addAxesWithBrush(svg) {
   // Create the axes and animate their positions
   dimensionGroup.each(function (dim, index) {
     let axis = d3.axisLeft(yScales[dim]);
-    if (integerTick.includes(dim)) {
-      axis = axis
-        .ticks(
-          Math.floor(yScales[dim].domain()[1] - yScales[dim].domain()[0])
-        )
+    if (dim === "Price") {
+      axis
+        .tickFormat(d => `${d / 1000}`);
+    } else if (integerTick.includes(dim)) {
+      axis
+        .ticks(Math.floor(yScales[dim].domain()[1] - yScales[dim].domain()[0]))
         .tickFormat(d3.format("d"));
     }
     // Apply axis and style
@@ -245,7 +246,7 @@ function addAxesWithBrush(svg) {
           return "Area (m²)";
         }
         if (d === "Price") {
-          return "Price (€)";
+          return "Price (k€)";
         }
         return d;
       })

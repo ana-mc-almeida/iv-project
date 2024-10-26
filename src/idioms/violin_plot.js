@@ -179,17 +179,20 @@ function createViolinPlot(data, selector, show) {
           .attr("r", 5)
           .attr("class", `violin-point ${attribute}-price-${d[0].toFixed(2)}`)
           .style("fill", "#000000")
-          .style("opacity", 0)
+          .style("fill-opacity", 0)
+          .style("stroke", "#000000")
+          .style("stroke-width", 0.5)
+          .style("stroke-opacity", 0.5)
           .on("mouseover", function (event) {
-            circle.style("opacity", 0.8);
+            circle.style("fill-opacity", 0.8);
 
             const previusRange = previusDensity[0] + (d[0] -previusDensity[0]) / 2;
             const posteriorRange = d[0] + (posteriorDensity[0] - d[0]) / 2;
             const countAtDensity = dataAttribute.filter(price => price.Price >= previusRange && price.Price <= posteriorRange).length;
             const monthlyPrice = d[0] / globalFilters.YEARS / 12
             const tooltipContent = `
-              <strong>Total Price:</strong> ${d[0].toFixed(2)}<br>
-              <strong>Monthly Price:</strong> ${monthlyPrice.toFixed(2)}<br>
+              <strong>Total Price:</strong> ${Math.round(d[0].toFixed(2))/1000000} M€<br>
+              <strong>Monthly Price:</strong> ${Math.round(monthlyPrice.toFixed(2))/1000} k€<br>
               <strong>Number of Houses:</strong> ${countAtDensity}
             `;
 
@@ -207,7 +210,7 @@ function createViolinPlot(data, selector, show) {
               .style("top", (event.pageY + 10) + "px");
           })
           .on("mouseout", function () {
-            circle.style("opacity", 0);
+            circle.style("fill-opacity", 0);
 
             tooltip.transition()
               .duration(500)
@@ -327,7 +330,7 @@ function updateViolinPlot(data, selector, show) {
 function updateViolinPlotHoverHouse(housePrice, isHover, AdsType, Condition) {
   // Reset the opacity of all points
   d3.selectAll(".violin-point")
-    .style("opacity", 0);
+    .style("fill-opacity", 0);
 
   const domain = currentShow === "AdsType" ? AdsType : Condition;
     
@@ -361,13 +364,13 @@ function updateViolinPlotHoverHouse(housePrice, isHover, AdsType, Condition) {
     
     if (closestPoint) {
       d3.select(closestPoint)
-        .style("opacity", 0.8)
+        .style("fill-opacity", 0.8)
         .style("fill", color);
     }
   }
   else {
     // Reset the opacity of all points
     d3.selectAll(".violin-point")
-      .style("opacity", 0);
+      .style("fill-opacity", 0);
   }
 }
