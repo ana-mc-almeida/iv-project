@@ -180,8 +180,8 @@ function createViolinPlot(data, selector, show) {
             const countAtDensity = dataAttribute.filter(price => price.Price >= previusRange && price.Price <= posteriorRange).length;
             const monthlyPrice = d[0] / globalFilters.YEARS / 12
             const tooltipContent = `
-              <strong>Total Price:</strong> ${d[0].toFixed(2)}<br>
-              <strong>Monthly Price:</strong> ${monthlyPrice.toFixed(2)}<br>
+              <strong>Total Price:</strong> ${Math.round(d[0].toFixed(2))/1000000} M€<br>
+              <strong>Monthly Price:</strong> ${Math.round(monthlyPrice.toFixed(2))/1000} k€<br>
               <strong>Number of Houses:</strong> ${countAtDensity}
             `;
 
