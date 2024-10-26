@@ -65,8 +65,8 @@ function createChoroplethMap(selector) {
             }
             const tooltipContent = `
             <strong>District:</strong> ${d.properties.District}<br>
-            <strong>Mean Area (m²):</strong> ${Math.round(d.properties.AreaMean)}<br>
-            <strong>Mean Price (€/m²):</strong> ${Math.round(d.properties.PriceMean)}<br>
+            <strong>Mean Area:</strong> ${Math.round(d.properties.AreaMean)} m²<br>
+            <strong>Mean Price:</strong> ${Math.round(d.properties.PriceMean)} €/m²<br>
             <strong>Number of Availability:</strong> ${d.properties.Count}
             `;
         
