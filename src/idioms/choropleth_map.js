@@ -243,26 +243,29 @@ function rangeLabels(index) {
     const areaArray = priceLimitsArray[1];
     const priceArray = priceLimitsArray[2];
 
-    const areaLabels = [];
-    for (let i = 0; i < areaArray.length; i++) {
-        const start = i === 0 ? 0 : Math.round(areaArray[i - 1]) + 1;
-        const end = Math.round(areaArray[i]);
-        areaLabels.push(`${start} - ${end}`);
-    }
+    const areaLabels = [
+        '0 - ' + parseInt(areaArray[0]),
+        parseInt(areaArray[0]+1) + ' - ' + parseInt(areaArray[1]),
+        parseInt(areaArray[1]+1) + ' - ' + parseInt(areaArray[2]),
+        parseInt(areaArray[2]+1) + ' - ' + parseInt(areaArray[3]),
+        parseInt(areaArray[3]+1) + ' - ' + parseInt(areaArray[4])
+    ];
 
-    const priceLabels = [];
-    for (let i = 0; i < priceArray.length; i++) {
-        const start = i === 0 ? 0 : Math.round(priceArray[i - 1]) + 1;
-        const end = Math.round(priceArray[i]);
-        priceLabels.push(`${start} - ${end}`);
-    }
+    const priceLabels = [
+        '0 - ' + parseInt(priceArray[0]),
+        parseInt(priceArray[0]+1) + ' - ' + parseInt(priceArray[1]),
+        parseInt(priceArray[1]+1) + ' - ' + parseInt(priceArray[2]),
+        parseInt(priceArray[2]+1) + ' - ' + parseInt(priceArray[3]),
+        parseInt(priceArray[3]+1) + ' - ' + parseInt(priceArray[4])
+    ];
 
-    const numberOfAvailabilityLabels = [];
-    for (let i = 0; i < numberOfAvailabilityArray.length; i++) {
-        const start = i === 0 ? 0 : Math.round(numberOfAvailabilityArray[i - 1]) + 1;
-        const end = Math.round(numberOfAvailabilityArray[i]);
-        numberOfAvailabilityLabels.push(`${start} - ${end}`);
-    }
+    const numberOfAvailabilityLabels = [
+        '0 - ' + parseInt(numberOfAvailabilityArray[0]),
+        parseInt(numberOfAvailabilityArray[0]+1) + ' - ' + parseInt(numberOfAvailabilityArray[1]),
+        parseInt(numberOfAvailabilityArray[1]+1) + ' - ' + parseInt(numberOfAvailabilityArray[2]),
+        parseInt(numberOfAvailabilityArray[2]+1) + ' - ' + parseInt(numberOfAvailabilityArray[3]),
+        parseInt(numberOfAvailabilityArray[3]+1) + ' - ' + parseInt(numberOfAvailabilityArray[4])
+    ];
 
     if (globalFilters.MAP_TYPE === "Area") {
         return areaLabels[index];
