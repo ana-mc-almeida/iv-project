@@ -5,6 +5,11 @@ let width, height, yScales, xScale;
 let parallelCoordinatesSelector = null;
 let dimensionGroup = null;
 
+let tooltip = null;
+
+let isDragging = false;
+let isBrushing = false;
+
 /**
  * Initializes the Parallel Coordinates chart
  * @param {String} selector - DOM element selector for the chart
@@ -70,8 +75,11 @@ function createPaths(svg, data) {
     return;
   }
 
+  // Delete previous tooltip
+  d3.select(".tooltip").remove();
+
   // Create tooltip
-  const tooltip = d3
+  tooltip = d3
     .select("body")
     .append("div")
     .attr("class", "tooltip")
@@ -89,12 +97,13 @@ function createPaths(svg, data) {
     .style("stroke", (d) => colorScale(d.Zone)) // Apply color based on Zone
     .style("stroke-width", "1.5px")
     .on("mouseover", function (event, d) {
-      d3.select(this).raise();
-      d3.select(this).style("stroke-width", "4px");
-      d3.select(this).style("stroke", "black");
+      if (!isDragging && !isBrushing) {
+        d3.select(this).raise();
+        d3.select(this).style("stroke-width", "4px");
+        d3.select(this).style("stroke", "black");
 
-      // Tooltip content
-      const tooltipContent = `
+        // Tooltip content
+        const tooltipContent = `
         <strong>Zone:</strong> ${d.Zone}<br>
         <strong>District:</strong> ${d.District}<br>
         <strong>Rooms:</strong> ${d.Rooms}<br>
@@ -105,15 +114,16 @@ function createPaths(svg, data) {
         <strong>Condition:</strong> ${d.Condition}<br>
       `;
 
-      // Show tooltip
-      tooltip.transition().duration(200).style("opacity", 0.9);
-      tooltip
-        .html(tooltipContent)
-        .style("left", event.pageX + 10 + "px")
-        .style("top", event.pageY + 10 + "px");
+        // Show tooltip
+        tooltip.transition().duration(200).style("opacity", 0.9);
+        tooltip
+          .html(tooltipContent)
+          .style("left", event.pageX + 10 + "px")
+          .style("top", event.pageY + 10 + "px");
 
-      updateViolinPlotHoverHouse(d.Price, true, d.AdsType, d.Condition);
-      updateChoroplethMapHoverDistrict(d.District, true);
+        updateViolinPlotHoverHouse(d.Price, true, d.AdsType, d.Condition);
+        updateChoroplethMapHoverDistrict(d.District, true);
+      }
     })
     .on("mousemove", function (event) {
       tooltip
@@ -141,35 +151,9 @@ function addAxesWithBrush(svg) {
     .enter()
     .append("g")
     .attr("class", "dimension")
-    .attr("transform", (dim) => `translate(${xScale(dim)})`)
-    .call(
-      // Add drag behavior to make the axis draggable
-      d3
-        .drag()
-        .subject((dim) => ({ x: xScale(dim) }))
-        .on("start", function (event, dim) {
-          dragging[dim] = xScale(dim);
-        })
-        .on("drag", function (event, dim) {
-          dragging[dim] = Math.min(width, Math.max(0, event.x));
-          dimensions.sort((a, b) => position(a) - position(b));
-          xScale.domain(dimensions);
-          svg
-            .selectAll(".dimension")
-            .attr("transform", (d) => `translate(${position(d)})`);
-          filterDataset(false);
-          updateParallelCoordinates(filtered_data);
-          // tick labels on the top
-          dimensionGroup.raise();
-        })
-        .on("end", function (event, dim) {
-          delete dragging[dim];
-          d3.select(this)
-            .transition()
-            .attr("transform", `translate(${xScale(dim)})`);
-        })
-    );
+    .attr("transform", (dim) => `translate(${xScale(dim)})`);
 
+  let initialPosition = 0;
   dimensionGroup
     .each(function (dim) {
       let axis = d3.axisLeft(yScales[dim]);
@@ -200,8 +184,14 @@ function addAxesWithBrush(svg) {
           [-10, 0],
           [10, height],
         ])
+        .on("start", () => {
+          isBrushing = true;
+        })
         .on("brush", (event) => brushed(event, dim))
-        .on("end", (event) => brushEnded(event, dim));
+        .on("end", (event) => {
+          isBrushing = false;
+          brushEnded(event, dim);
+        });
 
       d3.select(this)
         .append("g")
@@ -223,9 +213,59 @@ function addAxesWithBrush(svg) {
       return d;
     })
     .style("font-size", "18px")
-    .style("font-family", "Arial, sans-serif");
+    .style("font-family", "Arial, sans-serif")
+    .style("cursor", "grab")
+    .call(
+      d3
+        .drag()
+        .on("start", function (event, dim) {
+          isDragging = true;
+          dragging[dim] = xScale(dim);
+          initialPosition = event.sourceEvent.screenX;
+          event.subject = xScale(dim);
+        })
+        .on("drag", function (event, dim) {
+          const deltaX = event.sourceEvent.screenX - initialPosition;
 
-  // tick labels on the top
+          dragging[dim] = Math.min(width, Math.max(0, xScale(dim) + deltaX));
+
+          const stepWidth = xScale.step();
+          const difference = deltaX / stepWidth;
+          const dimensionIndexOffset =
+            difference > 0 ? Math.floor(difference) : Math.ceil(difference);
+
+          const currentIndex = dimensions.indexOf(dim);
+          const newIndex = Math.max(
+            0,
+            Math.min(dimensions.length - 1, currentIndex + dimensionIndexOffset)
+          );
+
+          if (currentIndex !== newIndex) {
+            dimensions.splice(currentIndex, 1);
+            dimensions.splice(newIndex, 0, dim);
+
+            xScale.domain(dimensions);
+
+            initialPosition = event.sourceEvent.screenX;
+          }
+
+          updateParallelCoordinates(filtered_data);
+
+          svg
+            .selectAll(".dimension")
+            .attr("transform", (d) => `translate(${position(d)})`);
+
+          dimensionGroup.raise();
+        })
+        .on("end", function (event, dim) {
+          delete dragging[dim];
+          d3.select(this.parentNode)
+            .transition()
+            .attr("transform", `translate(${xScale(dim)})`);
+          isDragging = false;
+        })
+    );
+
   dimensionGroup.raise();
 }
 
