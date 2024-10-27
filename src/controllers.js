@@ -33,12 +33,7 @@ function updateMap(option) {
   tag.textContent = globalFilters.MAP_TYPE;
   tag.className = "tag";
   tag.onclick = function () {
-    d3.selectAll(".mapOption-content a")
-      .filter(function () {
-        return d3.select(this).text() === globalFilters.MAP_TYPE;
-      })
-      .classed("selected", false);
-
+    d3.selectAll(".mapOption-content a").classed("selected", false);
     updateMap(globalFilters.MAP_TYPE); // Update the map with the selected option
   };
 
@@ -114,9 +109,10 @@ function updateSelectedDistrictsContainer() {
 function updateType(type) {
   if (!globalFilters.TYPE.includes(type)) {
     globalFilters.TYPE.push(type); // Add type if not already present
-  } else {
-    // Remove if exists
-    globalFilters.TYPE = globalFilters.TYPE.filter((d) => d !== type);
+  } else { // Remove if exists
+    if (globalFilters.TYPE.length === 2) { // At least one type should be selected
+      globalFilters.TYPE = globalFilters.TYPE.filter((d) => d !== type);
+    }
   }
 
   filterDataset(false); // Apply filters to the dataset

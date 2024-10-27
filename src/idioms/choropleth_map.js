@@ -10,14 +10,15 @@ function createChoroplethMap(selector) {
     const divElement = d3.select(selector).node();
     const width = divElement.clientWidth - margin.left - margin.right;
     const height = divElement.clientHeight - margin.top - margin.bottom;
+
     // Create the SVG element for the map
     const svg = d3
-      .select(selector)
-      .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
+        .select(selector)
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // Define the projection for the map
     const projection = d3.geoMercator()
@@ -26,7 +27,7 @@ function createChoroplethMap(selector) {
         .translate([width / 2, height / 2]);
 
     path = d3.geoPath().projection(projection);
-    
+
     rangeColorScale = createRangeColorScale();
 
     svg.selectAll('path').remove();
@@ -36,8 +37,8 @@ function createChoroplethMap(selector) {
         .attr("class", "tooltip")
         .style("opacity", 0);
 
-    // Create the map paths for each district
-    svg
+    // Create the map paths for each district with a transition
+    const paths = svg
         .selectAll('path')
         .data(geo_data)
         .enter()
@@ -46,16 +47,17 @@ function createChoroplethMap(selector) {
         .attr('fill', (d) => rangeColorScale(mapType(d))) // Fill color based on data
         .attr('stroke', (d) => colorScale(d.properties.Zone)) // Stroke color based on Zone
         .attr('stroke-width', 1) // Set initial stroke width
+        .style("opacity", 0) // Set initial opacity to 0 for animation
         .each(function (d) {
             // Highlight selected districts based on global filters
             if (globalFilters.DISTRICT.includes(d.properties.District)) {
                 d.clicked = true;
                 d3.select(this).attr('fill', '#8282FA')
-                .attr('stroke-width', 6);
+                    .attr('stroke-width', 6);
             } else {
                 d.clicked = false;
                 d3.select(this).attr('fill', (d) => rangeColorScale(mapType(d)))
-                .attr('stroke-width', 1);
+                    .attr('stroke-width', 1);
             }
         })
         .on('mouseover', function (event, d) {
@@ -69,7 +71,7 @@ function createChoroplethMap(selector) {
             <strong>Mean Price:</strong> ${Math.round(d.properties.PriceMean)} €/m²<br>
             <strong>Number of Availability:</strong> ${d.properties.Count}
             `;
-        
+
             // Show the tooltip with a transition
             tooltip.transition()
                 .duration(200)
@@ -77,12 +79,11 @@ function createChoroplethMap(selector) {
             tooltip.html(tooltipContent) // Set tooltip content
                 .style("left", (event.pageX + 10) + "px")
                 .style("top", (event.pageY + 10) + "px");
-            })
-            
+        })
         .on('mousemove', function (event) {
             // Update tooltip position on mouse move
             tooltip.style("left", (event.pageX + 10) + "px")
-                   .style("top", (event.pageY) + "px");
+                .style("top", (event.pageY) + "px");
         })
         .on('mouseout', function (event, d) {
             // Reset color on mouse out
@@ -98,21 +99,28 @@ function createChoroplethMap(selector) {
             // Handle district selection on click
             updateDistrict(d.properties.District, false);
         });
+
+    // Animate the paths to fade in
+    paths.transition()
+        .duration(1500) // Duration of the fade-in animation
+        .style("opacity", 1); // Change opacity to 1
     
     createLegend(svg);
 }
+
 
 /**
  * Creates a legend for the choropleth map.
  * @param {object} svg - The SVG element where the legend will be added.
  */
-function createLegend (svg) {
+function createLegend(svg) {
     const colorDomain = rangeColorScale.domain();
     const colorRange = rangeColorScale.range();
-    const legendWidth = 270;
-    const legendInitialHeight = 500;
-    const legendHeight = 20;
-    
+    const legendWidth = 270; // Width for the legend
+    const legendInitialHeight = 500; // Initial height for the legend
+    const legendHeight = 20; // Height for each legend item
+    const initialXPosition = legendWidth + 100; // Set initial x position for animation
+
     // Add legend title
     svg.append("text")
         .attr("x", legendWidth + 30)
@@ -121,18 +129,27 @@ function createLegend (svg) {
         .text(mapTypeStr())
         .style("fill", "#4B7AC4");
 
-   // Create the legend for the map
+    // Create the legend for the map
     colorDomain.forEach((d, i) => {
         let isClicked = false; // Flag to track whether the item has been clicked
 
-        svg.append("rect")
-            .attr("x", legendWidth)
+        // Create rectangles with initial x position off-screen
+        const rect = svg.append("rect")
+            .attr("x", initialXPosition) // Start position for animation
             .attr("y", legendInitialHeight + i * legendHeight)
-            .attr("width", 20) 
+            .attr("width", 20)
             .attr("height", legendHeight - 2)
             .style("fill", colorRange[i])
-            .style('stroke', colorRange[i]) // Add an initial stroke (optional)
-            .style('stroke-width', 1) // Set initial stroke width
+            .style('stroke', colorRange[i])
+            .style('stroke-width', 1);
+
+        // Animate the rectangle's x position
+        rect.transition()
+            .duration(1000) // Duration of the animation
+            .attr("x", legendWidth); // Final x position
+
+        // Mouse events
+        rect
             .on('mouseover', function () {
                 if (!isClicked) { // Only change stroke if not clicked
                     d3.select(this)
@@ -142,7 +159,7 @@ function createLegend (svg) {
             .on('mouseout', function () {
                 if (!isClicked) { // Only change stroke if not clicked
                     d3.select(this)
-                        .style('stroke-width', 1); // Reset stroke width when not hove#8282FA 
+                        .style('stroke-width', 1); // Reset stroke width when not hovered
                 }
             })
             .on('click', function () {
@@ -159,17 +176,22 @@ function createLegend (svg) {
                 }
             });
 
-        // Add text labels next to the legend rectangles
-        svg.append("text")
-            .attr("x", legendWidth + 30)
+        // Add text labels with initial x position off-screen
+        const text = svg.append("text")
+            .attr("x", initialXPosition + 30) // Start position for animation
             .attr("y", legendInitialHeight + i * legendHeight + (legendHeight - 2) / 2)
             .attr("dy", "0.35em")
             .text(rangeLabels(i))
             .style("fill", "#4B7AC4")
             .style("font-size", "14px");
-    });
 
+        // Animate the text's x position
+        text.transition()
+            .duration(1500) // Duration of the animation
+            .attr("x", legendWidth + 30); // Final x position
+    });
 }
+
 
 /**
  * Highlights the districts that belong to the clicked quartile.

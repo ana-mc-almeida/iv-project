@@ -40,7 +40,7 @@ def convert_rent_price_to_annual(df: pd.DataFrame) -> pd.DataFrame:
 # Create a new column with the price per square meter
 def calculate_price_per_square_meter(df: pd.DataFrame) -> pd.DataFrame:
     return df.assign(
-        PricePerSquareMeter=lambda x: x['Price'] / x['Area']
+        PricePerSquareMeter=lambda x: (x['Price'] / x['Area']).round(1)
     )
 
 # Slice the location string to extract the district and municipality
@@ -169,10 +169,13 @@ def process_geoData(geojson_path: str, district_counts: pd.Series,
     areaQuartiles = pd.qcut(mean_area, q=4, labels=['Q1', 'Q2', 'Q3', 'Q4'])
     priceQuartiles = pd.qcut(mean_pricePerSquareMeter, q=4, labels=['Q1', 'Q2', 'Q3', 'Q4'])
 
-    # Obter os limites reais dos quartis
-    _, district_bins = pd.qcut(district_counts, q=4, retbins=True)
-    _, area_bins = pd.qcut(mean_area, q=4, retbins=True)
-    _, price_bins = pd.qcut(mean_pricePerSquareMeter, q=4, retbins=True)
+    # Definindo os percentis desejados manualmente
+    percentiles = [0.25, 0.5, 0.75, 1.0]
+
+    # Calculando os limites com os percentis especificados
+    _, district_bins = pd.qcut(district_counts, q=percentiles, retbins=True)
+    _, area_bins = pd.qcut(mean_area, q=percentiles, retbins=True)
+    _, price_bins = pd.qcut(mean_pricePerSquareMeter, q=percentiles, retbins=True)
 
     # Criar um DataFrame com os valores concretos dos quartis
     quartiles_df = pd.DataFrame({
