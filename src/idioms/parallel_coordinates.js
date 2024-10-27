@@ -172,7 +172,7 @@ function addAxesWithBrush(svg) {
     .enter()
     .append("g")
     .attr("class", "dimension")
-    .attr("transform", (dim) => `translate(${xScale(dim)})`);
+    .attr("transform", `translate(0, 0)`);
 
   let initialPosition = 0;
   // Create the axes and animate their positions
