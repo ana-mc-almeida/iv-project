@@ -5,6 +5,11 @@ let width, height, yScales, xScale;
 let parallelCoordinatesSelector = null;
 let dimensionGroup = null;
 
+let tooltip = null;
+
+let isDragging = false;
+let isBrushing = false;
+
 /**
  * Initializes the Parallel Coordinates chart
  * @param {String} selector - DOM element selector for the chart
@@ -69,11 +74,16 @@ function createPaths(svg, data) {
     return;
   }
 
+  // Delete previous tooltip
+  d3.select(".tooltip").remove();
+
   // Create tooltip
-  const tooltip = d3.select("body").append("div")
+  tooltip = d3
+    .select("body")
+    .append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
-    
+
   const paths = svg
     .append("g")
     .attr("class", "foreground")
@@ -87,66 +97,66 @@ function createPaths(svg, data) {
     .style("stroke", (d) => colorScale(d.Zone)) // Apply color based on Zone
     .style("stroke-width", "1.5px")
     .on("mouseover", function (event, d) {
-      d3.select(this).raise();
-      paths.style("opacity", 0.1);
-      d3.select(this).style("stroke-width", "4px");
-      d3.select(this).style("stroke", "black");
-      
-      d3.select(this).style("opacity", 1);
+      if (!isDragging && !isBrushing) {
+        d3.select(this).raise();
+        d3.select(this).style("stroke-width", "4px");
+        d3.select(this).style("stroke", "black");
+        paths.style("opacity", 0.1);
+        d3.select(this).style("opacity", 1);
 
-      // Tooltip content
-      const tooltipContent = `
+        // Tooltip content
+        const tooltipContent = `
         <strong>Zone:</strong> ${d.Zone}<br>
         <strong>District:</strong> ${d.District}<br>
         <strong>Rooms:</strong> ${d.Rooms}<br>
         <strong>Bathrooms:</strong> ${d.Bathrooms}<br>
         <strong>Area:</strong> ${d.Area} m²<br>
-        <strong>Price:</strong> ${d.Price/1000} k€<br>
+        <strong>Price:</strong> ${d.Price / 1000} k€<br>
         <strong>AdsType:</strong> ${d.AdsType}<br>
         <strong>Condition:</strong> ${d.Condition}<br>
       `;
-      
-      // Show tooltip
-      tooltip.transition()
-        .duration(200)
-        .style("opacity", 0.9);
-      tooltip.html(tooltipContent)
-        .style("left", (event.pageX + 10) + "px")
-        .style("top", (event.pageY + 10) + "px");
-      
-      updateViolinPlotHoverHouse(d.Price, true, d.AdsType, d.Condition);
-      updateChoroplethMapHoverDistrict(d.District, true);
+
+        // Show tooltip
+        tooltip.transition().duration(200).style("opacity", 0.9);
+        tooltip
+          .html(tooltipContent)
+          .style("left", event.pageX + 10 + "px")
+          .style("top", event.pageY + 10 + "px");
+
+        updateViolinPlotHoverHouse(d.Price, true, d.AdsType, d.Condition);
+        updateChoroplethMapHoverDistrict(d.District, true);
+      }
     })
     .on("mousemove", function (event) {
-      tooltip.style("left", (event.pageX + 10) + "px")
-             .style("top", (event.pageY + 10) + "px");
+      tooltip
+        .style("left", event.pageX + 10 + "px")
+        .style("top", event.pageY + 10 + "px");
     })
     .on("mouseout", function (event, d) {
       d3.select(this).style("stroke-width", "1.5px");
       d3.select(this).style("stroke", (d) => colorScale(d.Zone));
-      tooltip.transition()
-        .duration(500)
-        .style("opacity", 0); // Hide tooltip
-      
+      tooltip.transition().duration(500).style("opacity", 0); // Hide tooltip
       paths.style("opacity", 1);
-      
+
       updateViolinPlotHoverHouse(d.Price, false, d.AdsType, d.Condition);
       updateChoroplethMapHoverDistrict(d.District, false);
     });
-  
+
   // Transition the paths to move them from left to right and fade in
   if (inicialized) {
-    paths.transition()
-    .duration(3000) // Duration of the movement animation
-    .ease(d3.easeCubicInOut) // Apply easing
-    .style("opacity", 1); // Change opacity to 1
+    paths
+      .transition()
+      .duration(3000) // Duration of the movement animation
+      .ease(d3.easeCubicInOut) // Apply easing
+      .style("opacity", 1); // Change opacity to 1
   } else {
-    paths.transition()
-    .duration(300) // Duration of the movement animation
-    .ease(d3.easeCubicInOut) // Apply easing
-    .style("opacity", 1); // Change opacity to 1
+    paths
+      .transition()
+      .duration(300) // Duration of the movement animation
+      .ease(d3.easeCubicInOut) // Apply easing
+      .style("opacity", 1); // Change opacity to 1
   }
-  
+
   dimensionGroup.raise();
 }
 
@@ -162,48 +172,23 @@ function addAxesWithBrush(svg) {
     .enter()
     .append("g")
     .attr("class", "dimension")
-    .attr("transform", `translate(0, 0)`) // Start all axes at (0, 0) to overlap
-    .call(
-      // Add drag behavior to make the axis draggable
-      d3
-        .drag()
-        .subject((dim) => ({ x: xScale(dim) }))
-        .on("start", function (event, dim) {
-          dragging[dim] = xScale(dim);
-        })
-        .on("drag", function (event, dim) {
-          dragging[dim] = Math.min(width, Math.max(0, event.x));
-          dimensions.sort((a, b) => position(a) - position(b));
-          xScale.domain(dimensions);
-          svg
-            .selectAll(".dimension")
-            .attr("transform", (d) => `translate(${position(d)})`);
-          filterDataset(false);
-          updateParallelCoordinates(filtered_data);
-          dimensionGroup.raise(); // Bring to front
-        })
-        .on("end", function (event, dim) {
-          delete dragging[dim];
-          d3.select(this)
-            .transition()
-            .attr("transform", `translate(${xScale(dim)})`);
-        })
-    );
+    .attr("transform", `translate(0, 0)`);
 
+  let initialPosition = 0;
   // Create the axes and animate their positions
   dimensionGroup.each(function (dim, index) {
     let axis = d3.axisLeft(yScales[dim]);
+
     if (dim === "Price") {
-      axis
-        .tickFormat(d => `${d / 1000}`);
+      axis.tickFormat((d) => `${d / 1000}`);
     } else if (integerTick.includes(dim)) {
       axis
         .ticks(Math.floor(yScales[dim].domain()[1] - yScales[dim].domain()[0]))
         .tickFormat(d3.format("d"));
     }
-    // Apply axis and style
+
     d3.select(this).call(axis).style("fill", "#6599CB");
-    // Style ticks
+
     d3.select(this)
       .selectAll(".tick text")
       .style("stroke", "rgba(255, 255, 255, 0.8)")
@@ -212,15 +197,20 @@ function addAxesWithBrush(svg) {
       .style("fill", "#4B7AC4")
       .style("font-size", "13px");
 
-    // Add the brush for filtering
     const brush = d3
       .brushY()
       .extent([
         [-10, 0],
         [10, height],
       ])
+      .on("start", () => {
+        isBrushing = true;
+      })
       .on("brush", (event) => brushed(event, dim))
-      .on("end", (event) => brushEnded(event, dim));
+      .on("end", (event) => {
+        isBrushing = false;
+        brushEnded(event, dim);
+      });
 
     d3.select(this)
       .append("g")
@@ -252,14 +242,66 @@ function addAxesWithBrush(svg) {
       })
       .style("font-size", "18px")
       .style("font-family", "Arial, sans-serif")
+      .style("cursor", "grab")
       .attr("opacity", 0) // Start invisible
+      .call(
+        d3
+          .drag()
+          .on("start", function (event, dim) {
+            isDragging = true;
+            dragging[dim] = xScale(dim);
+            initialPosition = event.sourceEvent.screenX;
+            event.subject = xScale(dim);
+          })
+          .on("drag", function (event, dim) {
+            const deltaX = event.sourceEvent.screenX - initialPosition;
+
+            dragging[dim] = Math.min(width, Math.max(0, xScale(dim) + deltaX));
+
+            const stepWidth = xScale.step();
+            const difference = deltaX / stepWidth;
+            const dimensionIndexOffset =
+              difference > 0 ? Math.floor(difference) : Math.ceil(difference);
+
+            const currentIndex = dimensions.indexOf(dim);
+            const newIndex = Math.max(
+              0,
+              Math.min(
+                dimensions.length - 1,
+                currentIndex + dimensionIndexOffset
+              )
+            );
+
+            if (currentIndex !== newIndex) {
+              dimensions.splice(currentIndex, 1);
+              dimensions.splice(newIndex, 0, dim);
+
+              xScale.domain(dimensions);
+
+              initialPosition = event.sourceEvent.screenX;
+            }
+
+            updateParallelCoordinates(filtered_data);
+
+            svg
+              .selectAll(".dimension")
+              .attr("transform", (d) => `translate(${position(d)})`);
+
+            dimensionGroup.raise();
+          })
+          .on("end", function (event, dim) {
+            delete dragging[dim];
+            d3.select(this.parentNode)
+              .transition()
+              .attr("transform", `translate(${xScale(dim)})`);
+            isDragging = false;
+          })
+      )
       .transition()
       .delay(index * 200 + 250) // Delay for label to appear after axis
       .duration(1500)
       .attr("opacity", 1); // Fade in the label
   });
-
-  // Raise the dimension group to the top
   dimensionGroup.raise();
 }
 

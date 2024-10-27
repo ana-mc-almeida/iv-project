@@ -60,7 +60,9 @@ function createViolinPlot(data, selector, show) {
     return;
   }
 
-  const tooltip = d3.select("body").append("div")
+  const tooltip = d3
+    .select("body")
+    .append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
 
@@ -93,7 +95,10 @@ function createViolinPlot(data, selector, show) {
   const yScale = d3.scaleBand().domain(domain).range([0, height]).padding(0.5);
   const violinWidthScale = d3.scaleLinear().range([0, 100]);
 
-  const kde = kernelDensityEstimator(kernelGaussian(200), xScaleTotal.ticks(100));
+  const kde = kernelDensityEstimator(
+    kernelGaussian(200),
+    xScaleTotal.ticks(100)
+  );
   const groupedData = d3.group(data, (d) => d[show]);
 
   let maxDensity = 0;
@@ -159,21 +164,25 @@ function createViolinPlot(data, selector, show) {
     );
 
     // Adicionar pontos relevantes (onde a densidade não é zero)
-    for(let i=0; i<density.length; i++){
-      const d = density[i]
-      const previusDensity = i === 0 ? [0,0] : density[i-1];
-      const posteriorDensity = i === density.length - 1 ? density[density.length-1] : density[i+1];
+    for (let i = 0; i < density.length; i++) {
+      const d = density[i];
+      const previusDensity = i === 0 ? [0, 0] : density[i - 1];
+      const posteriorDensity =
+        i === density.length - 1 ? density[density.length - 1] : density[i + 1];
 
-      if (d[1] > 1e-10) { // Verifica se a densidade é maior que 0
+      if (d[1] > 1e-10) {
+        // Verifica se a densidade é maior que 0
         const xPos = xScaleTotal(d[0]);
 
         // Calcular a posição Y usando a curva do violin plot
-        const yPos = attribute === upValue
-          ? height / 2 - violinWidthScale(d[1])
-          : height / 2 + violinWidthScale(d[1]);
+        const yPos =
+          attribute === upValue
+            ? height / 2 - violinWidthScale(d[1])
+            : height / 2 + violinWidthScale(d[1]);
 
         // Adicionar círculo na posição correspondente da curva
-        const circle =svg.append("circle")
+        const circle = svg
+          .append("circle")
           .attr("cx", xPos)
           .attr("cy", yPos)
           .attr("r", 5)
@@ -186,35 +195,40 @@ function createViolinPlot(data, selector, show) {
           .on("mouseover", function (event) {
             circle.style("fill-opacity", 0.8);
 
-            const previusRange = previusDensity[0] + (d[0] -previusDensity[0]) / 2;
+            const previusRange =
+              previusDensity[0] + (d[0] - previusDensity[0]) / 2;
             const posteriorRange = d[0] + (posteriorDensity[0] - d[0]) / 2;
-            const countAtDensity = dataAttribute.filter(price => price.Price >= previusRange && price.Price <= posteriorRange).length;
-            const monthlyPrice = d[0] / globalFilters.YEARS / 12
+            const countAtDensity = dataAttribute.filter(
+              (price) =>
+                price.Price >= previusRange && price.Price <= posteriorRange
+            ).length;
+            const monthlyPrice = d[0] / globalFilters.YEARS / 12;
             const tooltipContent = `
-              <strong>Total Price:</strong> ${Math.round(d[0].toFixed(2))/1000000} M€<br>
-              <strong>Monthly Price:</strong> ${Math.round(monthlyPrice.toFixed(2))/1000} k€<br>
+              <strong>Total Price:</strong> ${
+                Math.round(d[0].toFixed(2)) / 1000000
+              } M€<br>
+              <strong>Monthly Price:</strong> ${
+                Math.round(monthlyPrice.toFixed(2)) / 1000
+              } k€<br>
               <strong>Number of Houses:</strong> ${countAtDensity}
             `;
 
-            tooltip.transition()
-              .duration(200)
-              .style("opacity", .9);
+            tooltip.transition().duration(200).style("opacity", 0.9);
 
-
-            tooltip.html(tooltipContent)
-              .style("left", (event.pageX + 10) + "px")
-              .style("top", (event.pageY + 10) + "px");
+            tooltip
+              .html(tooltipContent)
+              .style("left", event.pageX + 10 + "px")
+              .style("top", event.pageY + 10 + "px");
           })
           .on("mousemove", function (event) {
-            tooltip.style("left", (event.pageX + 10) + "px")
-              .style("top", (event.pageY + 10) + "px");
+            tooltip
+              .style("left", event.pageX + 10 + "px")
+              .style("top", event.pageY + 10 + "px");
           })
           .on("mouseout", function () {
             circle.style("fill-opacity", 0);
 
-            tooltip.transition()
-              .duration(500)
-              .style("opacity", 0);
+            tooltip.transition().duration(500).style("opacity", 0);
           });
 
         circle.transition()
@@ -222,8 +236,7 @@ function createViolinPlot(data, selector, show) {
         .style("stroke-opacity", 0.5);
       }
     }
-  })
-
+  });
 
   // Grade para o preço mensal (parte de cima)
   svg
@@ -261,7 +274,9 @@ function createViolinPlot(data, selector, show) {
   svg
     .append("g")
     .attr("transform", `translate(0,${height})`)
-    .call(d3.axisBottom(xScaleTotal).ticks(ticksNumber).tickFormat(d3.format(".2s")))
+    .call(
+      d3.axisBottom(xScaleTotal).ticks(ticksNumber).tickFormat(d3.format(".2s"))
+    )
     .selectAll("text")
     .style("fill", "#4B7AC4")
     .style("dy", "1.5em");
@@ -270,7 +285,9 @@ function createViolinPlot(data, selector, show) {
   svg
     .append("g")
     .attr("transform", `translate(0,0)`) // Colocar o eixo no topo
-    .call(d3.axisTop(xScaleRent).ticks(ticksNumber).tickFormat(d3.format(".2s"))) // Usar axisTop
+    .call(
+      d3.axisTop(xScaleRent).ticks(ticksNumber).tickFormat(d3.format(".2s"))
+    ) // Usar axisTop
     .selectAll("text")
     .style("fill", "#4B7AC4")
     .style("dy", "-1.5em"); // Colocar os textos acima do eixo
@@ -327,28 +344,26 @@ function updateViolinPlot(data, selector, show) {
 /**
  * Updates the visual indication of a house when hovered over in the violin plot.
  * A circle will be displayed at the corresponding price on the x-axis of the violin plot.
- * 
+ *
  * @param {Number} housePrice - The price of the house being hovered.
  * @param {Boolean} isHover - Indicates if the house is being hovered over.
  */
 function updateViolinPlotHoverHouse(housePrice, isHover, AdsType, Condition) {
   // Reset the opacity of all points
-  d3.selectAll(".violin-point")
-    .style("fill-opacity", 0);
+  d3.selectAll(".violin-point").style("fill-opacity", 0);
 
   const domain = currentShow === "AdsType" ? AdsType : Condition;
-    
+
   if (isHover) {
     // Find the closest point to the house price
     const points = d3.selectAll(".violin-point");
     let minDiff = Infinity;
     let closestPoint = null;
-    
-    points.each(function() {
+
+    points.each(function () {
       const className = d3.select(this).attr("class");
       const regex = new RegExp(`${domain}-price-(\\d+\\.?\\d*)`);
       const priceMatch = className.match(regex);
-      console.log('priceMatch', priceMatch);
 
       if (priceMatch) {
         const pointPrice = parseFloat(priceMatch[1]);
@@ -360,21 +375,17 @@ function updateViolinPlotHoverHouse(housePrice, isHover, AdsType, Condition) {
       }
     });
 
-    let color = '#000000';
+    let color = "#000000";
 
-    if(minDiff > stepDensity){
-      color = '#808080';
+    if (minDiff > stepDensity) {
+      color = "#808080";
     }
-    
+
     if (closestPoint) {
-      d3.select(closestPoint)
-        .style("fill-opacity", 0.8)
-        .style("fill", color);
+      d3.select(closestPoint).style("fill-opacity", 0.8).style("fill", color);
     }
-  }
-  else {
+  } else {
     // Reset the opacity of all points
-    d3.selectAll(".violin-point")
-      .style("fill-opacity", 0);
+    d3.selectAll(".violin-point").style("fill-opacity", 0);
   }
 }
