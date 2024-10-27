@@ -83,7 +83,7 @@ function createPaths(svg, data) {
     .append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
-    
+
   const paths = svg
     .append("g")
     .attr("class", "foreground")
@@ -101,7 +101,7 @@ function createPaths(svg, data) {
         d3.select(this).raise();
         d3.select(this).style("stroke-width", "4px");
         d3.select(this).style("stroke", "black");
-        paths.style("opacity", 0.1);      
+        paths.style("opacity", 0.1);
         d3.select(this).style("opacity", 1);
 
         // Tooltip content
@@ -135,29 +135,28 @@ function createPaths(svg, data) {
     .on("mouseout", function (event, d) {
       d3.select(this).style("stroke-width", "1.5px");
       d3.select(this).style("stroke", (d) => colorScale(d.Zone));
-      tooltip.transition()
-        .duration(500)
-        .style("opacity", 0); // Hide tooltip
-      
+      tooltip.transition().duration(500).style("opacity", 0); // Hide tooltip
       paths.style("opacity", 1);
-      
+
       updateViolinPlotHoverHouse(d.Price, false, d.AdsType, d.Condition);
       updateChoroplethMapHoverDistrict(d.District, false);
     });
-  
+
   // Transition the paths to move them from left to right and fade in
   if (inicialized) {
-    paths.transition()
-    .duration(3000) // Duration of the movement animation
-    .ease(d3.easeCubicInOut) // Apply easing
-    .style("opacity", 1); // Change opacity to 1
+    paths
+      .transition()
+      .duration(3000) // Duration of the movement animation
+      .ease(d3.easeCubicInOut) // Apply easing
+      .style("opacity", 1); // Change opacity to 1
   } else {
-    paths.transition()
-    .duration(300) // Duration of the movement animation
-    .ease(d3.easeCubicInOut) // Apply easing
-    .style("opacity", 1); // Change opacity to 1
+    paths
+      .transition()
+      .duration(300) // Duration of the movement animation
+      .ease(d3.easeCubicInOut) // Apply easing
+      .style("opacity", 1); // Change opacity to 1
   }
-  
+
   dimensionGroup.raise();
 }
 
@@ -179,17 +178,17 @@ function addAxesWithBrush(svg) {
   // Create the axes and animate their positions
   dimensionGroup.each(function (dim, index) {
     let axis = d3.axisLeft(yScales[dim]);
+
     if (dim === "Price") {
-      axis
-        .tickFormat(d => `${d / 1000}`);
+      axis.tickFormat((d) => `${d / 1000}`);
     } else if (integerTick.includes(dim)) {
       axis
         .ticks(Math.floor(yScales[dim].domain()[1] - yScales[dim].domain()[0]))
         .tickFormat(d3.format("d"));
     }
-    // Apply axis and style
+
     d3.select(this).call(axis).style("fill", "#6599CB");
-    // Style ticks
+
     d3.select(this)
       .selectAll(".tick text")
       .style("stroke", "rgba(255, 255, 255, 0.8)")
@@ -197,101 +196,34 @@ function addAxesWithBrush(svg) {
       .style("paint-order", "stroke")
       .style("fill", "#4B7AC4")
       .style("font-size", "13px");
-    
+
+    const brush = d3
+      .brushY()
+      .extent([
+        [-10, 0],
+        [10, height],
+      ])
+      .on("start", () => {
+        isBrushing = true;
+      })
+      .on("brush", (event) => brushed(event, dim))
+      .on("end", (event) => {
+        isBrushing = false;
+        brushEnded(event, dim);
+      });
+
+    d3.select(this)
+      .append("g")
+      .attr("class", "brush")
+      .call(brush)
+      .call(brush.move, [0, height]);
+
     // Animate the axes moving to their final positions
     d3.select(this)
       .transition() // Transition for moving
       .duration(1000) // Duration of the transition
       .delay(index * 200) // Stagger the delay for each axis (200 ms apart)
       .attr("transform", `translate(${xScale(dim)}, 0)`); // Move to the final position
-
-      const brush = d3
-        .brushY()
-        .extent([
-          [-10, 0],
-          [10, height],
-        ])
-        .on("start", () => {
-          isBrushing = true;
-        })
-        .on("brush", (event) => brushed(event, dim))
-        .on("end", (event) => {
-          isBrushing = false;
-          brushEnded(event, dim);
-        });
-
-      d3.select(this)
-        .append("g")
-        .attr("class", "brush")
-        .call(brush)
-        .call(brush.move, [0, height]);
-    })
-    .append("text")
-    .attr("fill", "#4B7AC4")
-    .style("text-anchor", "middle")
-    .attr("y", -9)
-    .text((d) => {
-      if (d === "Area") {
-        return "Area (m²)";
-      }
-      if (d === "Price") {
-        return "Price (k€)";
-      }
-      return d;
-    })
-    .style("font-size", "18px")
-    .style("font-family", "Arial, sans-serif")
-    .style("cursor", "grab")
-    .call(
-      d3
-        .drag()
-        .on("start", function (event, dim) {
-          isDragging = true;
-          dragging[dim] = xScale(dim);
-          initialPosition = event.sourceEvent.screenX;
-          event.subject = xScale(dim);
-        })
-        .on("drag", function (event, dim) {
-          const deltaX = event.sourceEvent.screenX - initialPosition;
-
-          dragging[dim] = Math.min(width, Math.max(0, xScale(dim) + deltaX));
-
-          const stepWidth = xScale.step();
-          const difference = deltaX / stepWidth;
-          const dimensionIndexOffset =
-            difference > 0 ? Math.floor(difference) : Math.ceil(difference);
-
-          const currentIndex = dimensions.indexOf(dim);
-          const newIndex = Math.max(
-            0,
-            Math.min(dimensions.length - 1, currentIndex + dimensionIndexOffset)
-          );
-
-          if (currentIndex !== newIndex) {
-            dimensions.splice(currentIndex, 1);
-            dimensions.splice(newIndex, 0, dim);
-
-            xScale.domain(dimensions);
-
-            initialPosition = event.sourceEvent.screenX;
-          }
-
-          updateParallelCoordinates(filtered_data);
-
-          svg
-            .selectAll(".dimension")
-            .attr("transform", (d) => `translate(${position(d)})`);
-
-          dimensionGroup.raise();
-        })
-        .on("end", function (event, dim) {
-          delete dragging[dim];
-          d3.select(this.parentNode)
-            .transition()
-            .attr("transform", `translate(${xScale(dim)})`);
-          isDragging = false;
-        })
-    );
 
     // Add axis labels with fade-in effect
     d3.select(this)
@@ -310,14 +242,66 @@ function addAxesWithBrush(svg) {
       })
       .style("font-size", "18px")
       .style("font-family", "Arial, sans-serif")
+      .style("cursor", "grab")
       .attr("opacity", 0) // Start invisible
+      .call(
+        d3
+          .drag()
+          .on("start", function (event, dim) {
+            isDragging = true;
+            dragging[dim] = xScale(dim);
+            initialPosition = event.sourceEvent.screenX;
+            event.subject = xScale(dim);
+          })
+          .on("drag", function (event, dim) {
+            const deltaX = event.sourceEvent.screenX - initialPosition;
+
+            dragging[dim] = Math.min(width, Math.max(0, xScale(dim) + deltaX));
+
+            const stepWidth = xScale.step();
+            const difference = deltaX / stepWidth;
+            const dimensionIndexOffset =
+              difference > 0 ? Math.floor(difference) : Math.ceil(difference);
+
+            const currentIndex = dimensions.indexOf(dim);
+            const newIndex = Math.max(
+              0,
+              Math.min(
+                dimensions.length - 1,
+                currentIndex + dimensionIndexOffset
+              )
+            );
+
+            if (currentIndex !== newIndex) {
+              dimensions.splice(currentIndex, 1);
+              dimensions.splice(newIndex, 0, dim);
+
+              xScale.domain(dimensions);
+
+              initialPosition = event.sourceEvent.screenX;
+            }
+
+            updateParallelCoordinates(filtered_data);
+
+            svg
+              .selectAll(".dimension")
+              .attr("transform", (d) => `translate(${position(d)})`);
+
+            dimensionGroup.raise();
+          })
+          .on("end", function (event, dim) {
+            delete dragging[dim];
+            d3.select(this.parentNode)
+              .transition()
+              .attr("transform", `translate(${xScale(dim)})`);
+            isDragging = false;
+          })
+      )
       .transition()
       .delay(index * 200 + 250) // Delay for label to appear after axis
       .duration(1500)
       .attr("opacity", 1); // Fade in the label
   });
-
-  // Raise the dimension group to the top
   dimensionGroup.raise();
 }
 
